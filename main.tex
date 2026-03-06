@@ -131,8 +131,6 @@
 	\end{tcolorbox}
 }
 
-
-
 % --- KwAnd per algorithm2e ---
 \SetKw{KwAnd}{and}
 
@@ -160,9 +158,7 @@
 
 % ================================================================
 \begin{document}
-	
 	\pagenumbering{gobble}
-	
 	% --- FRONTESPIZIO ---
 	\begin{titlepage}
 		\centering
@@ -182,413 +178,488 @@
 		
 		
 	\end{titlepage}
-	
 	\clearpage
 	\pagenumbering{arabic}
 	\tableofcontents
 	\clearpage
-	
 	% ================================================================
 	\section{Fondamenti}
-	
-	\subsection{Introduzione al corso}
-	
-	\subsubsection{Requisiti}
-	\begin{itemize}
-		\item Fondamenti di matematica discreta e grafi
-		\item Calcolo delle probabilità
-		\item Basi di C $\to$ si studia Java (Classi e Oggetti)\footnote{Java è il male}
-		\item Le procedure ricorsive sono come l'Ave Maria (STUDIA: c'è nell'esame)
-	\end{itemize}
-	
-	\subsubsection{Programma del corso}
-	\begin{itemize}
-		\item Divide et Impera
-		\item Programmazione dinamica
-		\item Algoritmi Greedy
-		\item Grafi $\to$ Nodi e archi
-	\end{itemize}
-	
-	\subsubsection{Struttura del modulo}
-	48 ore di lezione: 4 ore a settimana + 9 ore di studio personale.\footnote{Sì, lo so, è una noia, ma serve.}
-	Non usare ChatGPT o altri strumenti simili.
-	
-	I lucidi non bastano (purtroppo).
-	
-	Se proprio devi, usa \textbf{Anthropic CLAUDE}.
-	
-	\subsubsection{Modalità di esame}
-	\begin{itemize}
-		\item \textbf{Prima parte:} 15 domande a risposta multipla
-		(almeno 4 su codice Java -- CODE RUNNER)
-		\item \textbf{Seconda parte:} Progettare una soluzione algoritmica
-		\item \textbf{Se va male:} Può fare orale se ha dubbi (Ave o Maria\dots)
-	\end{itemize}
-	
-	% ================================================================
-	\subsection{Il ruolo degli algoritmi nell'informatica}
-	
-	\subsubsection{Cos'è un algoritmo?}
-	
-	\begin{definizione}[Algoritmo]
-		Procedura di calcolo ben definita: dato un input (anche nullo), produce un output
-		in tempo finito.
-	\end{definizione}
-	
-	\begin{definizione}[Problema computazionale]
-		Relazione input/output desiderata. L'algoritmo specifica \textit{come} ottenerla.
-	\end{definizione}
-	
-	\begin{definizione}[Algoritmo corretto]
-		Termina producendo il risultato corretto per ogni istanza valida.
-	\end{definizione}
-	
-	\begin{osservazione}
-		Non sempre esiste un algoritmo: il problema della fermata è indecidibile.
-	\end{osservazione}
-	
-	
-	\subsection{Esempio di algoritmo ricorsivo}
+		\subsection{Introduzione al corso}
+			
+			\subsubsection{Requisiti}
+				\begin{itemize}
+					\item Fondamenti di matematica discreta e grafi
+					\item Calcolo delle probabilità
+					\item Basi di C $\to$ si studia Java (Classi e Oggetti)\footnote{Java è il male}
+					\item Le procedure ricorsive sono come l'Ave Maria (STUDIA: c'è nell'esame)
+				\end{itemize}
+			
+			\subsubsection{Programma del corso}
+				\begin{itemize}
+					\item Divide et Impera
+					\item Programmazione dinamica
+					\item Algoritmi Greedy
+					\item Grafi $\to$ Nodi e archi
+				\end{itemize}
+			
+			\subsubsection{Struttura del modulo}
+				48 ore di lezione: 4 ore a settimana + 9 ore di studio personale.\footnote{Sì, lo so, è una noia, ma serve.}
+				Non usare ChatGPT o altri strumenti simili.
+				
+				I lucidi non bastano (purtroppo).
+				
+				Se proprio devi, usa \textbf{Anthropic CLAUDE}.
+			
+			\subsubsection{Modalità di esame}
+				\begin{itemize}
+					\item \textbf{Prima parte:} 15 domande a risposta multipla
+					(almeno 4 su codice Java -- CODE RUNNER)
+					\item \textbf{Seconda parte:} Progettare una soluzione algoritmica
+					\item \textbf{Se va male:} Può fare orale se ha dubbi (Ave o Maria\dots)
+				\end{itemize}
 		
-	\begin{nota}
-		Le convenzioni usate per il pseudocodice sono a pag. 19 del [CLRS].
-	\end{nota}
+		% ================================================================
+		\subsection{Il ruolo degli algoritmi nell'informatica}
 		
-	\begin{algorithm}[H]
-		\caption{FibonacciR}
-		\KwIn{$n \geq 0$}
-		\KwOut{$F_n$}
-		\If{$n = 0$}{\Return $0$\;}
-		\If{$n = 1$}{\Return $1$\;}
-		\Return FibonacciR($n-1$) + FibonacciR($n-2$)\;
-	\end{algorithm}
-	
-	L’algoritmo è corretto? \textbf{Sì!}
-	
-	Per ogni input valido, termina? \textbf{Sì, assumendo che input sia sempre
-	un intero n  $\geq$ 0}
-	
-	Se sì, calcola il valore giusto? \textbf{Sì, perché l’algoritmo codifica la
-	definizione ricorsiva.}
-	
-	Quanto \textbf{tempo} richiede per terminare?
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=0.5\textwidth]{Immagini/FibonacciT.png}
-		\caption{Tempo computazionale dell'algoritmo \texttt{FibonacciR}}
-		\label{fig:fibonacci-tempo}
-		Come mostrato in Figura~\ref{fig:fibonacci-tempo}, il tempo cresce esponenzialmente.
+			\subsubsection{Cos'è un algoritmo?}
+			
+				\begin{definizione}[Algoritmo]
+					Procedura di calcolo ben definita: dato un input (anche nullo), produce un output
+					in tempo finito.
+				\end{definizione}
+				
+				\begin{definizione}[Problema computazionale]
+					Relazione input/output desiderata. L'algoritmo specifica \textit{come} ottenerla.
+				\end{definizione}
+				
+				\begin{definizione}[Algoritmo corretto]
+					Termina producendo il risultato corretto per ogni istanza valida.
+				\end{definizione}
+				
+				\begin{osservazione}
+					Non sempre esiste un algoritmo: il problema della fermata è indecidibile.
+				\end{osservazione}
 		
-	\end{figure}
-	
-	
-	\newpage
-	\subsubsection*{Calcolo della complessità computazionale}
-	\begin{definizione}[Efficienza]
-		Risorse (tempo e spazio) richieste in funzione della dimensione $n$ dell'input.
-	\end{definizione}
-	
-	\begin{definizione}[Algoritmo vs.\ Implementazione]
-		L'algoritmo è un concetto \textbf{astratto} ($\neq$ implementazione):
-		descrive \textit{come} risolvere un problema indipendentemente dal linguaggio.
-		L'implementazione è un \textbf{programma concreto}, ovvero la traduzione
-		dell'algoritmo in un linguaggio comprensibile dalla macchina.
-	\end{definizione}
-	
-	\begin{nozione}[Algoritmo efficiente]
-		Andiamo a cercare l'algoritmo efficiente:
-		\begin{itemize}
-			\item \textbf{Efficiente:} usa poche risorse
-			\item \textbf{Risorse:} tempo e spazio richiesti dall'algoritmo
-			per produrre l'output
-		\end{itemize}
-	\end{nozione}
-	
-	\begin{teorema}[Algoritmo vs.\ hardware]
-		Con $n = 10^7$ interi da ordinare:
-		\begin{align*}
-			t_A &= \frac{2(10^7)^2}{10^{10}} \approx 5.5\ \text{ore}
-			\quad\text{(InsSort, } 10^9 \text{ istr/s)} \\
-			t_B &= \frac{50 \cdot 10^7 \log_2 10^7}{10^6} \approx 20\ \text{min}
-			\quad\text{(MergeSort, } 10^6 \text{ istr/s)}
-		\end{align*}
-		L'algoritmo migliore batte l'hardware più veloce.
-	\end{teorema}
-	
-	Possiamo fare meglio?
-	
-	\subsubsection*{Ottimizzazione: FibonacciI }
-	\begin{algorithm}[H]
-		\caption{FibonacciI}
-		\KwIn{Intero positivo $n$}
-		\KwOut{Il valore $F_n$}
-		\If{$n = 0$}{\Return $0$\;}
-		\If{$n = 1$}{\Return $1$\;}
-		$\mathit{pprev} = 0$\;
-		$\mathit{prev} = 1$\;
-		\For{$i = 2$ \KwTo $n$}{
-			$f = \mathit{prev} + \mathit{pprev}$\;
-			$\mathit{pprev} = \mathit{prev}$\;
-			$\mathit{prev} = f$\;
-		}
-		\Return $f$\;
-	\end{algorithm}
-
-	\begin{center}
-		\begin{tabular}{lll}
-			\toprule
-			Algoritmo & Complessità & $n=50$ \\
-			\midrule
-			Ricorsivo & $(1.4)^n$   & minuti \\
-			Iterativo & $\Theta(n)$ & istantaneo \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\noindent\textbf{Modello RAM:} ogni operazione elementare ha costo $1$;
-	parola di memoria a dimensione fissa.
-	
-	% ----------------------------------------------------------------
-	\subsection{InsertionSort e MergeSort}
-	\subsubsection{InsertionSort}
-	Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
-	(come le carte da gioco).
-	
-	\begin{algorithm}[H]
-		\caption{InsertionSort}
-		\KwIn{$A[1\ldots n]$}
-		\KwOut{$A$ ordinato}
-		\For{$i = 2$ \KwTo $n$}{
-			$\mathit{key} \gets A[i]$\;
-			$j \gets i - 1$\;
-			\While{$j > 0$ \KwAnd $A[j] > \mathit{key}$}{
-				$A[j+1] \gets A[j]$\;
-				$j \gets j - 1$\;
+		
+		\subsection{Esempio di algoritmo ricorsivo}
+			
+			\begin{nota}
+				Le convenzioni usate per il pseudocodice sono a pag. 19 del [CLRS].
+			\end{nota}
+				
+			\begin{algorithm}[H]
+				\caption{FibonacciR}
+				\KwIn{$n \geq 0$}
+				\KwOut{$F_n$}
+				\If{$n = 0$}{\Return $0$\;}
+				\If{$n = 1$}{\Return $1$\;}
+				\Return FibonacciR($n-1$) + FibonacciR($n-2$)\;
+			\end{algorithm}
+			
+			L’algoritmo è corretto? \textbf{Sì!}
+			
+			Per ogni input valido, termina? \textbf{Sì, assumendo che input sia sempre un intero n  $\geq$ 0}
+			
+			Se sì, calcola il valore giusto? \textbf{Sì, perché l’algoritmo codifica la definizione ricorsiva.}
+			
+			Quanto \textbf{tempo} richiede per terminare?
+			
+			\begin{figure}[H]
+				\centering
+				\includegraphics[width=0.5\textwidth]{Immagini/FibonacciT.png}
+				\caption{Tempo computazionale dell'algoritmo \texttt{FibonacciR}}
+				\label{fig:fibonacci-tempo}
+				Come mostrato in Figura~\ref{fig:fibonacci-tempo}, il tempo cresce esponenzialmente.
+				
+			\end{figure}
+			
+			\newpage
+				\subsubsection*{Calcolo della complessità computazionale}
+			\begin{definizione}[Efficienza]
+				Risorse (tempo e spazio) richieste in funzione della dimensione $n$ dell'input.
+			\end{definizione}
+			
+			\begin{definizione}[Algoritmo vs.\ Implementazione]
+				L'algoritmo è un concetto \textbf{astratto} ($\neq$ implementazione):
+				descrive \textit{come} risolvere un problema indipendentemente dal linguaggio.
+				L'implementazione è un \textbf{programma concreto}, ovvero la traduzione
+				dell'algoritmo in un linguaggio comprensibile dalla macchina.
+			\end{definizione}
+			
+			\begin{nozione}[Algoritmo efficiente]
+				Andiamo a cercare l'algoritmo efficiente:
+				\begin{itemize}
+					\item \textbf{Efficiente:} usa poche risorse
+					\item \textbf{Risorse:} tempo e spazio richiesti dall'algoritmo
+					per produrre l'output
+				\end{itemize}
+			\end{nozione}
+			
+			\begin{teorema}[Algoritmo vs.\ hardware]
+				Con $n = 10^7$ interi da ordinare:
+				\begin{align*}
+					t_A &= \frac{2(10^7)^2}{10^{10}} \approx 5.5\ \text{ore}
+					\quad\text{(InsSort, } 10^9 \text{ istr/s)} \\
+					t_B &= \frac{50 \cdot 10^7 \log_2 10^7}{10^6} \approx 20\ \text{min}
+					\quad\text{(MergeSort, } 10^6 \text{ istr/s)}
+				\end{align*}
+				L'algoritmo migliore batte l'hardware più veloce.
+			\end{teorema}
+			
+			\textbf{Possiamo fare meglio?}
+			
+			\subsubsection*{Ottimizzazione: FibonacciI }
+			\begin{algorithm}[H]
+				\caption{FibonacciI}
+				\KwIn{Intero positivo $n$}
+				\KwOut{Il valore $F_n$}
+				\If{$n = 0$}{\Return $0$\;}
+				\If{$n = 1$}{\Return $1$\;}
+				$\mathit{pprev} = 0$\;
+				$\mathit{prev} = 1$\;
+				\For{$i = 2$ \KwTo $n$}{
+					$f = \mathit{prev} + \mathit{pprev}$\;
+					$\mathit{pprev} = \mathit{prev}$\;
+					$\mathit{prev} = f$\;
+				}
+				\Return $f$\;
+			\end{algorithm}
+			
+			\newpage
+			
+			La sua complessità soddisfa la ricorrenza:
+			\[
+			T(0) = 2, \quad T(1) = 3, \quad T(n) = T(n-1) + T(n-2) + 8
+			\]
+			
+			Il $+8$ è dato da: 2 \texttt{if} + 2 calcoli parametri + 2 chiamate + 1 somma + 1 \texttt{return}.
+			Da questa ricorrenza segue $T(n) > F_n$, e per $n \geq 7$:
+			\[
+			F_n > 2F_{n-2} > 2^2 F_{n-4} > \cdots > 2^{n/2}
+			\]
+			
+			Quindi la crescita è \textbf{esponenziale}:
+			\[
+			T(n) > \left(\sqrt{2}\right)^n \approx (1.4)^n
+			\]
+			
+			Una stima più precisa è data dalla \textbf{Formula di Binet}:
+			\[
+			T(n) \geq \frac{\varphi^n - (-\varphi)^{-n}}{\sqrt{5}}, \qquad \varphi = \frac{1+\sqrt{5}}{2} \approx 1.62
+			\]
+			
+			L'algoritmo iterativo evita il ricalcolo sommando i valori dal più piccolo al più grande.
+			La complessità è:
+			\[
+			T(0) = 2, \quad T(1) = 3, \quad T(n) = 4 + 2n + 4(n-1) + 1 = 6n + 1
+			\]
+			
+			La crescita è \textbf{lineare in $n$}.
+		
+		
+			\begin{center}
+				\begin{tabular}{lll}
+					\toprule
+					Algoritmo & Complessità & $n=50$ \\
+					\midrule
+					Ricorsivo & $(1.4)^n$   & minuti \\
+					Iterativo & $\Theta(n)$ & istantaneo \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			\noindent\textbf{Modello RAM:} ogni operazione elementare ha costo $1$;
+			parola di memoria a dimensione fissa.
+			
+			\newpage
+		\subsection*{Esempi di problemi computazionali da risolvere in aula}
+		
+			\textbf{Problema:} Data una matrice di interi \texttt{nums} e un intero \texttt{target}, restituisci gli indici dei due numeri tali che la loro somma sia uguale a \texttt{target}. Puoi assumere che ogni input abbia esattamente una soluzione, e non puoi usare lo stesso elemento due volte. Puoi restituire la risposta in qualsiasi ordine.
+			
+			\begin{algorithm}[H]
+				\caption{twoSum (Brute Force)}
+				\KwIn{\texttt{nums[0\ldots n-1]}, \texttt{target}}
+				\KwOut{\{i, j\} tali che \texttt{nums[i] + nums[j] = target}, $i \neq j$}
+				\For{$i = 0$ \KwTo $n-2$}{
+					\For{$j = i+1$ \KwTo $n-1$}{
+						\If{\texttt{nums[i] + nums[j] == target}}{
+							\KwRet $\{i, j\}$\;
+						}
+					}
+				}
+			\end{algorithm}
+			
+			\noindent\textbf{Invariante:} Dopo ogni iterazione esterna, tutti gli elementi da $0$ a $i-1$ sono stati confrontati con tutti gli elementi successivi.
+			
+			\noindent\textbf{Complessità:}
+			\begin{itemize}
+				\item Caso migliore: $\Theta(1)$ (se la coppia è trovata subito)
+				\item Caso peggiore: $\Theta(n^2)$
+			\end{itemize}
+			
+			\noindent\textbf{Calcolo della complessità temporale (caso peggiore):}
+			
+			L'algoritmo esegue due cicli annidati. Il ciclo esterno itera $n-1$ volte, e per ogni $i$ il ciclo interno itera $n-1-i$ volte. Quindi:
+			
+			\[
+			T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = \frac{(n-1)n}{2} \in \Theta(n^2)
+			\]
+			
+			La complessità spaziale è $\Theta(1)$, poiché usiamo solo variabili costanti. 
+			
+			\vspace*{\stretch{1}} 
+		\subsection*{CODICE JAVA}
+			\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
+			class twoSum {
+				public int[] twoSum(int[] nums, int target) {
+					for (int i = 0; i < nums.length; i++) {
+						for (int j = i + 1; j < nums.length; j++) {
+							if (nums[i] + nums[j] == target) {
+								return new int[]{i, j};
+							}
+						}
+					}
+					return new int[]{};  // nessuna soluzione trovata
+				}
 			}
-			$A[j+1] \gets \mathit{key}$\;
-		}
-	\end{algorithm}
-	
-	\noindent\textbf{Invariante:} $A[1:i-1]$ è ordinato all'inizio di ogni iterazione.
-	
-	\noindent\textbf{Complessità:} caso migliore $\Theta(n)$, caso peggiore $\Theta(n^2)$.
-	
-	\subsubsection{MergeSort (Divide et impera)}
-	\begin{enumerate}
-		\item \textbf{Dividi:} spezza in due metà.
-		\item \textbf{Impera:} ordina ricorsivamente.
-		\item \textbf{Combina:} fondi in $\Theta(n)$.
-	\end{enumerate}
-	\[
-	T(n) = 2\,T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n)
-	\]
-	
-	\begin{center}
-		\begin{tabular}{lll}
-			\toprule
-			Algoritmo     & Caso peggiore      & Strategia \\
-			\midrule
-			InsertionSort & $\Theta(n^2)$      & Incrementale \\
-			MergeSort     & $\Theta(n \log n)$ & Divide et impera \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	% ----------------------------------------------------------------
-	\subsection{Analisi probabilistica e algoritmi randomizzati}
-	
-	\subsubsection{Il problema dell'assunzione}
-	\mbox{}
-	
-	\subsubsection{Variabili casuali indicatrici}
-	\mbox{}
-	
-	\subsubsection{Algoritmi randomizzati}
-	\mbox{}
-	
-	% ================================================================
-	\subsection{Calcolo della complessità}
-	
-	\subsubsection{Notazione asintotica}
-	
-	\begin{definizione}[$O$, $\Omega$, $\Theta$]
-		Date $f, g : \mathbb{N} \to \mathbb{R}^+$:
-		\begin{itemize}
-			\item $f = O(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \le c\,g(n)$
-			per $n \ge n_0$ \quad(\emph{limite superiore}).
-			\item $f = \Omega(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \ge c\,g(n)$
-			per $n \ge n_0$ \quad(\emph{limite inferiore}).
-			\item $f = \Theta(g)$: $f = O(g)$ e $f = \Omega(g)$
-			\quad(\emph{limite stretto}).
-		\end{itemize}
-	\end{definizione}
-	
-	\noindent Ordine crescente:
-	\[
-	O(1) \subset O(\log n) \subset O(n) \subset O(n\log n)
-	\subset O(n^2) \subset O(2^n) \subset O(n!)
-	\]
-	
-	\subsubsection{Regole per algoritmi iterativi}
-	\begin{itemize}
-		\item \textbf{Sequenza:} $O(\max(f, g))$.
-		\item \textbf{Ciclo semplice} di $n$ iterazioni a corpo $O(1)$: $O(n)$.
-		\item \textbf{Cicli annidati:} prodotto dei range.
-		Due cicli $1\ldots n$: $O(n^2)$.
-		\item \textbf{Passo moltiplicativo} ($i$ raddoppia): $O(\log n)$.
-		\item \textbf{If-else:} massimo dei due rami.
-	\end{itemize}
-	
-	\noindent\textbf{Esempio (limite variabile):}
-	\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
-		for (int i = 1; i <= n; i++)
-		for (int j = 1; j <= i; j++)
-		op(); // O(1)
-	\end{lstlisting}
-	Costo: $\sum_{i=1}^{n} i = \dfrac{n(n+1)}{2} = \Theta(n^2)$.
-	
-	\subsubsection{Ricorrenze: forma generale}
-	\[
-	T(n) = a\,T\!\left(\frac{n}{b}\right) + f(n), \quad T(1)=\Theta(1)
-	\]
-	$a$ = numero sotto-chiamate, $b$ = fattore riduzione, $f(n)$ = costo
-	divisione + combinazione.
-	
-	\subsubsection{Metodo della sostituzione}
-	\begin{enumerate}
-		\item \textbf{Ipotizzare} la forma, es.\ $T(n) = O(n\log n)$.
-		\item \textbf{Sostituire} nella ricorrenza assumendo l'ipotesi vera
-		per $T(n/b)$.
-		\item \textbf{Verificare} la disuguaglianza scegliendo le costanti.
-	\end{enumerate}
-	
-	\noindent\textbf{Esempio:} $T(n) = 2T(n/2)+n$, ipotesi $T(n)\le cn\log n$:
-	\[
-	T(n) \le 2\cdot\frac{cn}{2}\log\frac{n}{2}+n
-	= cn\log n - cn + n \le cn\log n \quad (c\ge 1).
-	\]
-	
-	\subsubsection{Metodo dell'albero di ricorsione}
-	\begin{enumerate}
-		\item Ogni nodo al livello $k$ ha costo $f(n/b^k)$ e genera $a$ figli.
-		\item Numero livelli: $\log_b n$. Foglie: $n^{\log_b a}$.
-		\item Sommare i costi per livello.
-	\end{enumerate}
-	
-	\noindent\textbf{Esempio:} $T(n)=3T(n/4)+cn^2$.
-	Costo per livello $k$: $c\,n^2(3/16)^k$.
-	\[
-	T(n) < cn^2\sum_{k=0}^{\infty}\!\left(\frac{3}{16}\right)^k
-	= cn^2\cdot\frac{16}{13} = O(n^2).
-	\]
-	
-	\subsubsection{Master Theorem}
-	
-	\begin{teorema}[Master Theorem]
-		Data $T(n) = a\,T(n/b)+f(n)$, posto $p = \log_b a$:
+			\end{lstlisting}
+		
+		\subsection{InsertionSort e MergeSort}
+		\subsubsection{InsertionSort}
+		Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
+		(come le carte da gioco).
+		
+		\begin{algorithm}[H]
+			\caption{InsertionSort}
+			\KwIn{$A[1\ldots n]$}
+			\KwOut{$A$ ordinato}
+			\For{$i = 2$ \KwTo $n$}{
+				$\mathit{key} \gets A[i]$\;
+				$j \gets i - 1$\;
+				\While{$j > 0$ \KwAnd $A[j] > \mathit{key}$}{
+					$A[j+1] \gets A[j]$\;
+					$j \gets j - 1$\;
+				}
+				$A[j+1] \gets \mathit{key}$\;
+			}
+		\end{algorithm}
+		
+		\noindent\textbf{Invariante:} $A[1:i-1]$ è ordinato all'inizio di ogni iterazione.
+		
+		\noindent\textbf{Complessità:} caso migliore $\Theta(n)$, caso peggiore $\Theta(n^2)$.
+		
+		\subsubsection{MergeSort (Divide et impera)}
 		\begin{enumerate}
-			\item $f(n) = O(n^{p-\varepsilon})$
-			$\Rightarrow T(n) = \Theta(n^p)$ \quad\emph{(foglie dominano)}
-			\item $f(n) = \Theta(n^p\log^k n)$, $k\ge 0$
-			$\Rightarrow T(n) = \Theta(n^p\log^{k+1}n)$ \quad\emph{(pareggio)}
-			\item $f(n) = \Omega(n^{p+\varepsilon})$ e $a\,f(n/b)\le c\,f(n)$, $c<1$
-			$\Rightarrow T(n) = \Theta(f(n))$ \quad\emph{(radice domina)}
+			\item \textbf{Dividi:} spezza in due metà.
+			\item \textbf{Impera:} ordina ricorsivamente.
+			\item \textbf{Combina:} fondi in $\Theta(n)$.
 		\end{enumerate}
-	\end{teorema}
-	
-	\noindent\textbf{Esempi applicativi:}
-	\begin{center}
-		\small
-		\begin{tabular}{llll}
-			\toprule
-			Ricorrenza & $p=\log_b a$ & Caso & Soluzione \\
-			\midrule
-			$2T(n/2)+\Theta(n)$   & $1$        & 2 & $\Theta(n\log n)$ \\
-			$2T(n/2)+\Theta(n^2)$ & $1$        & 3 & $\Theta(n^2)$ \\
-			$4T(n/2)+\Theta(n)$   & $2$        & 1 & $\Theta(n^2)$ \\
-			$2T(n/3)+\Theta(1)$   & $\log_3 2$ & 1 & $\Theta(n^{\log_3 2})$ \\
-			$T(n/2)+\Theta(1)$    & $0$        & 2 & $\Theta(\log n)$ \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\begin{osservazione}
-		Il Master Theorem \textbf{non si applica} se $f(n)$ non è polinomialmente
-		confrontabile con $n^p$ o se la forma non è $a\,T(n/b)+f(n)$.
-	\end{osservazione}
-	
-	\subsubsection{Ricorrenze non standard (telescoping)}
-	
-	\begin{center}
-		\begin{tabular}{ll}
-			\toprule
-			Ricorrenza & Soluzione \\
-			\midrule
-			$T(n) = T(n-1) + O(1)$                     & $\Theta(n)$ \\
-			$T(n) = T(n-1) + O(n^c)$                   & $\Theta(n^{c+1})$ \\
-			$T(n) = 2T(n-1) + O(1)$                    & $\Theta(2^n)$ \\
-			$T(n) \le T(\alpha n)+T((1-\alpha)n)+O(n)$ & $O(n\log n)$ \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\noindent\textbf{Telescoping:}
-	$T(n) = T(n-1)+f(n) = T(1) + \sum_{k=2}^{n} f(k)$.
-	Per $f(k)=k^c$: somma $= \Theta(n^{c+1})$.
-	
+		\[
+		T(n) = 2\,T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n)
+		\]
+		
+		\begin{center}
+			\begin{tabular}{lll}
+				\toprule
+				Algoritmo     & Caso peggiore      & Strategia \\
+				\midrule
+				InsertionSort & $\Theta(n^2)$      & Incrementale \\
+				MergeSort     & $\Theta(n \log n)$ & Divide et impera \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		
+		% ----------------------------------------------------------------
+		\subsection{Analisi probabilistica e algoritmi randomizzati}
+		
+		\subsubsection{Il problema dell'assunzione}
+		\mbox{}
+		
+		\subsubsection{Variabili casuali indicatrici}
+		\mbox{}
+		
+		\subsubsection{Algoritmi randomizzati}
+		\mbox{}
+		
+		% ================================================================
+		\subsection{Calcolo della complessità}
+			\subsubsection{Notazione asintotica}
+			
+			\begin{definizione}[$O$, $\Omega$, $\Theta$]
+				Date $f, g : \mathbb{N} \to \mathbb{R}^+$:
+				\begin{itemize}
+					\item $f = O(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \le c\,g(n)$
+					per $n \ge n_0$ \quad(\emph{limite superiore}).
+					\item $f = \Omega(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \ge c\,g(n)$
+					per $n \ge n_0$ \quad(\emph{limite inferiore}).
+					\item $f = \Theta(g)$: $f = O(g)$ e $f = \Omega(g)$
+					\quad(\emph{limite stretto}).
+				\end{itemize}
+			\end{definizione}
+			
+			\noindent Ordine crescente:
+			\[
+			O(1) \subset O(\log n) \subset O(n) \subset O(n\log n)
+			\subset O(n^2) \subset O(2^n) \subset O(n!)
+			\]
+			
+			\subsubsection{Regole per algoritmi iterativi}
+			\begin{itemize}
+				\item \textbf{Sequenza:} $O(\max(f, g))$.
+				\item \textbf{Ciclo semplice} di $n$ iterazioni a corpo $O(1)$: $O(n)$.
+				\item \textbf{Cicli annidati:} prodotto dei range.
+				Due cicli $1\ldots n$: $O(n^2)$.
+				\item \textbf{Passo moltiplicativo} ($i$ raddoppia): $O(\log n)$.
+				\item \textbf{If-else:} massimo dei due rami.
+			\end{itemize}
+			
+			\noindent\textbf{Esempio (limite variabile):}
+			\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
+				for (int i = 1; i <= n; i++)
+				for (int j = 1; j <= i; j++)
+				op(); // O(1)
+			\end{lstlisting}
+			Costo: $\sum_{i=1}^{n} i = \dfrac{n(n+1)}{2} = \Theta(n^2)$.
+			
+			\subsubsection{Ricorrenze: forma generale}
+			\[
+			T(n) = a\,T\!\left(\frac{n}{b}\right) + f(n), \quad T(1)=\Theta(1)
+			\]
+			$a$ = numero sotto-chiamate, $b$ = fattore riduzione, $f(n)$ = costo
+			divisione + combinazione.
+			
+			\subsubsection{Metodo della sostituzione}
+			\begin{enumerate}
+				\item \textbf{Ipotizzare} la forma, es.\ $T(n) = O(n\log n)$.
+				\item \textbf{Sostituire} nella ricorrenza assumendo l'ipotesi vera
+				per $T(n/b)$.
+				\item \textbf{Verificare} la disuguaglianza scegliendo le costanti.
+			\end{enumerate}
+			
+			\noindent\textbf{Esempio:} $T(n) = 2T(n/2)+n$, ipotesi $T(n)\le cn\log n$:
+			\[
+			T(n) \le 2\cdot\frac{cn}{2}\log\frac{n}{2}+n
+			= cn\log n - cn + n \le cn\log n \quad (c\ge 1).
+			\]
+			
+			\subsubsection{Metodo dell'albero di ricorsione}
+			\begin{enumerate}
+				\item Ogni nodo al livello $k$ ha costo $f(n/b^k)$ e genera $a$ figli.
+				\item Numero livelli: $\log_b n$. Foglie: $n^{\log_b a}$.
+				\item Sommare i costi per livello.
+			\end{enumerate}
+			
+			\noindent\textbf{Esempio:} $T(n)=3T(n/4)+cn^2$.
+			Costo per livello $k$: $c\,n^2(3/16)^k$.
+			\[
+			T(n) < cn^2\sum_{k=0}^{\infty}\!\left(\frac{3}{16}\right)^k
+			= cn^2\cdot\frac{16}{13} = O(n^2).
+			\]
+			
+			\subsubsection{Master Theorem}
+			
+			\begin{teorema}[Master Theorem]
+				Data $T(n) = a\,T(n/b)+f(n)$, posto $p = \log_b a$:
+				\begin{enumerate}
+					\item $f(n) = O(n^{p-\varepsilon})$
+					$\Rightarrow T(n) = \Theta(n^p)$ \quad\emph{(foglie dominano)}
+					\item $f(n) = \Theta(n^p\log^k n)$, $k\ge 0$
+					$\Rightarrow T(n) = \Theta(n^p\log^{k+1}n)$ \quad\emph{(pareggio)}
+					\item $f(n) = \Omega(n^{p+\varepsilon})$ e $a\,f(n/b)\le c\,f(n)$, $c<1$
+					$\Rightarrow T(n) = \Theta(f(n))$ \quad\emph{(radice domina)}
+				\end{enumerate}
+			\end{teorema}
+			
+			\noindent\textbf{Esempi applicativi:}
+			\begin{center}
+				\small
+				\begin{tabular}{llll}
+					\toprule
+					Ricorrenza & $p=\log_b a$ & Caso & Soluzione \\
+					\midrule
+					$2T(n/2)+\Theta(n)$   & $1$        & 2 & $\Theta(n\log n)$ \\
+					$2T(n/2)+\Theta(n^2)$ & $1$        & 3 & $\Theta(n^2)$ \\
+					$4T(n/2)+\Theta(n)$   & $2$        & 1 & $\Theta(n^2)$ \\
+					$2T(n/3)+\Theta(1)$   & $\log_3 2$ & 1 & $\Theta(n^{\log_3 2})$ \\
+					$T(n/2)+\Theta(1)$    & $0$        & 2 & $\Theta(\log n)$ \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			\begin{osservazione}
+				Il Master Theorem \textbf{non si applica} se $f(n)$ non è polinomialmente
+				confrontabile con $n^p$ o se la forma non è $a\,T(n/b)+f(n)$.
+			\end{osservazione}
+			
+			\subsubsection{Ricorrenze non standard (telescoping)}
+			
+			\begin{center}
+				\begin{tabular}{ll}
+					\toprule
+					Ricorrenza & Soluzione \\
+					\midrule
+					$T(n) = T(n-1) + O(1)$                     & $\Theta(n)$ \\
+					$T(n) = T(n-1) + O(n^c)$                   & $\Theta(n^{c+1})$ \\
+					$T(n) = 2T(n-1) + O(1)$                    & $\Theta(2^n)$ \\
+					$T(n) \le T(\alpha n)+T((1-\alpha)n)+O(n)$ & $O(n\log n)$ \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			\noindent\textbf{Telescoping:}
+			$T(n) = T(n-1)+f(n) = T(1) + \sum_{k=2}^{n} f(k)$.
+			Per $f(k)=k^c$: somma $= \Theta(n^{c+1})$.
+			
 	% ----------------------------------------------------------------
 
 	
 	% ================================================================
 	\section{Ordinamento e statistiche d'ordine}
-	
-	\subsection{Heapsort}
-	
-	\subsubsection{Heap}
-	\mbox{}
-	
-	\subsubsection{Mantenere la proprietà heap}
-	\mbox{}
-	
-	\subsubsection{Costruire un heap}
-	\mbox{}
-	
-	\subsubsection{Heapsort}
-	\mbox{}
-	
-	\subsubsection{Code di priorità}
-	\mbox{}
-	
-	\subsection{Quicksort}
-	
-	\subsubsection{Descrizione}
-	\mbox{}
-	
-	\subsubsection{Prestazioni nel caso peggiore}
-	\mbox{}
-	
-	\subsubsection{Versione randomizzata}
-	\mbox{}
-	
-	\subsubsection{Analisi}
-	\mbox{}
-	
-	\subsection{Ordinamento in tempo lineare}
-	
-	\subsubsection{Limite inferiore per l'ordinamento}
-	\mbox{}
-	
-	\subsubsection{Counting sort}
-	\mbox{}
-	
-	\subsubsection{Radix sort}
-	\mbox{}
-	
-	\subsubsection{Bucket sort}
-	\mbox{}
-	
-	\subsection{Mediane e statistiche d'ordine}
+		\subsection{Heapsort}
+		\subsubsection{Heap}
+		\mbox{}
+		
+		\subsubsection{Mantenere la proprietà heap}
+		\mbox{}
+		
+		\subsubsection{Costruire un heap}
+		\mbox{}
+		
+		\subsubsection{Heapsort}
+		\mbox{}
+		
+		\subsubsection{Code di priorità}
+		\mbox{}
+		
+		\subsection{Quicksort}
+		
+		\subsubsection{Descrizione}
+		\mbox{}
+		
+		\subsubsection{Prestazioni nel caso peggiore}
+		\mbox{}
+		
+		\subsubsection{Versione randomizzata}
+		\mbox{}
+		
+		\subsubsection{Analisi}
+		\mbox{}
+		
+		\subsection{Ordinamento in tempo lineare}
+		
+		\subsubsection{Limite inferiore per l'ordinamento}
+		\mbox{}
+		
+		\subsubsection{Counting sort}
+		\mbox{}
+		
+		\subsubsection{Radix sort}
+		\mbox{}
+		
+		\subsubsection{Bucket sort}
+		\mbox{}
+		
+		\subsection{Mediane e statistiche d'ordine}
 	
 	\subsubsection{Minimo e massimo}
 	\mbox{}
@@ -601,38 +672,37 @@
 	
 	% ================================================================
 	\section{Strutture Dati}
-	
-	\subsection{Strutture dati elementari}
-	
-	\subsubsection{Array, matrici, pile, code}
-	\mbox{}
-	
-	\subsubsection{Liste concatenate}
-	\mbox{}
-	
-	\subsubsection{Rappresentazione di alberi radicati}
-	\mbox{}
-	
-	\subsection{Tabelle hash}
-	
-	\subsubsection{Indirizzamento diretto}
-	\mbox{}
-	
-	\subsubsection{Funzioni hash}
-	\mbox{}
-	
-	\subsubsection{Indirizzamento aperto}
-	\mbox{}
-	
-	\subsection{Alberi binari di ricerca}
-	
-	\subsubsection{Struttura e proprietà}
-	\mbox{}
-	
-	\subsubsection{Ricerca, inserimento e cancellazione}
-	\mbox{}
-	
-	\subsection{Alberi rosso-neri}
+		\subsection{Strutture dati elementari}
+		
+		\subsubsection{Array, matrici, pile, code}
+		\mbox{}
+		
+		\subsubsection{Liste concatenate}
+		\mbox{}
+		
+		\subsubsection{Rappresentazione di alberi radicati}
+		\mbox{}
+		
+		\subsection{Tabelle hash}
+		
+		\subsubsection{Indirizzamento diretto}
+		\mbox{}
+		
+		\subsubsection{Funzioni hash}
+		\mbox{}
+		
+		\subsubsection{Indirizzamento aperto}
+		\mbox{}
+		
+		\subsection{Alberi binari di ricerca}
+		
+		\subsubsection{Struttura e proprietà}
+		\mbox{}
+		
+		\subsubsection{Ricerca, inserimento e cancellazione}
+		\mbox{}
+		
+		\subsection{Alberi rosso-neri}
 	
 	\subsubsection{Proprietà e rotazioni}
 	\mbox{}
@@ -642,39 +712,38 @@
 	
 	% ================================================================
 	\section{Tecniche avanzate di progettazione e analisi}
-	
-	\subsection{Programmazione dinamica}
-	
-	\subsubsection{Taglio delle aste}
-	\mbox{}
-	
-	\subsubsection{Moltiplicazione di catene di matrici}
-	\mbox{}
-	
-	\subsubsection{Elementi della programmazione dinamica}
-	\mbox{}
-	
-	\subsubsection{Sottosequenza comune più lunga (LCS)}
-	\mbox{}
-	
-	\subsubsection{Alberi binari di ricerca ottimali}
-	\mbox{}
-	
-	\subsection{Algoritmi greedy}
-	
-	\subsubsection{Selezione di attività}
-	\mbox{}
-	
-	\subsubsection{Strategia greedy}
-	\mbox{}
-	
-	\subsubsection{Codici di Huffman}
-	\mbox{}
-	
-	\subsubsection{Caching offline}
-	\mbox{}
-	
-	\subsection{Analisi ammortizzata}
+		\subsection{Programmazione dinamica}
+		
+		\subsubsection{Taglio delle aste}
+		\mbox{}
+		
+		\subsubsection{Moltiplicazione di catene di matrici}
+		\mbox{}
+		
+		\subsubsection{Elementi della programmazione dinamica}
+		\mbox{}
+		
+		\subsubsection{Sottosequenza comune più lunga (LCS)}
+		\mbox{}
+		
+		\subsubsection{Alberi binari di ricerca ottimali}
+		\mbox{}
+		
+		\subsection{Algoritmi greedy}
+		
+		\subsubsection{Selezione di attività}
+		\mbox{}
+		
+		\subsubsection{Strategia greedy}
+		\mbox{}
+		
+		\subsubsection{Codici di Huffman}
+		\mbox{}
+		
+		\subsubsection{Caching offline}
+		\mbox{}
+		
+		\subsection{Analisi ammortizzata}
 	
 	\subsubsection{Analisi aggregata}
 	\mbox{}
@@ -690,97 +759,94 @@
 	
 	% ================================================================
 	\section{Strutture dati avanzate}
-	
-	\subsection{Aumentare le strutture dati}
-	
-	\subsubsection{Statistiche d'ordine dinamiche}
-	\mbox{}
-	
-	\subsubsection{Come aumentare una struttura dati}
-	\mbox{}
-	
-	\subsubsection{Alberi di intervalli}
-	\mbox{}
-	
-	\subsection{B-Tree}
-	\mbox{}
-	
-	\subsection{Strutture dati per insiemi disgiunti (Union-Find)}
+		\subsection{Aumentare le strutture dati}
+		
+		\subsubsection{Statistiche d'ordine dinamiche}
+		\mbox{}
+		
+		\subsubsection{Come aumentare una struttura dati}
+		\mbox{}
+		
+		\subsubsection{Alberi di intervalli}
+		\mbox{}
+		
+		\subsection{B-Tree}
+		\mbox{}
+		
+		\subsection{Strutture dati per insiemi disgiunti (Union-Find)}
 	\mbox{}
 	
 	% ================================================================
 	\section{Algoritmi per grafi}
-	
-	\subsection{Algoritmi elementari su grafi}
-	
-	\subsubsection{Rappresentazioni dei grafi}
-	\mbox{}
-	
-	\subsubsection{Visita in ampiezza (BFS)}
-	\mbox{}
-	
-	\subsubsection{Visita in profondità (DFS)}
-	\mbox{}
-	
-	\subsubsection{Ordinamento topologico}
-	\mbox{}
-	
-	\subsubsection{Componenti fortemente connesse}
-	\mbox{}
-	
-	\subsection{Alberi di copertura minimi (MST)}
-	
-	\subsubsection{Costruzione incrementale}
-	\mbox{}
-	
-	\subsubsection{Algoritmo di Kruskal}
-	\mbox{}
-	
-	\subsubsection{Algoritmo di Prim}
-	\mbox{}
-	
-	\subsection{Cammini minimi da sorgente singola}
-	
-	\subsubsection{Algoritmo di Bellman-Ford}
-	\mbox{}
-	
-	\subsubsection{Cammini minimi su DAG}
-	\mbox{}
-	
-	\subsubsection{Algoritmo di Dijkstra}
-	\mbox{}
-	
-	\subsection{Cammini minimi tra tutte le coppie}
-	
-	\subsubsection{Floyd-Warshall}
-	\mbox{}
-	
-	\subsubsection{Algoritmo di Johnson}
-	\mbox{}
-	
-	\subsection{Flusso massimo (Ford-Fulkerson)}
-	\mbox{}
-	
-	\subsection{Matching in grafi bipartiti}
+		\subsection{Algoritmi elementari su grafi}
+		
+		\subsubsection{Rappresentazioni dei grafi}
+		\mbox{}
+		
+		\subsubsection{Visita in ampiezza (BFS)}
+		\mbox{}
+		
+		\subsubsection{Visita in profondità (DFS)}
+		\mbox{}
+		
+		\subsubsection{Ordinamento topologico}
+		\mbox{}
+		
+		\subsubsection{Componenti fortemente connesse}
+		\mbox{}
+		
+		\subsection{Alberi di copertura minimi (MST)}
+		
+		\subsubsection{Costruzione incrementale}
+		\mbox{}
+		
+		\subsubsection{Algoritmo di Kruskal}
+		\mbox{}
+		
+		\subsubsection{Algoritmo di Prim}
+		\mbox{}
+		
+		\subsection{Cammini minimi da sorgente singola}
+		
+		\subsubsection{Algoritmo di Bellman-Ford}
+		\mbox{}
+		
+		\subsubsection{Cammini minimi su DAG}
+		\mbox{}
+		
+		\subsubsection{Algoritmo di Dijkstra}
+		\mbox{}
+		
+		\subsection{Cammini minimi tra tutte le coppie}
+		
+		\subsubsection{Floyd-Warshall}
+		\mbox{}
+		
+		\subsubsection{Algoritmo di Johnson}
+		\mbox{}
+		
+		\subsection{Flusso massimo (Ford-Fulkerson)}
+		\mbox{}
+		
+		\subsection{Matching in grafi bipartiti}
 	\mbox{}
 	
 	% ================================================================
 	\section{Può tornare utile}
-	
-	\subsection{Appendice A (Sommatorie)}
-	\mbox{}
-	
-	\subsection{Appendice B (Insiemi, relazioni, funzioni, grafi, alberi)}
-	\mbox{}
-	
-	\subsection{Appendice C (Calcolo combinatorio e probabilità)}
-	\mbox{}
-	
-	\subsection{Appendice D (Matrici)}
-	\mbox{}
-	
-	% ----------------------------------------------------------------
-	\subsection{Domande d'esame (Appello 2)}
+		\subsection{Appendice A (Sommatorie)}
+		\mbox{}
+		
+		\subsection{Appendice B (Insiemi, relazioni, funzioni, grafi, alberi)}
+		\mbox{}
+		
+		\subsection{Appendice C (Calcolo combinatorio e probabilità)}
+		\mbox{}
+		
+		\subsection{Appendice D (Matrici)}
+		\mbox{}
+		
+		% ----------------------------------------------------------------
+		\subsection{Domande d'esame (Appello 2)}
 	
 	\subsubsection{Definizione di algoritmo}
 	\textbf{D:} Definizione sufficiente di algoritmo?\\
