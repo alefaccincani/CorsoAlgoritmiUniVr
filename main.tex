@@ -31,6 +31,10 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{colortbl}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}  
+
 
 % --- LAYOUT E UTILITÀ ---
 \usepackage{geometry}
@@ -283,7 +287,13 @@
 				L'algoritmo è un concetto \textbf{astratto} ($\neq$ implementazione):
 				descrive \textit{come} risolvere un problema indipendentemente dal linguaggio.
 				L'implementazione è un \textbf{programma concreto}, ovvero la traduzione
-				dell'algoritmo in un linguaggio comprensibile dalla macchina.
+				dell'algoritmo in un linguaggio comprensibile dalla \[
+				T(n) = \begin{cases}
+				mac & \text{se } condizione \\
+				caso_ricorsivo & \text{altrimenti}
+					\end{cases}
+						\]
+							china.
 			\end{definizione}
 			
 			\begin{nozione}[Algoritmo efficiente]
@@ -324,8 +334,6 @@
 				}
 				\Return $f$\;
 			\end{algorithm}
-			
-			\newpage
 			
 			La sua complessità soddisfa la ricorrenza:
 			\[
@@ -371,59 +379,238 @@
 			\noindent\textbf{Modello RAM:} ogni operazione elementare ha costo $1$;
 			parola di memoria a dimensione fissa.
 			
-			\newpage
-		\subsection*{Esempi di problemi computazionali da risolvere in aula}
-		
-			\textbf{Problema:} Data una matrice di interi \texttt{nums} e un intero \texttt{target}, restituisci gli indici dei due numeri tali che la loro somma sia uguale a \texttt{target}. Puoi assumere che ogni input abbia esattamente una soluzione, e non puoi usare lo stesso elemento due volte. Puoi restituire la risposta in qualsiasi ordine.
-			
-			\begin{algorithm}[H]
-				\caption{twoSum (Brute Force)}
-				\KwIn{\texttt{nums[0\ldots n-1]}, \texttt{target}}
-				\KwOut{\{i, j\} tali che \texttt{nums[i] + nums[j] = target}, $i \neq j$}
-				\For{$i = 0$ \KwTo $n-2$}{
-					\For{$j = i+1$ \KwTo $n-1$}{
-						\If{\texttt{nums[i] + nums[j] == target}}{
-							\KwRet $\{i, j\}$\;
-						}
-					}
-				}
-			\end{algorithm}
-			
-			\noindent\textbf{Invariante:} Dopo ogni iterazione esterna, tutti gli elementi da $0$ a $i-1$ sono stati confrontati con tutti gli elementi successivi.
-			
-			\noindent\textbf{Complessità:}
-			\begin{itemize}
-				\item Caso migliore: $\Theta(1)$ (se la coppia è trovata subito)
-				\item Caso peggiore: $\Theta(n^2)$
-			\end{itemize}
-			
-			\noindent\textbf{Calcolo della complessità temporale (caso peggiore):}
-			
-			L'algoritmo esegue due cicli annidati. Il ciclo esterno itera $n-1$ volte, e per ogni $i$ il ciclo interno itera $n-1-i$ volte. Quindi:
-			
-			\[
-			T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = \frac{(n-1)n}{2} \in \Theta(n^2)
-			\]
-			
-			La complessità spaziale è $\Theta(1)$, poiché usiamo solo variabili costanti. 
-			
-			\vspace*{\stretch{1}} 
-		\subsection*{CODICE JAVA}
-			\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
-			class twoSum {
-				public int[] twoSum(int[] nums, int target) {
-					for (int i = 0; i < nums.length; i++) {
-						for (int j = i + 1; j < nums.length; j++) {
-							if (nums[i] + nums[j] == target) {
-								return new int[]{i, j};
+		\subsection{Esempi di problemi computazionali da risolvere in aula}
+			\subsubsection*{Iindici dei due numeri che sommati danno N}
+				\textbf{Problema:} Data una matrice di interi \texttt{nums} e un intero \texttt{target}, restituisci gli indici dei due numeri tali che la loro somma sia uguale a \texttt{target}. Puoi assumere che ogni input abbia esattamente una soluzione, e non puoi usare lo stesso elemento due volte. Puoi restituire la risposta in qualsiasi ordine.
+				
+				\begin{algorithm}[H]
+					\caption{twoSum (Brute Force)}
+					\KwIn{\texttt{nums[0\ldots n-1]}, \texttt{target}}
+					\KwOut{\{i, j\} tali che \texttt{nums[i] + nums[j] = target}, $i \neq j$}
+					\For{$i = 0$ \KwTo $n-2$}{
+						\For{$j = i+1$ \KwTo $n-1$}{
+							\If{\texttt{nums[i] + nums[j] == target}}{
+								\KwRet $\{i, j\}$\;
 							}
 						}
 					}
-					return new int[]{};  // nessuna soluzione trovata
+				\end{algorithm}
+				
+				\noindent\textbf{Invariante:} Dopo ogni iterazione esterna, tutti gli elementi da $0$ a $i-1$ sono stati confrontati con tutti gli elementi successivi.
+				
+				\noindent\textbf{Complessità:}
+				\begin{itemize}
+					\item Caso migliore: $\Theta(1)$ (se la coppia è trovata subito)
+					\item Caso peggiore: $\Theta(n^2)$
+				\end{itemize}
+				
+				\noindent\textbf{Calcolo della complessità temporale (caso peggiore):}
+				
+				L'algoritmo esegue due cicli annidati. Il ciclo esterno itera $n-1$ volte, e per ogni $i$ il ciclo interno itera $n-1-i$ volte. Quindi:
+				
+				\[
+				T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = \frac{(n-1)n}{2} \in \Theta(n^2)
+				\]
+				
+				La complessità spaziale è $\Theta(1)$, poiché usiamo solo variabili costanti. 
+				
+				\vspace*{\stretch{1}} 
+			\subsubsection*{CODICE JAVA}
+				\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
+				class twoSum {
+					public int[] twoSum(int[] nums, int target) {
+						for (int i = 0; i < nums.length; i++) {
+							for (int j = i + 1; j < nums.length; j++) {
+								if (nums[i] + nums[j] == target) {
+									return new int[]{i, j};
+								}
+							}
+						}
+						return new int[]{};  // nessuna soluzione trovata
+					}
 				}
-			}
-			\end{lstlisting}
-		
+				\end{lstlisting}
+					
+			\subsubsection*{Problema dell'input}
+						\begin{algorithm}[H]
+							\caption{Inversione numerica}
+							\label{alg:inversione}
+							
+							\KwIn{Intero $x$ rappresentato con segno a 32 bit}
+							\KwOut{Intero $y$ con le cifre di $x$ invertite}
+							
+							$y = 0$\tcp*{Inizializza risultato}
+							$sign = 1$\tcp*{Memorizza segno}
+							
+							$sign = (x < 0) ? -1 : 1$\tcp*{Memorizza segno di x}
+							$x = |x|$\tcp*{Rende x positivo}
+							
+							\While{$x > 0$}{
+								$digit = x \bmod 10$\tcp*{Estrae ultima cifra}
+								$y = y \times 10 + digit$\tcp*{Aggiunge a y}
+								$x = \lfloor x / 10 \rfloor$\tcp*{Rimuove cifra}
+							}
+							
+							\Return{$y \times sign$}\tcp*{Restituisce con segno}
+						\end{algorithm}
+						
+						\textbf{Complessità.}
+						Sia $k$ il numero di cifre decimali di $|x|$. Con $c=6$ Allora
+						\[
+						T(k) =
+						\begin{cases}
+							6       & \text{se } x = 0,\\
+							5k + 6  & \text{se } x > 0,\\
+							5k + 8  & \text{se } x < 0,
+						\end{cases}
+						\qquad\Rightarrow\qquad
+						T(k) = \mathcal{O}(k).
+						\]
+						
+						\[
+						T = 3 + (\text{n. cicli}) + 12 \cdot (\text{n. cicli}) + 2
+						\]
+						\begin{center}
+							La complessità dell'algoritmo è lineare.
+						\end{center}
+						
+						
+				\begin{nota}
+					L'\textbf{operatore ternario} è definito mome:
+					x = (espressione booleana) ? v1 : v2
+					se l'espressione booleana è vera viene usata v1
+					se l'espressione booleana è falsa viene usata v2
+				\end{nota}
+				
+			\subsubsection*{Container con più acqua}
+			
+				Si consideri un array di interi non negativi $height$ di lunghezza $n$.
+				Per ogni $i$, la retta verticale ha estremi $(i,0)$ e $(i,height[i])$.
+				Si vogliono trovare due rette che, insieme all'asse $x$, formino un
+				contenitore che possa contenere la massima quantità d'acqua.
+				
+				\medskip
+				Nel nostro esempio poniamo
+				\[
+				A = [4,6,3,5].
+				\]
+				
+				L'area del contenitore formato dalle rette in posizione $i$ e $j$
+				($i < j$) è data da
+				\[
+				\mathrm{area}(i,j) = (j-i)\,\min(A[i],A[j]).
+				\]
+				
+				Per $A = [4,6,3,5]$ otteniamo:
+				
+				\begin{figure}[H]
+					\centering
+					\begin{tikzpicture}
+						\begin{axis}[
+							xlabel={i},
+							ylabel={height[i]},
+							ymin=0, ymax=7,
+							xmin=-0.5, xmax=3.5,
+							xtick={0,1,2,3},
+							grid=both,
+							]
+							% linee verticali per A = [4,6,3,5]
+							\addplot[very thick, blue] coordinates {(0,0) (0,4)};
+							\addplot[very thick, blue] coordinates {(1,0) (1,6)};
+							\addplot[very thick, blue] coordinates {(2,0) (2,3)};
+							\addplot[very thick, blue] coordinates {(3,0) (3,5)};
+							
+							% evidenzia il contenitore migliore tra i=0 e i=3
+							\addplot[
+							fill=blue!20,
+							draw=blue!60,
+							fill opacity=0.5 % 50% trasparente
+							]
+							coordinates {(0,0) (0,4) (3,4) (3,0) (0,0)};
+						\end{axis}
+					\end{tikzpicture}
+					\caption{Container con area massima per $A = [4,6,3,5]$.}
+				\end{figure}
+				
+				Il valore massimo è quindi
+				\[
+				\max_{0 \le i < j \le 3} \mathrm{area}(i,j) = 12,
+				\]
+				ottenuto per la coppia di indici $(i,j) = (0,3)$.
+				
+				\pagebreak
+				Quindi il pseudocodice per questo problema computazionale è il seguente:
+				
+				\begin{algorithm}[H]
+					\caption{Container With Most Water}
+					\label{alg:container-most-water}
+					
+					\KwIn{Array $height[0 \dots n-1]$ di interi non negativi}
+					\KwOut{Massima area d'acqua contenibile}
+					
+					$left \gets 0$\tcp*{Puntatore sinistro}
+					$right \gets n - 1$\tcp*{Puntatore destro}
+					$maxArea \gets 0$\tcp*{Area massima trovata finora}
+					
+					\While{$left < right$}{
+						$width \gets right - left$\tcp*{Larghezza del contenitore}
+						$h \gets \min(height[left],\; height[right])$\tcp*{Altezza = lato più basso}
+						$area \gets width \cdot h$\tcp*{Area del contenitore corrente}
+						$maxArea \gets \max(maxArea,\; area)$\tcp*{Aggiorna massimo}
+						
+						\If{$height[left] < height[right]$}{
+							$left \gets left + 1$\tcp*{Sposta il lato più basso verso il centro}
+						}
+						\Else{
+							$right \gets right - 1$\tcp*{Sposta il lato più basso verso il centro}
+						}
+					}
+					\Return{$maxArea$}\tcp*{Restituisce l'area massima}
+				\end{algorithm}
+				
+				\textbf{Complessità.}
+				Ad ogni iterazione del ciclo \texttt{while} viene spostato
+				solo uno dei due puntatori, che possono muoversi ciascuno al più $n-1$ volte.
+				Pertanto il numero di iterazioni è al più $n-1$ e il costo è
+				\[
+				T(n) = c_1 + c_2 (n-1) = \Theta(n).
+				\]
+				Lo spazio aggiuntivo utilizzato è costante, quindi $S(n) = \Theta(1)$.
+			
+			\pagebreak
+			\subsubsection*{Prefisso piu lungo comune fra più sequenze}
+			
+				\begin{algorithm}[H]
+					\caption{Prefisso comune più lungo}
+					\label{alg:prefisso-comune}
+					
+					\KwIn{Array $S[1 \dots n]$ di stringhe}
+					\KwOut{Prefisso più lungo comune a tutte le stringhe}
+					
+					\tcp{Assumo che le stringhe di $S$ siano tutte diverse da \texttt{null}}
+					
+					$p \gets S[1]$\tcp*{Prefisso corrente}
+					
+					\For{$i \gets 2$ \KwTo $n$}{
+						$p \gets \text{PrefissoComune}(p, S[i])$\tcp*{Prefisso tra $p$ e $S[i]$}
+						\If{$p =$ stringa vuota}{
+							\Return{p}\tcp*{Nessun prefisso comune}
+						}
+					}
+					
+					\Return{$p$}\tcp*{Prefisso comune più lungo}
+				\end{algorithm}
+				
+				\textbf{Complessità.}
+				Sia $n$ il numero di stringhe in $S$ e sia $m$ la lunghezza della
+				stringa più corta. Ad ogni passo del ciclo la funzione
+				\texttt{PrefissoComune} confronta al più $m$ caratteri, quindi
+				\[
+				T(n,m) = c_1 + c_2 (n-1)m = \Theta(nm).
+				\]
+				Lo spazio aggiuntivo utilizzato è costante, dunque $S(n,m) = \Theta(1)$.
+				
+
 		\subsection{InsertionSort e MergeSort}
 		\subsubsection{InsertionSort}
 		Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
