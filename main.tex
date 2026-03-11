@@ -205,1128 +205,2159 @@
 	\clearpage
 	% ================================================================
 	\section{Fondamenti}
-		\subsection{Introduzione al corso}
-			
-			\subsubsection{Requisiti}
-				\begin{itemize}
-					\item Fondamenti di matematica discreta e grafi
-					\item Calcolo delle probabilità
-					\item Basi di C $\to$ si studia Java (Classi e Oggetti)\footnote{Java è il male}
-					\item Le procedure ricorsive sono come l'Ave Maria (STUDIA: c'è nell'esame)
-				\end{itemize}
-			
-			\subsubsection{Programma del corso}
-				\begin{itemize}
-					\item Divide et Impera
-					\item Programmazione dinamica
-					\item Algoritmi Greedy
-					\item Grafi $\to$ Nodi e archi
-				\end{itemize}
-			
-			\subsubsection{Struttura del modulo}
-				48 ore di lezione: 4 ore a settimana + 9 ore di studio personale.\footnote{Sì, lo so, è una noia, ma serve.}
-				Non usare ChatGPT o altri strumenti simili.
-				
-				I lucidi non bastano (purtroppo).
-				
-				Se proprio devi, usa \textbf{Anthropic CLAUDE}.
-			
-			\subsubsection{Modalità di esame}
-				\begin{itemize}
-					\item \textbf{Prima parte:} 15 domande a risposta multipla
-					(almeno 4 su codice Java -- CODE RUNNER)
-					\item \textbf{Seconda parte:} Progettare una soluzione algoritmica
-					\item \textbf{Se va male:} Può fare orale se ha dubbi (Ave o Maria\dots)
-				\end{itemize}
+	
+	\begin{softnote}
+		Questa sezione introduce i concetti fondamentali necessari per comprendere il resto del corso. Non preoccuparti se all'inizio alcune definizioni sembrano astratte: diventeranno chiare con gli esempi concreti nelle sezioni successive.
+	\end{softnote}
+	
+	\subsection{Introduzione al corso}
+	
+	\subsubsection{Requisiti}
+	\begin{itemize}
+		\item Fondamenti di matematica discreta e grafi
+		\item Calcolo delle probabilità
+		\item Basi di C $\to$ si studia Java (Classi e Oggetti)\footnote{Java è il male}
+		\item Le procedure ricorsive sono come l'Ave Maria (STUDIA: c'è nell'esame)
+	\end{itemize}
+	
+	\begin{nota}
+		La ricorsione è \textbf{fondamentale} in questo corso. Se non ti senti sicuro, ripassa prima di procedere: fibonacci, fattoriale, e i concetti base di chiamate ricorsive.
+	\end{nota}
+	
+	\subsubsection{Programma del corso}
+	\begin{itemize}
+		\item Divide et Impera
+		\item Programmazione dinamica
+		\item Algoritmi Greedy
+		\item Grafi $\to$ Nodi e archi
+	\end{itemize}
+	
+	\begin{softnote}
+		Questi quattro argomenti sono le \textbf{tecniche algoritmiche} principali. Ogni tecnica è un "modo di pensare" per risolvere problemi complessi:
+		\begin{itemize}
+			\item \textbf{Divide et Impera}: spezza il problema in pezzi piccoli
+			\item \textbf{Programmazione Dinamica}: memorizza soluzioni parziali per evitare ricalcoli
+			\item \textbf{Greedy}: fai sempre la scelta localmente migliore
+			\item \textbf{Grafi}: rappresenta problemi come reti di connessioni
+		\end{itemize}
+	\end{softnote}
+	
+	\subsubsection{Struttura del modulo}
+	48 ore di lezione: 4 ore a settimana + 9 ore di studio personale.\footnote{Sì, lo so, è una noia, ma serve.}
+	Non usare ChatGPT o altri strumenti simili.
+	
+	I lucidi non bastano (purtroppo).
+	
+	Se proprio devi, usa \textbf{Anthropic CLAUDE}.
+	
+	\subsubsection{Modalità di esame}
+	\begin{itemize}
+		\item \textbf{Prima parte:} 15 domande a risposta multipla
+		(almeno 4 su codice Java -- CODE RUNNER)
+		\item \textbf{Seconda parte:} Progettare una soluzione algoritmica
+		\item \textbf{Se va male:} Può fare orale se ha dubbi (Ave o Maria\dots)
+	\end{itemize}
+	
+	% ================================================================
+	\subsection{Il ruolo degli algoritmi nell'informatica}
+	
+	\begin{softnote}
+		Prima di tuffarci nei dettagli tecnici, capiamo \textbf{perché} gli algoritmi sono importanti. Un algoritmo è semplicemente una "ricetta" per risolvere un problema al computer.
+	\end{softnote}
+	
+	\subsubsection{Cos'è un algoritmo?}
+	
+	\begin{definizione}[Algoritmo]
+		Procedura di calcolo ben definita: dato un input (anche nullo), produce un output
+		in tempo finito.
+	\end{definizione}
+	
+	\begin{nota}
+		\textbf{In parole semplici:} un algoritmo è una sequenza di passi precisi che trasforma dei dati di partenza (input) in un risultato (output). Deve sempre finire in tempo ragionevole.
 		
-		% ================================================================
-		\subsection{Il ruolo degli algoritmi nell'informatica}
+		\textbf{Esempio quotidiano:} una ricetta di cucina è un algoritmo:
+		\begin{itemize}
+			\item \textbf{Input}: ingredienti (farina, uova, zucchero)
+			\item \textbf{Passi}: mescola, cuoci a 180°C per 30 minuti
+			\item \textbf{Output}: torta
+		\end{itemize}
+	\end{nota}
+	
+	\begin{definizione}[Problema computazionale]
+		Relazione input/output desiderata. L'algoritmo specifica \textit{come} ottenerla.
+	\end{definizione}
+	
+	\begin{softnote}
+		\textbf{Differenza chiave:}
+		\begin{itemize}
+			\item \textbf{Problema}: ``Voglio ordinare una lista di numeri'' (COSA)
+			\item \textbf{Algoritmo}: ``Confronta elementi a coppie e scambiali se necessario'' (COME)
+		\end{itemize}
+		Il problema dice \textit{cosa} vogliamo ottenere, l'algoritmo dice \textit{come} farlo.
+	\end{softnote}
+	
+	\begin{definizione}[Algoritmo corretto]
+		Termina producendo il risultato corretto per ogni istanza valida.
+	\end{definizione}
+	
+	\begin{osservazione}
+		Non sempre esiste un algoritmo: il problema della fermata è indecidibile.
+	\end{osservazione}
+	
+	\begin{nota}
+		\textbf{Cosa significa ``indecidibile''?} Esistono problemi per cui è matematicamente impossibile scrivere un algoritmo generale che funzioni sempre. Il famoso ``problema della fermata'' chiede: ``Dato un programma qualsiasi, terminerà mai?'' È stato dimostrato che non esiste un algoritmo che possa rispondere a questa domanda per tutti i programmi possibili.
+	\end{nota}
+	
+	
+	\subsection{Esempio di algoritmo ricorsivo}
+	
+	\begin{softnote}
+		Ora vediamo un esempio concreto: calcolare i numeri di Fibonacci. Questo ci permetterà di capire la differenza tra un algoritmo \textbf{corretto} (che funziona) e uno \textbf{efficiente} (che funziona velocemente).
+	\end{softnote}
+	
+	\begin{nota}
+		\textbf{Cosa sono i numeri di Fibonacci?}
 		
-			\subsubsection{Cos'è un algoritmo?}
-			
-				\begin{definizione}[Algoritmo]
-					Procedura di calcolo ben definita: dato un input (anche nullo), produce un output
-					in tempo finito.
-				\end{definizione}
-				
-				\begin{definizione}[Problema computazionale]
-					Relazione input/output desiderata. L'algoritmo specifica \textit{come} ottenerla.
-				\end{definizione}
-				
-				\begin{definizione}[Algoritmo corretto]
-					Termina producendo il risultato corretto per ogni istanza valida.
-				\end{definizione}
-				
-				\begin{osservazione}
-					Non sempre esiste un algoritmo: il problema della fermata è indecidibile.
-				\end{osservazione}
-		
-		
-		\subsection{Esempio di algoritmo ricorsivo}
-			
-			\begin{nota}
-				Le convenzioni usate per il pseudocodice sono a pag. 19 del [CLRS].
-			\end{nota}
-				
-			\begin{algorithm}[H]
-				\caption{FibonacciR}
-				\KwIn{$n \geq 0$}
-				\KwOut{$F_n$}
-				\If{$n = 0$}{\Return $0$\;}
-				\If{$n = 1$}{\Return $1$\;}
-				\Return FibonacciR($n-1$) + FibonacciR($n-2$)\;
-			\end{algorithm}
-			
-			L’algoritmo è corretto? \textbf{Sì!}
-			
-			Per ogni input valido, termina? \textbf{Sì, assumendo che input sia sempre un intero n  $\geq$ 0}
-			
-			Se sì, calcola il valore giusto? \textbf{Sì, perché l’algoritmo codifica la definizione ricorsiva.}
-			
-			Quanto \textbf{tempo} richiede per terminare?
-			
-			\begin{figure}[H]
-				\centering
-				\includegraphics[width=0.5\textwidth]{Immagini/FibonacciT.png}
-				\caption{Tempo computazionale dell'algoritmo \texttt{FibonacciR}}
-				\label{fig:fibonacci-tempo}
-				Come mostrato in Figura~\ref{fig:fibonacci-tempo}, il tempo cresce esponenzialmente.
-				
-			\end{figure}
-			
-			\newpage
-				\subsubsection*{Calcolo della complessità computazionale}
-			\begin{definizione}[Efficienza]
-				Risorse (tempo e spazio) richieste in funzione della dimensione $n$ dell'input.
-			\end{definizione}
-			
-			\begin{definizione}[Algoritmo vs.\ Implementazione]
-				L'algoritmo è un concetto \textbf{astratto} ($\neq$ implementazione):
-				descrive \textit{come} risolvere un problema indipendentemente dal linguaggio.
-				L'implementazione è un \textbf{programma concreto}, ovvero la traduzione
-				dell'algoritmo in un linguaggio comprensibile dalla \[
-				T(n) = \begin{cases}
-				mac & \text{se } condizione \\
-				caso_ricorsivo & \text{altrimenti}
-					\end{cases}
-						\]
-							china.
-			\end{definizione}
-			
-			\begin{nozione}[Algoritmo efficiente]
-				Andiamo a cercare l'algoritmo efficiente:
-				\begin{itemize}
-					\item \textbf{Efficiente:} usa poche risorse
-					\item \textbf{Risorse:} tempo e spazio richiesti dall'algoritmo
-					per produrre l'output
-				\end{itemize}
-			\end{nozione}
-			
-			\begin{teorema}[Algoritmo vs.\ hardware]
-				Con $n = 10^7$ interi da ordinare:
-				\begin{align*}
-					t_A &= \frac{2(10^7)^2}{10^{10}} \approx 5.5\ \text{ore}
-					\quad\text{(InsSort, } 10^9 \text{ istr/s)} \\
-					t_B &= \frac{50 \cdot 10^7 \log_2 10^7}{10^6} \approx 20\ \text{min}
-					\quad\text{(MergeSort, } 10^6 \text{ istr/s)}
-				\end{align*}
-				L'algoritmo migliore batte l'hardware più veloce.
-			\end{teorema}
-			
-			\textbf{Possiamo fare meglio?}
-			
-			\subsubsection*{Ottimizzazione: FibonacciI }
-			\begin{algorithm}[H]
-				\caption{FibonacciI}
-				\KwIn{Intero positivo $n$}
-				\KwOut{Il valore $F_n$}
-				\If{$n = 0$}{\Return $0$\;}
-				\If{$n = 1$}{\Return $1$\;}
-				$\mathit{pprev} = 0$\;
-				$\mathit{prev} = 1$\;
-				\For{$i = 2$ \KwTo $n$}{
-					$f = \mathit{prev} + \mathit{pprev}$\;
-					$\mathit{pprev} = \mathit{prev}$\;
-					$\mathit{prev} = f$\;
-				}
-				\Return $f$\;
-			\end{algorithm}
-			
-			La sua complessità soddisfa la ricorrenza:
-			\[
-			T(0) = 2, \quad T(1) = 3, \quad T(n) = T(n-1) + T(n-2) + 8
-			\]
-			
-			Il $+8$ è dato da: 2 \texttt{if} + 2 calcoli parametri + 2 chiamate + 1 somma + 1 \texttt{return}.
-			Da questa ricorrenza segue $T(n) > F_n$, e per $n \geq 7$:
-			\[
-			F_n > 2F_{n-2} > 2^2 F_{n-4} > \cdots > 2^{n/2}
-			\]
-			
-			Quindi la crescita è \textbf{esponenziale}:
-			\[
-			T(n) > \left(\sqrt{2}\right)^n \approx (1.4)^n
-			\]
-			
-			Una stima più precisa è data dalla \textbf{Formula di Binet}:
-			\[
-			T(n) \geq \frac{\varphi^n - (-\varphi)^{-n}}{\sqrt{5}}, \qquad \varphi = \frac{1+\sqrt{5}}{2} \approx 1.62
-			\]
-			
-			L'algoritmo iterativo evita il ricalcolo sommando i valori dal più piccolo al più grande.
-			La complessità è:
-			\[
-			T(0) = 2, \quad T(1) = 3, \quad T(n) = 4 + 2n + 4(n-1) + 1 = 6n + 1
-			\]
-			
-			La crescita è \textbf{lineare in $n$}.
-		
-		
-			\begin{center}
-				\begin{tabular}{lll}
-					\toprule
-					Algoritmo & Complessità & $n=50$ \\
-					\midrule
-					Ricorsivo & $(1.4)^n$   & minuti \\
-					Iterativo & $\Theta(n)$ & istantaneo \\
-					\bottomrule
-				\end{tabular}
-			\end{center}
-			
-			\noindent\textbf{Modello RAM:} ogni operazione elementare ha costo $1$;
-			parola di memoria a dimensione fissa.
-			
-		\subsection{Esempi di problemi computazionali da risolvere in aula}
-			\subsubsection*{Iindici dei due numeri che sommati danno N}
-				\textbf{Problema:} Data una matrice di interi \texttt{nums} e un intero \texttt{target}, restituisci gli indici dei due numeri tali che la loro somma sia uguale a \texttt{target}. Puoi assumere che ogni input abbia esattamente una soluzione, e non puoi usare lo stesso elemento due volte. Puoi restituire la risposta in qualsiasi ordine.
-				
-				\begin{algorithm}[H]
-					\caption{twoSum (Brute Force)}
-					\KwIn{\texttt{nums[0\ldots n-1]}, \texttt{target}}
-					\KwOut{\{i, j\} tali che \texttt{nums[i] + nums[j] = target}, $i \neq j$}
-					\For{$i = 0$ \KwTo $n-2$}{
-						\For{$j = i+1$ \KwTo $n-1$}{
-							\If{\texttt{nums[i] + nums[j] == target}}{
-								\KwRet $\{i, j\}$\;
-							}
-						}
-					}
-				\end{algorithm}
-				
-				\noindent\textbf{Invariante:} Dopo ogni iterazione esterna, tutti gli elementi da $0$ a $i-1$ sono stati confrontati con tutti gli elementi successivi.
-				
-				\noindent\textbf{Complessità:}
-				\begin{itemize}
-					\item Caso migliore: $\Theta(1)$ (se la coppia è trovata subito)
-					\item Caso peggiore: $\Theta(n^2)$
-				\end{itemize}
-				
-				\noindent\textbf{Calcolo della complessità temporale (caso peggiore):}
-				
-				L'algoritmo esegue due cicli annidati. Il ciclo esterno itera $n-1$ volte, e per ogni $i$ il ciclo interno itera $n-1-i$ volte. Quindi:
-				
-				\[
-				T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = 	\frac{(n-1)n}{2} \in \Theta(n^2)
-				\]
-				
-				La complessità spaziale è $\Theta(1)$, poiché usiamo solo variabili costanti. 
-				
-				\vspace*{\stretch{1}} 
-				\subsubsection*{Codice JAVA}
-				\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
-				class twoSum {
-					public int[] twoSum(int[] nums, int target) {
-						for (int i = 0; i < nums.length; i++) {
-							for (int j = i + 1; j < nums.length; j++) {
-								if (nums[i] + nums[j] == target) {
-									return new int[]{i, j};
-								}
-							}
-						}
-						return new int[]{};  // nessuna soluzione trovata
-					}
-				}
-				\end{lstlisting}
-					
-			\subsubsection*{Problema dell'input}
-						\begin{algorithm}[H]
-							\caption{Inversione numerica}
-							\label{alg:inversione}
-							
-							\KwIn{Intero $x$ rappresentato con segno a 32 bit}
-							\KwOut{Intero $y$ con le cifre di $x$ invertite}
-							
-							$y = 0$\tcp*{Inizializza risultato}
-							$sign = 1$\tcp*{Memorizza segno}
-							
-							$sign = (x < 0) ? -1 : 1$\tcp*{Memorizza segno di x}
-							$x = |x|$\tcp*{Rende x positivo}
-							
-							\While{$x > 0$}{
-								$digit = x \bmod 10$\tcp*{Estrae ultima cifra}
-								$y = y \times 10 + digit$\tcp*{Aggiunge a y}
-								$x = \lfloor x / 10 \rfloor$\tcp*{Rimuove cifra}
-							}
-							
-							\Return{$y \times sign$}\tcp*{Restituisce con segno}
-						\end{algorithm}
-						
-						\textbf{Complessità.}
-						Sia $k$ il numero di cifre decimali di $|x|$. Con $c=6$ Allora
-						\[
-						T(k) =
-						\begin{cases}
-							6       & \text{se } x = 0,\\
-							5k + 6  & \text{se } x > 0,\\
-							5k + 8  & \text{se } x < 0,
-						\end{cases}
-						\qquad\Rightarrow\qquad
-						T(k) = \mathcal{O}(k).
-						\]
-						
-						\[
-						T = 3 + (\text{n. cicli}) + 12 \cdot (\text{n. cicli}) + 2
-						\]
-						\begin{center}
-							La complessità dell'algoritmo è lineare.
-						\end{center}
-						
-						
-				\begin{nota}
-					L'\textbf{operatore ternario} è definito mome:
-					x = (espressione booleana) ? v1 : v2
-					se l'espressione booleana è vera viene usata v1
-					se l'espressione booleana è falsa viene usata v2
-				\end{nota}
-				
-			\subsubsection*{Container con più acqua}
-			
-				Si consideri un array di interi non negativi $height$ di lunghezza $n$.
-				Per ogni $i$, la retta verticale ha estremi $(i,0)$ e $(i,height[i])$.
-				Si vogliono trovare due rette che, insieme all'asse $x$, formino un
-				contenitore che possa contenere la massima quantità d'acqua.
-				
-				\medskip
-				Nel nostro esempio poniamo
-				\[
-				A = [4,6,3,5].
-				\]
-				
-				L'area del contenitore formato dalle rette in posizione $i$ e $j$
-				($i < j$) è data da
-				\[
-				\mathrm{area}(i,j) = (j-i)\,\min(A[i],A[j]).
-				\]
-				
-				Per $A = [4,6,3,5]$ otteniamo:
-				
-				\begin{figure}[H]
-					\centering
-					\begin{tikzpicture}
-						\begin{axis}[
-							xlabel={i},
-							ylabel={height[i]},
-							ymin=0, ymax=7,
-							xmin=-0.5, xmax=3.5,
-							xtick={0,1,2,3},
-							grid=both,
-							]
-							% linee verticali per A = [4,6,3,5]
-							\addplot[very thick, blue] coordinates {(0,0) (0,4)};
-							\addplot[very thick, blue] coordinates {(1,0) (1,6)};
-							\addplot[very thick, blue] coordinates {(2,0) (2,3)};
-							\addplot[very thick, blue] coordinates {(3,0) (3,5)};
-							
-							% evidenzia il contenitore migliore tra i=0 e i=3
-							\addplot[
-							fill=blue!20,
-							draw=blue!60,
-							fill opacity=0.5 % 50% trasparente
-							]
-							coordinates {(0,0) (0,4) (3,4) (3,0) (0,0)};
-						\end{axis}
-					\end{tikzpicture}
-					\caption{Container con area massima per $A = [4,6,3,5]$.}
-				\end{figure}
-				
-				Il valore massimo è quindi
-				\[
-				\max_{0 \le i < j \le 3} \mathrm{area}(i,j) = 12,
-				\]
-				ottenuto per la coppia di indici $(i,j) = (0,3)$.
-				
-				\pagebreak
-				Quindi il pseudocodice per questo problema computazionale è il seguente:
-				
-				\begin{algorithm}[H]
-					\caption{Container With Most Water}
-					\label{alg:container-most-water}
-					
-					\KwIn{Array $height[0 \dots n-1]$ di interi non negativi}
-					\KwOut{Massima area d'acqua contenibile}
-					
-					$left \gets 0$\tcp*{Puntatore sinistro}
-					$right \gets n - 1$\tcp*{Puntatore destro}
-					$maxArea \gets 0$\tcp*{Area massima trovata finora}
-					
-					\While{$left < right$}{
-						$width \gets right - left$\tcp*{Larghezza del contenitore}
-						$h \gets \min(height[left],\; height[right])$\tcp*{Altezza = lato più basso}
-						$area \gets width \cdot h$\tcp*{Area del contenitore corrente}
-						$maxArea \gets \max(maxArea,\; area)$\tcp*{Aggiorna massimo}
-						
-						\If{$height[left] < height[right]$}{
-							$left \gets left + 1$\tcp*{Sposta il lato più basso verso il centro}
-						}
-						\Else{
-							$right \gets right - 1$\tcp*{Sposta il lato più basso verso il centro}
-						}
-					}
-					\Return{$maxArea$}\tcp*{Restituisce l'area massima}
-				\end{algorithm}
-				
-				\textbf{Complessità.}
-				Ad ogni iterazione del ciclo \texttt{while} viene spostato
-				solo uno dei due puntatori, che possono muoversi ciascuno al più $n-1$ volte.
-				Pertanto il numero di iterazioni è al più $n-1$ e il costo è
-				\[
-				T(n) = c_1 + c_2 (n-1) = \Theta(n).
-				\]
-				Lo spazio aggiuntivo utilizzato è costante, quindi $S(n) = \Theta(1)$.
-			
-			\pagebreak
-			\subsubsection*{Prefisso piu lungo comune fra più sequenze}
-			
-				\begin{algorithm}[H]
-					\caption{Prefisso comune più lungo}
-					\label{alg:prefisso-comune}
-					
-					\KwIn{Array $S[1 \dots n]$ di stringhe}
-					\KwOut{Prefisso più lungo comune a tutte le stringhe}
-					
-					\tcp{Assumo che le stringhe di $S$ siano tutte diverse da \texttt{null}}
-					
-					$p \gets S[1]$\tcp*{Prefisso corrente}
-					
-					\For{$i \gets 2$ \KwTo $n$}{
-						$p \gets \text{PrefissoComune}(p, S[i])$\tcp*{Prefisso tra $p$ e $S[i]$}
-						\If{$p =$ stringa vuota}{
-							\Return{p}\tcp*{Nessun prefisso comune}
-						}
-					}
-					
-					\Return{$p$}\tcp*{Prefisso comune più lungo}
-				\end{algorithm}
-				
-				\textbf{Complessità.}
-				Sia $n$ il numero di stringhe in $S$ e sia $m$ la lunghezza della
-				stringa più corta. Ad ogni passo del ciclo la funzione
-				\texttt{PrefissoComune} confronta al più $m$ caratteri, quindi
-				\[
-				T(n,m) = c_1 + c_2 (n-1)m = \Theta(nm).
-				\]
-				Lo spazio aggiuntivo utilizzato è costante, dunque $S(n,m) = \Theta(1)$.
-				
-				\pagebreak
-		\subsection{InsertionSort e MergeSort}
-		\subsubsection{InsertionSort}
-		
-			Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
-			(come le carte da gioco).
-			
-			\begin{algorithm}
-				\caption{InsertionSort}
-				\KwIn{$A = \langle a_1, \ldots, a_n \rangle$, array di elementi 
-					confrontabili con $\leq$}
-				\KwOut{$A$ ordinato rispetto a $\leq$}
-				\For{$i = 2$ \KwTo $n$}{
-					$key = A[i]$ \tcp*{Inserisce $A[i]$ nella parte ordinata $a_1, \ldots, a_{i-1}$}
-					$j = i - 1$\;
-					\While{$j > 0$ \textbf{and} $A[j] > key$}{
-						$A[j+1] = A[j]$\;
-						$j = j - 1$\;
-					}
-					$A[j+1] = key$\;
-				}
-				\Return{$A$}
-			\end{algorithm}
-			
-			\begin{nota}
-				Ordina gli elementi \textbf{sul posto}.
-			\end{nota}
-			
-			\begin{center}
-				\textbf{Ciclo Algoritmo}
-				
-				\vspace{0.4em}
-				\begin{tabular}{|c|c|c|c|c|}
-					\hline
-					5 & 2 & 4 & 6 & 1 \\
-					\hline
-				\end{tabular}
-				$= A$
-				
-				\vspace{0.4em}
-				{\small\textit{Ogni blocco rappresenta un ciclo for (0 o più cicli while)}}
-				\vspace{0.4em}
-				
-				\scalebox{0.9}{%
-					\begin{tabular}{|c|c|c|c|c|l|}
-						\hline
-						\textit{1} & \textit{2} & \textit{3} & \textit{4} & \textit{5} & \textit{Commento} \\
-						\hline
-						5 & \textcolor{codered}{2} & 4 & 6 & 1 &
-						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 5 \\ Scambio 5$\to$2}} \\
-						j & i & & & & \\[3pt]
-						\hline
-						2 & 5 & \textcolor{codered}{4} & 6 & 1 &
-						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,5 \\ Scambio 5$\to$4}} \\
-						$\leftarrow$ & j & i & & & \\[3pt]
-						\hline
-						2 & 4 & 5 & \textcolor{codered}{6} & 1 &
-						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5 \\ Nessun scambio}} \\
-						& $\leftarrow$ & j & i & & \\[3pt]
-						\hline
-						2 & 4 & 5 & 6 & \textcolor{codered}{1} &
-						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5,6 \\ 1 $\to$ pos. I}} \\
-						& & $\leftarrow$ & j & i & \\[3pt]
-						\hline
-						1 & 2 & 4 & 5 & 6 &
-						\multirow{2}{*}{\parbox{3cm}{\small Seq. ordinata}} \\
-						& & & & i & \\[3pt]
-						\hline
-					\end{tabular}%
-				}
-			\end{center}
-			
-			\pagebreak
-			\subsubsection*{Invariante di ciclo}
-			
-			\begin{definizione}[Invariante di ciclo]
-				Un'asserzione (proprietà booleana) sempre vera all'inizio
-				di ogni iterazione di un ciclo.
-			\end{definizione}
-			
-			La validità si dimostra in tre passi:
-			\begin{enumerate}
-				\item \textbf{Inizializzazione:} è vera prima della prima iterazione.
-				\item \textbf{Conservazione:} se è vera prima di un'iterazione,
-				rimane vera prima di quella successiva.
-				\item \textbf{Conclusione:} quando il ciclo termina, l'invariante
-				fornisce una proprietà utile a dimostrare la correttezza.
-			\end{enumerate}
-			
-			\begin{esempio}[Invariante di InsertionSort]
-				\textit{``All'inizio del ciclo \texttt{for}, il sottoarray
-					$A[1:i-1]$ è ordinato e formato dagli stessi elementi
-					che erano in $A[1:i-1]$.''}
-				
-				\begin{itemize}
-					\item \textbf{Inizializzazione:} $i=2$, quindi $A[1:1]$
-					è un solo elemento $\Rightarrow$ ordinato. \checkmark
-					\item \textbf{Conservazione:} \texttt{key}$= A[i]$,
-					il ciclo \texttt{while} sposta $A[i-1], A[i-2],\ldots$
-					a destra finché non trova la posizione corretta per
-					\texttt{key}. Quindi $A[1:i]$ diventa ordinato con
-					gli stessi elementi. All'iterazione successiva
-					$i$ aumenta di 1, l'invariante vale su $A[1:i-1]$.
-					\checkmark
-					\item \textbf{Conclusione:} il ciclo termina con $i = n+1$.
-					Per l'invariante, $A[1:n]$ è ordinato con gli stessi
-					elementi $\Rightarrow$ l'algoritmo è corretto. \checkmark
-				\end{itemize}
-			\end{esempio}
-			
-			\subsubsection*{Modello RAM}
-			
-			
-			Per analizzare la complessità si usa un modello astratto di
-			computer: la \textbf{Random Access Machine (RAM)}.
-			
-			\begin{itemize}
-				\item Un solo processore con memoria ad accesso casuale.
-				\item Numeri interi e a virgola mobile con dimensione fissa
-				(es.\ 64 bit per parola).
-				\item Istruzioni elementari (lettura, scrittura, somma,
-				sottrazione, moltiplicazione, divisione, confronto,
-				\texttt{if}, salto, chiamata a procedura).
-				\item Ogni istruzione ha \textbf{costo costante} $= 1$.
-			\end{itemize}
-			
-			\begin{nota}
-				È una semplificazione: nella realtà cache, pipeline e
-				parallelismo influenzano i tempi reali. In questo corso
-				si ignorano questi dettagli.
-			\end{nota}
-			
-			\subsubsection*{Dimensione dell'input e tempo di esecuzione}
-			
-			\begin{definizione}[Dimensione dell'input]
-				Misura della quantità di bit/word necessari per rappresentare
-				l'input. Un indicatore è \textbf{corretto} se la dimensione
-				reale è in relazione polinomiale con esso.
-			\end{definizione}
-			
-			\begin{definizione}[Tempo di esecuzione]
-				Numero totale di operazioni elementari eseguite dall'algoritmo
-				nel modello RAM, in funzione della dimensione $n$ dell'input.
-			\end{definizione}
-			
-			Esempi di indicatori corretti:
-			\begin{itemize}
-				\item \textbf{Array di $n$ elementi:} indicatore $= n$. \checkmark
-				\item \textbf{Matrice $n \times n$:} indicatore $= n$
-				(la dimensione reale $n \cdot k(n+1)$ è polinomiale in $n$).
-				\checkmark
-				\item \textbf{Intero $n$:} indicatore $= \lfloor \lg n \rfloor + 1$
-				(numero di bit). \textbf{Non} si può usare $n$ come
-				indicatore perché $2^{|I|} \approx n$, relazione
-				esponenziale. \checkmark
-			\end{itemize}
-			
-			\begin{esempio}[Matrice $n \times n$]
-				Sia $A$ una matrice $n \times n$ di interi, dove ogni intero
-				richiede $k$ bit. La RAM memorizza la matrice riga per riga.
-				
-				Ogni riga occupa $nk$ bit per gli interi, più $k$ bit per il
-				marcatore di fine riga. L'intera matrice richiede:
-				\[
-				|I| = n\bigl(n+1\bigr)k \text{ bit}
-				= n(kn + k) \text{ bit}
-				= \boxed{kn^2 + kn \text{ bit}}
-				= \Theta(n)
-				\]
-				
-				\begin{center}
-					\begin{tikzpicture}[scale=1.2]
-						% --- matrice n x n ---
-						\draw[step=0.6cm, gray!60, thin] (0,0) grid (3.6, 3.6);
-						\draw[thick] (0,0) rectangle (3.6, 3.6);
-						\node[above] at (1.8, 3.6) {$n$};
-						\node[left]  at (0,  1.8)  {$n$};
-						\node[font=\tiny] at (0.3, 3.3) {$a_{1,1}$};
-						\node[font=\tiny] at (3.3, 3.3) {$a_{1,n}$};
-						\node[font=\tiny] at (0.3, 0.3) {$a_{n,1}$};
-						\node[font=\tiny] at (3.3, 0.3) {$a_{n,n}$};
-						
-						% --- freccia RAM ---
-						\draw[->, thick] (4.0, 1.8) -- (5.2, 1.8);
-						\node[above, font=\small] at (4.6, 1.9) {RAM};
-						
-						% --- stack RAM ---
-						\foreach \y in {0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2}
-						\draw[draw=gray!80, fill=codebg]
-						(5.4, \y) rectangle (7.2, \y+0.35);
-						\node[font=\tiny] at (6.3, 3.35) {$a_{1,1}$};
-						\node[font=\tiny] at (6.3, 2.95) {$a_{1,2}$};
-						\node[font=\tiny] at (6.3, 2.55) {$\vdots$};
-						\node[font=\tiny] at (6.3, 2.15) {$a_{1,n}$};
-						\node[font=\tiny, color=codered] at (6.3, 1.75) {\texttt{fine riga} ($k$ bit)};
-						\node[font=\tiny] at (6.3, 1.35) {$a_{2,1}$};
-						\node[font=\tiny] at (6.3, 0.95) {$\vdots$};
-						\node[font=\tiny] at (6.3, 0.55) {$a_{n,n}$};
-						\node[font=\tiny, color=codered] at (6.3, 0.15) {\texttt{fine riga} ($k$ bit)};
-						
-						% --- graffa dimensione ---
-						\draw[decorate, decoration={brace, amplitude=5pt, mirror}]
-						(7.3, 0) -- (7.3, 3.55)
-						node[midway, right=6pt, font=\small] {$n$ righe};
-						
-						% --- annotazione dimensione riga ---
-						\draw[decorate, decoration={brace, amplitude=4pt}]
-						(5.4, 3.6) -- (7.2, 3.6)
-						node[midway, above=5pt, font=\tiny]
-						{$nk + k$ bit per riga};
-					\end{tikzpicture}
-				\end{center}
-				
-				Si usa come indicatore $|I| = n$. È \textbf{corretto} perché
-				la dimensione reale $kn^2 + kn$ è un \textbf{polinomio in $n$}.
-			\end{esempio}
-			
-			\begin{nota}
-				L'errore comune è usare il \emph{valore} di un intero $n$ come
-				dimensione dell'input invece del numero di bit necessari a
-				rappresentarlo. Questo porta a sottostimare la complessità.
-			\end{nota}
-			
-			\begin{definizione}[Tempo di esecuzione]
-				Il tempo di esecuzione di un algoritmo per un dato input di
-				dimensione n è il numero totale di operazioni elementari eseguite
-				(passi) nel modello RAM.
-			\end{definizione}
-			
-			\subsubsection*{Analisi di InsertionSort}
-			
-			$c_k$ = costo esecuzione istruzione alla riga $k$. \quad
-			$t_i - 1$ = \# cicli \textbf{while} nel $i$-esimo ciclo \textbf{for}.
-			
-			\begin{center}
-				\begin{tabular}{rll r r}
-					\toprule
-					& \textsc{Insertion-Sort}$(A, n)$ & & \textit{cost} & \textit{times} \\
-					\midrule
-					1 & \textbf{for} $i = 2$ \textbf{to} $n$ & & $c_1$ & $n$ \\
-					2 & \quad $key = A[i]$ & & $c_2$ & $n-1$ \\
-					3 & \quad \textcolor{codegreen}{\texttt{// Insert $A[i]$ into the sorted subarray $A[1:i-1]$}} & & $0$ & $n-1$ \\
-					4 & \quad $j = i - 1$ & & $c_4$ & $n-1$ \\
-					5 & \quad \textbf{while} $j > 0$ \textbf{and} $A[j] > key$ & & $c_5$ & $\displaystyle\sum_{i=2}^{n} t_i$ \\[6pt]
-					6 & \qquad $A[j+1] = A[j]$ & & $c_6$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
-					7 & \qquad $j = j - 1$ & & $c_7$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
-					8 & \quad $A[j+1] = key$ & & $c_8$ & $n-1$ \\
-					\bottomrule
-				\end{tabular}
-			\end{center}
-			
-			\begin{softnote}
-				\textbf{Contare le iterazioni:}
-				
-				\textbf{for} $i = \ell$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $\#\text{Cicli} = n - \ell + 1$
-				
-				\textbf{Esempio:} \textbf{for} $i = 2$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $n - 1$ iterazioni
-			\end{softnote}
-			
-			
-			\[
-			T(n) = c_1 n + c_2(n-1) + c_4(n-1)
-			+ c_5 \sum_{i=2}^{n} t_i
-			+ c_6 \sum_{i=2}^{n} (t_i-1)
-			+ c_7 \sum_{i=2}^{n} (t_i-1)
-			+ c_8(n-1)
-			\]
-			
-			
-			Indichiamo con $c_k$ il costo dell'istruzione alla riga $k$,
-			e con $t_i$ il numero di volte che il ciclo \texttt{while} viene
-			eseguito durante l'$i$-esimo ciclo \texttt{for}.
-			
-			Il tempo totale è:
-			\[
-			T(n) = c_1 n + c_2(n-1) + c_4(n-1)
-			+ c_5 \sum_{i=2}^{n} t_i
-			+ c_6 \sum_{i=2}^{n} (t_i - 1)
-			+ c_7 \sum_{i=2}^{n} (t_i - 1)
-			+ c_8(n-1)
-			\]
-			
-			\pagebreak
-			
-			\subsubsection*{Caso migliore: array già ordinato}
-			
-			Se l'array è già ordinato, il corpo del \texttt{while} non viene
-			mai eseguito: $t_i = 1$ per ogni $i$.
-			Le somme $\sum(t_i - 1) = 0$, quindi:
-			
-			\[
-			T(n) = c_1 n + c_2(n-1) + c_4(n-1) + c_5(n-1) + c_8(n-1)
-			\]
-			\[
-			= \underbrace{(c_1 + c_2 + c_4 + c_5 + c_8)}_{a} n
-			- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{b}
-			\]
-			\[
-			= an - b \quad \Rightarrow \quad \boxed{T(n) = \Theta(n)}
-			\]
-			
-			\begin{nota}
-				Nel caso migliore la crescita è \textbf{lineare}: ogni elemento
-				viene confrontato una sola volta con il suo predecessore e
-				nessuno scambio viene effettuato.
-			\end{nota}
-			
-			\subsubsection*{Caso peggiore: array ordinato al contrario}
-			
-			Se l'array è in ordine decrescente, ogni $A[i]$ deve essere
-			confrontato con \textbf{tutti} gli elementi in $A[1:i-1]$,
-			quindi $t_i = i$. Usando $\sum_{i=2}^{n} i = \frac{n(n+1)}{2} - 1$:
-			
-			\[
-			T(n) = c_1 n + c_2(n-1) + c_4(n-1)
-			+ c_5\!\left(\frac{n(n+1)}{2} - 1\right)
-			+ (c_6 + c_7)\frac{n(n-1)}{2}
-			+ c_8(n-1)
-			\]
-			
-			Raccogliendo i termini per grado:
-			
-			\[
-			T(n) = \underbrace{\frac{c_5 + c_6 + c_7}{2}}_{a} n^2
-			+ \underbrace{\left(c_1 + c_2 + c_4 + \frac{c_5 - c_6 - c_7}{2} + c_8\right)}_{b} n
-			- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{c}
-			\]
-			\[
-			\Rightarrow \quad \boxed{T(n) = \Theta(n^2)}
-			\]
-			
-			\begin{nota}
-				Nel caso peggiore la crescita è \textbf{quadratica}: ogni nuovo
-				elemento deve ``scendere'' fino in fondo alla parte già ordinata,
-				confrontandosi con tutti gli elementi precedenti.
-			\end{nota}
-			
-			\begin{center}
-				\begin{tabular}{lll}
-					\toprule
-					Caso & Input & Complessità \\
-					\midrule
-					Migliore & Array già ordinato      & $\Theta(n)$   \\
-					Peggiore & Array ordinato inverso  & $\Theta(n^2)$ \\
-					\bottomrule
-				\end{tabular}
-			\end{center}
-			
-			\begin{hardnote}
-				Solitamente si considera come complessità di un algoritmo il
-				tempo di esecuzione con input che rappresenta il caso peggiore.
-				
-				\begin{enumerate}[label=\arabic*.]
-					\item È una garanzia sulla descrizione del comportamento dell'algoritmo.
-					\item In alcuni casi, il caso peggiore è il più frequente.
-					\item Il caso medio spesso è simile al caso peggiore (vedi InsertionSort).
-				\end{enumerate}
-			\end{hardnote}
-			
-		\subsection{Tasso di crescita e ordine di grandezza}
-		
-		Nell'analisi di InsertionSort si sono usate costanti $c_k$ per
-		rappresentare i costi astratti delle operazioni nel modello RAM.
-		Queste costanti possono essere raggruppate: ad esempio
-		$(c_2 + c_4 + c_5 + c_8)$ diventa una costante generica $a$.
-		
-		\begin{softnote}
-			\textbf{Ultima astrazione:} è più importante valutare la
-			\textbf{velocità con cui cresce} il tempo di esecuzione
-			(\textit{tasso di crescita}) che i dettagli delle costanti.
-			
-			\medskip
-			Di un polinomio $T(n) = an^2 + bn + c$ è sufficiente
-			considerare solo il termine dominante $an^2$.
-			Visto che la costante $a$ è astratta, la si assorbe
-			nell'ordine di grandezza:
-			\[
-			T(n) = an^2 + bn + c \;\approx\; an^2
-			\;\Longrightarrow\; \Theta(n^2)
-			\]
-		\end{softnote}
-		
-		\begin{hardnote}
-			Un algoritmo è considerato \textbf{più efficiente} di un altro
-			se il suo tempo di computazione nel caso peggiore ha un
-			\textbf{tasso di crescita inferiore}.
-		\end{hardnote}
-		
-		\begin{center}
-			\begin{tabular}{lll}
-				\toprule
-				$T(n)$ & Ordine di grandezza & Nome \\
-				\midrule
-				$an + b$         & $\Theta(n)$      & Lineare \\
-				$an^2 + bn + c$  & $\Theta(n^2)$    & Quadratica \\
-				$an^3 + \cdots$  & $\Theta(n^3)$    & Cubica \\
-				$a\lg n + b$     & $\Theta(\lg n)$  & Logaritmica \\
-				$an\lg n + b$    & $\Theta(n\lg n)$ & Linearitmica \\
-				\bottomrule
-			\end{tabular}
-		\end{center}
-		
-		\subsubsection{MergeSort (Divide et impera)}
-		\begin{enumerate}
-			\item \textbf{Dividi:} spezza in due metà.
-			\item \textbf{Impera:} ordina ricorsivamente.
-			\item \textbf{Combina:} fondi in $\Theta(n)$.
-		\end{enumerate}
+		È una sequenza di numeri dove ogni numero è la somma dei due precedenti:
 		\[
-		T(n) = 2\,T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n)
+		0, 1, 1, 2, 3, 5, 8, 13, 21, 34, \ldots
+		\]
+		
+		Definizione formale:
+		\[
+		F_0 = 0, \quad F_1 = 1, \quad F_n = F_{n-1} + F_{n-2} \text{ per } n \geq 2
+		\]
+		
+		\textbf{Esempio:} $F_5 = F_4 + F_3 = 3 + 2 = 5$
+	\end{nota}
+	
+	\begin{nota}
+		Le convenzioni usate per il pseudocodice sono a pag. 19 del [CLRS].
+	\end{nota}
+	
+	\begin{algorithm}[H]
+		\caption{FibonacciR}
+		\KwIn{$n \geq 0$}
+		\KwOut{$F_n$}
+		\If{$n = 0$}{\Return $0$\;}
+		\If{$n = 1$}{\Return $1$\;}
+		\Return FibonacciR($n-1$) + FibonacciR($n-2$)\;
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Come funziona questo algoritmo?}
+		
+		Traduce direttamente la definizione matematica in codice:
+		\begin{enumerate}
+			\item Se $n=0$ restituisci 0 (caso base)
+			\item Se $n=1$ restituisci 1 (caso base)
+			\item Altrimenti, calcola $F_{n-1}$ e $F_{n-2}$ ricorsivamente e sommali
+		\end{enumerate}
+		
+		\textbf{Esempio per $n=4$:}
+		\begin{itemize}
+			\item Calcola $F_3 + F_2$
+			\item $F_3 = F_2 + F_1$, quindi serve calcolare $F_2$ due volte!
+			\item $F_2 = F_1 + F_0 = 1 + 0 = 1$
+			\item Risultato finale: $F_4 = 3$
+		\end{itemize}
+	\end{softnote}
+	
+	L'algoritmo è corretto? \textbf{Sì!}
+	
+	Per ogni input valido, termina? \textbf{Sì, assumendo che input sia sempre un intero n  $\geq$ 0}
+	
+	Se sì, calcola il valore giusto? \textbf{Sì, perché l'algoritmo codifica la definizione ricorsiva.}
+	
+	Quanto \textbf{tempo} richiede per terminare?
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.5\textwidth]{Immagini/FibonacciT.png}
+		\caption{Tempo computazionale dell'algoritmo \texttt{FibonacciR}}
+		\label{fig:fibonacci-tempo}
+		Come mostrato in Figura~\ref{fig:fibonacci-tempo}, il tempo cresce esponenzialmente.
+		
+	\end{figure}
+	
+	\begin{hardnote}
+		\textbf{Problema grave:} anche se l'algoritmo è corretto, è \textbf{terribilmente lento}.
+		
+		Per $n=50$ impiega diversi minuti, mentre un algoritmo migliore lo calcola istantaneamente. Il problema è che ricalcola gli stessi valori moltissime volte.
+	\end{hardnote}
+	
+	\newpage
+	\subsubsection*{Calcolo della complessità computazionale}
+	
+	\begin{softnote}
+		La \textbf{complessità} misura quanto ``costa'' eseguire un algoritmo. Non misuriamo i secondi (dipendono dal computer), ma il numero di operazioni in funzione della dimensione dell'input.
+	\end{softnote}
+	
+	\begin{definizione}[Efficienza]
+		Risorse (tempo e spazio) richieste in funzione della dimensione $n$ dell'input.
+	\end{definizione}
+	
+	\begin{definizione}[Algoritmo vs.\ Implementazione]
+		L'algoritmo è un concetto \textbf{astratto} ($\neq$ implementazione):
+		descrive \textit{come} risolvere un problema indipendentemente dal linguaggio.
+		L'implementazione è un \textbf{programma concreto}, ovvero la traduzione
+		dell'algoritmo in un linguaggio comprensibile dalla macchina.
+	\end{definizione}
+	
+	\begin{nota}
+		\textbf{Analogia:}
+		\begin{itemize}
+			\item \textbf{Algoritmo} = ricetta scritta in italiano (``mescola gli ingredienti'')
+			\item \textbf{Implementazione} = ricetta tradotta in giapponese per un cuoco giapponese
+		\end{itemize}
+		L'idea (algoritmo) è la stessa, cambia solo la forma (implementazione).
+	\end{nota}
+	
+	\begin{nozione}[Algoritmo efficiente]
+		Andiamo a cercare l'algoritmo efficiente:
+		\begin{itemize}
+			\item \textbf{Efficiente:} usa poche risorse
+			\item \textbf{Risorse:} tempo e spazio richiesti dall'algoritmo
+			per produrre l'output
+		\end{itemize}
+	\end{nozione}
+	
+	\begin{teorema}[Algoritmo vs.\ hardware]
+		Con $n = 10^7$ interi da ordinare:
+		\begin{align*}
+			t_A &= \frac{2(10^7)^2}{10^{10}} \approx 5.5\ \text{ore}
+			\quad\text{(InsSort, } 10^9 \text{ istr/s)} \\
+			t_B &= \frac{50 \cdot 10^7 \log_2 10^7}{10^6} \approx 20\ \text{min}
+			\quad\text{(MergeSort, } 10^6 \text{ istr/s)}
+		\end{align*}
+		L'algoritmo migliore batte l'hardware più veloce.
+	\end{teorema}
+	
+	\begin{hardnote}
+		\textbf{Lezione fondamentale:} un algoritmo efficiente su un computer lento batte un algoritmo inefficiente su un computer veloce.
+		
+		Nell'esempio:
+		\begin{itemize}
+			\item Computer A: 10× più veloce, ma usa InsertionSort (algoritmo lento)
+			\item Computer B: 10× più lento, ma usa MergeSort (algoritmo veloce)
+		\end{itemize}
+		Risultato: B finisce in 20 minuti, A impiega 5.5 ore!
+	\end{hardnote}
+	
+	\textbf{Possiamo fare meglio?}
+	
+	\subsubsection*{Ottimizzazione: FibonacciI }
+	\begin{algorithm}[H]
+		\caption{FibonacciI}
+		\KwIn{Intero positivo $n$}
+		\KwOut{Il valore $F_n$}
+		\If{$n = 0$}{\Return $0$\;}
+		\If{$n = 1$}{\Return $1$\;}
+		$\mathit{pprev} = 0$\;
+		$\mathit{prev} = 1$\;
+		\For{$i = 2$ \KwTo $n$}{
+			$f = \mathit{prev} + \mathit{pprev}$\;
+			$\mathit{pprev} = \mathit{prev}$\;
+			$\mathit{prev} = f$\;
+		}
+		\Return $f$\;
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Come funziona FibonacciI (iterativo)?}
+		
+		Invece di chiamare ricorsivamente la funzione, mantiene in memoria solo gli ultimi due valori e li aggiorna ad ogni passo:
+		
+		\begin{itemize}
+			\item Inizia con $F_0=0$ e $F_1=1$
+			\item Calcola $F_2 = F_1 + F_0 = 1$
+			\item Calcola $F_3 = F_2 + F_1 = 2$
+			\item Calcola $F_4 = F_3 + F_2 = 3$
+			\item E così via fino a $F_n$
+		\end{itemize}
+		
+		\textbf{Vantaggio:} ogni numero viene calcolato \textbf{una sola volta}, non milioni di volte come nella versione ricorsiva!
+	\end{softnote}
+	
+	La complessità è:
+	\[
+	T(0) = 2, \quad T(1) = 3, \quad T(n) = 4 + 2n + 4(n-1) + 1 = 6n + 1
+	\]
+	
+	La crescita è \textbf{lineare in $n$}.
+	
+	
+	\begin{center}
+		\begin{tabular}{lll}
+			\toprule
+			Algoritmo & Complessità & $n=50$ \\
+			\midrule
+			Ricorsivo & $(1.4)^n$   & minuti \\
+			Iterativo & $\Theta(n)$ & istantaneo \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\begin{hardnote}
+		\textbf{Confronto drammatico:}
+		\begin{itemize}
+			\item FibonacciR (ricorsivo): per $n=50$ fa circa $2^{25} \approx 33$ milioni di chiamate $\to$ minuti
+			\item FibonacciI (iterativo): per $n=50$ fa esattamente 50 iterazioni $\to$ istantaneo
+		\end{itemize}
+		
+		Questo dimostra che due algoritmi che risolvono lo stesso problema possono avere prestazioni \textbf{radicalmente diverse}.
+	\end{hardnote}
+	
+	\noindent\textbf{Modello RAM:} ogni operazione elementare ha costo $1$;
+	parola di memoria a dimensione fissa.
+	
+	\begin{nota}
+		Il \textbf{modello RAM} (Random Access Machine) è una semplificazione che assumiamo per analizzare gli algoritmi:
+		\begin{itemize}
+			\item Ogni operazione base (somma, confronto, assegnazione) costa 1
+			\item La memoria è infinita e accedervi costa 1
+			\item Un solo processore esegue un'istruzione alla volta
+		\end{itemize}
+		
+		Non è realistico (nella realtà ci sono cache, processori multipli, ecc.), ma è utile per confrontare algoritmi in modo uniforme.
+	\end{nota}
+	
+	\subsection{Esempi di problemi computazionali da risolvere in aula}
+	
+	\begin{softnote}
+		Ora vediamo alcuni problemi classici che ti aiuteranno a capire come si progettano e analizzano gli algoritmi. Studia bene questi esempi: sono fondamentali per l'esame!
+	\end{softnote}
+	
+	\subsubsection*{Indici dei due numeri che sommati danno N}
+	\textbf{Problema:} Data una matrice di interi \texttt{nums} e un intero \texttt{target}, restituisci gli indici dei due numeri tali che la loro somma sia uguale a \texttt{target}. Puoi assumere che ogni input abbia esattamente una soluzione, e non puoi usare lo stesso elemento due volte. Puoi restituire la risposta in qualsiasi ordine.
+	
+	\begin{nota}
+		\textbf{In parole semplici:} hai un array di numeri e un numero obiettivo. Devi trovare due numeri nell'array che sommati danno il numero obiettivo, e restituire le loro posizioni.
+		
+		\textbf{Esempio:}
+		\begin{itemize}
+			\item Input: \texttt{nums = [2, 7, 11, 15]}, \texttt{target = 9}
+			\item Output: \texttt{[0, 1]}
+			\item Spiegazione: \texttt{nums[0] + nums[1] = 2 + 7 = 9}
+		\end{itemize}
+	\end{nota}
+	
+	\begin{algorithm}[H]
+		\caption{twoSum (Brute Force)}
+		\KwIn{\texttt{nums[0\ldots n-1]}, \texttt{target}}
+		\KwOut{\{i, j\} tali che \texttt{nums[i] + nums[j] = target}, $i \neq j$}
+		\For{$i = 0$ \KwTo $n-2$}{
+			\For{$j = i+1$ \KwTo $n-1$}{
+				\If{\texttt{nums[i] + nums[j] == target}}{
+					\KwRet $\{i, j\}$\;
+				}
+			}
+		}
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Come funziona l'algoritmo?}
+		
+		Prova tutte le possibili coppie di numeri:
+		\begin{enumerate}
+			\item Fisso il primo numero (indice $i$)
+			\item Controllo tutti i numeri successivi (indice $j > i$)
+			\item Se $nums[i] + nums[j] = target$, ho trovato la coppia!
+		\end{enumerate}
+		
+		Si chiama ``brute force'' (forza bruta) perché prova semplicemente tutte le combinazioni possibili.
+	\end{softnote}
+	
+	\noindent\textbf{Invariante:} Dopo ogni iterazione esterna, tutti gli elementi da $0$ a $i-1$ sono stati confrontati con tutti gli elementi successivi.
+	
+	\begin{nota}
+		L'\textbf{invariante di ciclo} è una proprietà che rimane vera ad ogni iterazione. Serve per dimostrare che l'algoritmo è corretto. In questo caso: ``alla fine dell'iterazione $i$, abbiamo controllato tutte le coppie che iniziano con indici da $0$ a $i$.''
+	\end{nota}
+	
+	\noindent\textbf{Complessità:}
+	\begin{itemize}
+		\item Caso migliore: $\Theta(1)$ (se la coppia è trovata subito)
+		\item Caso peggiore: $\Theta(n^2)$
+	\end{itemize}
+	
+	\noindent\textbf{Calcolo della complessità temporale (caso peggiore):}
+	
+	L'algoritmo esegue due cicli annidati. Il ciclo esterno itera $n-1$ volte, e per ogni $i$ il ciclo interno itera $n-1-i$ volte. Quindi:
+	
+	\[
+	T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = 	\frac{(n-1)n}{2} \in \Theta(n^2)
+	\]
+	
+	\begin{softnote}
+		\textbf{Perché $\Theta(n^2)$?}
+		
+		Il ciclo esterno fa $n$ passi, e per ognuno il ciclo interno fa in media $n/2$ passi. In totale: $n \times n/2 = n^2/2$ operazioni. Siccome ignoriamo le costanti, rimane $n^2$.
+		
+		\textbf{Esempio concreto:} con $n=100$ elementi, l'algoritmo fa circa $100 \times 100 / 2 = 5000$ confronti.
+	\end{softnote}
+	
+	La complessità spaziale è $\Theta(1)$, poiché usiamo solo variabili costanti. 
+	
+	\vspace*{\stretch{1}} 
+	\subsubsection*{Codice JAVA}
+	\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
+		class twoSum {
+			public int[] twoSum(int[] nums, int target) {
+				for (int i = 0; i < nums.length; i++) {
+					for (int j = i + 1; j < nums.length; j++) {
+						if (nums[i] + nums[j] == target) {
+							return new int[]{i, j};
+						}
+					}
+				}
+				return new int[]{};  // nessuna soluzione trovata
+			}
+		}
+	\end{lstlisting}
+	
+	\begin{nota}
+		\textbf{Nota sul codice Java:}
+		\begin{itemize}
+			\item \texttt{nums.length} restituisce la lunghezza dell'array
+			\item \texttt{new int[]\{i, j\}} crea un nuovo array con due elementi
+			\item Il \texttt{return} interrompe immediatamente l'esecuzione quando trova la soluzione
+		\end{itemize}
+	\end{nota}
+	
+	\subsubsection*{Problema dell'inversione numerica}
+	
+	\begin{softnote}
+		Questo problema insegna a manipolare le cifre di un numero usando aritmetica modulare. È un classico per imparare operazioni su interi.
+	\end{softnote}
+	
+	\begin{algorithm}[H]
+		\caption{Inversione numerica}
+		\label{alg:inversione}
+		
+		\KwIn{Intero $x$ rappresentato con segno a 32 bit}
+		\KwOut{Intero $y$ con le cifre di $x$ invertite}
+		
+		$y = 0$\tcp*{Inizializza risultato}
+		$sign = 1$\tcp*{Memorizza segno}
+		
+		$sign = (x < 0) ? -1 : 1$\tcp*{Memorizza segno di x}
+		$x = |x|$\tcp*{Rende x positivo}
+		
+		\While{$x > 0$}{
+			$digit = x \bmod 10$\tcp*{Estrae ultima cifra}
+			$y = y \times 10 + digit$\tcp*{Aggiunge a y}
+			$x = \lfloor x / 10 \rfloor$\tcp*{Rimuove cifra}
+		}
+		
+		\Return{$y \times sign$}\tcp*{Restituisce con segno}
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Come funziona l'inversione?}
+		
+		\textbf{Esempio:} inverti 1234
+		\begin{enumerate}
+			\item $digit = 1234 \bmod 10 = 4$, $y = 0 \times 10 + 4 = 4$, $x = 123$
+			\item $digit = 123 \bmod 10 = 3$, $y = 4 \times 10 + 3 = 43$, $x = 12$
+			\item $digit = 12 \bmod 10 = 2$, $y = 43 \times 10 + 2 = 432$, $x = 1$
+			\item $digit = 1 \bmod 10 = 1$, $y = 432 \times 10 + 1 = 4321$, $x = 0$
+		\end{enumerate}
+		
+		\textbf{Trucchi usati:}
+		\begin{itemize}
+			\item $n \bmod 10$ estrae l'ultima cifra
+			\item $\lfloor n / 10 \rfloor$ rimuove l'ultima cifra
+			\item Moltiplicare per 10 e sommare ``costruisce'' il numero invertito
+		\end{itemize}
+	\end{softnote}
+	
+	\textbf{Complessità.}
+	Sia $k$ il numero di cifre decimali di $|x|$. Allora
+	\[
+	T(k) =
+	\begin{cases}
+		6       & \text{se } x = 0,\\
+		5k + 6  & \text{se } x > 0,\\
+		5k + 8  & \text{se } x < 0,
+	\end{cases}
+	\qquad\Rightarrow\qquad
+	T(k) = \mathcal{O}(k).
+	\]
+	
+	\begin{center}
+		La complessità dell'algoritmo è lineare nel numero di cifre.
+	\end{center}
+	
+	\begin{nota}
+		Se il numero ha $k$ cifre, il ciclo while viene eseguito esattamente $k$ volte (una per ogni cifra). Quindi la complessità è $O(k)$, dove $k = \log_{10}(n)$ per un numero $n$.
+		
+		\textbf{Esempio:} il numero 12345 ha 5 cifre, quindi $k=5$ e il ciclo fa 5 iterazioni.
+	\end{nota}
+	
+	
+	\begin{nota}
+		L'\textbf{operatore ternario} è definito come:
+		
+		\texttt{x = (espressione booleana) ? v1 : v2}
+		
+		\begin{itemize}
+			\item se l'espressione booleana è vera viene usata \texttt{v1}
+			\item se l'espressione booleana è falsa viene usata \texttt{v2}
+		\end{itemize}
+		
+		\textbf{Esempio:} \texttt{max = (a > b) ? a : b} assegna a \texttt{max} il valore più grande tra \texttt{a} e \texttt{b}.
+	\end{nota}
+	
+	\subsubsection*{Container con più acqua}
+	
+	\begin{softnote}
+		Questo è un problema di ottimizzazione: dobbiamo trovare il rettangolo di area massima. Introduciamo la tecnica dei ``due puntatori'' che è molto utile per problemi su array.
+	\end{softnote}
+	
+	Si consideri un array di interi non negativi $height$ di lunghezza $n$.
+	Per ogni $i$, la retta verticale ha estremi $(i,0)$ e $(i,height[i])$.
+	Si vogliono trovare due rette che, insieme all'asse $x$, formino un
+	contenitore che possa contenere la massima quantità d'acqua.
+	
+	\medskip
+	Nel nostro esempio poniamo
+	\[
+	A = [4,6,3,5].
+	\]
+	
+	L'area del contenitore formato dalle rette in posizione $i$ e $j$
+	($i < j$) è data da
+	\[
+	\mathrm{area}(i,j) = (j-i)\,\min(A[i],A[j]).
+	\]
+	
+	\begin{nota}
+		\textbf{Perché questa formula?}
+		
+		L'area di un rettangolo è: $\text{base} \times \text{altezza}$
+		\begin{itemize}
+			\item \textbf{Base} = distanza orizzontale = $(j-i)$
+			\item \textbf{Altezza} = il lato più basso = $\min(A[i], A[j])$
+		\end{itemize}
+		
+		Usiamo il minimo perché l'acqua ``trabocca'' dal lato più basso, quindi l'altezza effettiva è limitata dalla barra più corta.
+	\end{nota}
+	
+	Per $A = [4,6,3,5]$ otteniamo:
+	
+	\begin{figure}[H]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel={i},
+				ylabel={height[i]},
+				ymin=0, ymax=7,
+				xmin=-0.5, xmax=3.5,
+				xtick={0,1,2,3},
+				grid=both,
+				]
+				% linee verticali per A = [4,6,3,5]
+				\addplot[very thick, blue] coordinates {(0,0) (0,4)};
+				\addplot[very thick, blue] coordinates {(1,0) (1,6)};
+				\addplot[very thick, blue] coordinates {(2,0) (2,3)};
+				\addplot[very thick, blue] coordinates {(3,0) (3,5)};
+				
+				% evidenzia il contenitore migliore tra i=0 e i=3
+				\addplot[
+				fill=blue!20,
+				draw=blue!60,
+				fill opacity=0.5 % 50% trasparente
+				]
+				coordinates {(0,0) (0,4) (3,4) (3,0) (0,0)};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Container con area massima per $A = [4,6,3,5]$.}
+	\end{figure}
+	
+	Il valore massimo è quindi
+	\[
+	\max_{0 \le i < j \le 3} \mathrm{area}(i,j) = 12,
+	\]
+	ottenuto per la coppia di indici $(i,j) = (0,3)$.
+	
+	\begin{softnote}
+		Nell'esempio: area$(0,3) = (3-0) \times \min(4,5) = 3 \times 4 = 12$ è la massima possibile.
+	\end{softnote}
+	
+	Quindi il pseudocodice per questo problema computazionale è il seguente:
+	
+	\begin{algorithm}[H]
+		\caption{Container With Most Water}
+		\label{alg:container-most-water}
+		
+		\KwIn{Array $height[0 \dots n-1]$ di interi non negativi}
+		\KwOut{Massima area d'acqua contenibile}
+		
+		$left \gets 0$\tcp*{Puntatore sinistro}
+		$right \gets n - 1$\tcp*{Puntatore destro}
+		$maxArea \gets 0$\tcp*{Area massima trovata finora}
+		
+		\While{$left < right$}{
+			$width \gets right - left$\tcp*{Larghezza del contenitore}
+			$h \gets \min(height[left],\; height[right])$\tcp*{Altezza = lato più basso}
+			$area \gets width \cdot h$\tcp*{Area del contenitore corrente}
+			$maxArea \gets \max(maxArea,\; area)$\tcp*{Aggiorna massimo}
+			
+			\If{$height[left] < height[right]$}{
+				$left \gets left + 1$\tcp*{Sposta il lato più basso verso il centro}
+			}
+			\Else{
+				$right \gets right - 1$\tcp*{Sposta il lato più basso verso il centro}
+			}
+		}
+		\Return{$maxArea$}\tcp*{Restituisce l'area massima}
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Tecnica dei due puntatori:}
+		
+		\begin{enumerate}
+			\item Partiamo dai due estremi dell'array (left=0, right=n-1)
+			\item Calcoliamo l'area del contenitore corrente
+			\item Spostiamo verso il centro il puntatore che punta alla barra \textbf{più bassa}
+			\item Ripetiamo fino a quando i puntatori si incontrano
+		\end{enumerate}
+		
+		\textbf{Perché muoviamo il lato più basso?} Se muovessimo il lato più alto, la larghezza diminuirebbe e l'altezza resterebbe limitata dal lato basso: l'area peggiorerebbe sicuramente. Muovendo il lato basso abbiamo la \textit{possibilità} di trovare un lato più alto che migliori l'area.
+	\end{softnote}
+	
+	\textbf{Complessità.}
+	Ad ogni iterazione del ciclo \texttt{while} viene spostato
+	solo uno dei due puntatori, che possono muoversi ciascuno al più $n-1$ volte.
+	Pertanto il numero di iterazioni è al più $n-1$ e il costo è
+	\[
+	T(n) = c_1 + c_2 (n-1) = \Theta(n).
+	\]
+	Lo spazio aggiuntivo utilizzato è costante, quindi $S(n) = \Theta(1)$.
+	
+	\begin{nota}
+		Complessità $\Theta(n)$ significa che l'algoritmo è \textbf{lineare}: raddoppiando la dimensione dell'input, il tempo raddoppia. Molto meglio di $\Theta(n^2)$ dove raddoppiando l'input il tempo quadruplica!
+	\end{nota}
+	
+	\pagebreak
+	\subsubsection*{Prefisso più lungo comune fra più sequenze}
+	
+	\begin{softnote}
+		Questo problema è utile per capire come elaborare stringhe. L'idea è trovare la parte iniziale condivisa da tutte le stringhe in input.
+	\end{softnote}
+	
+	\begin{algorithm}[H]
+		\caption{Prefisso comune più lungo}
+		\label{alg:prefisso-comune}
+		
+		\KwIn{Array $S[1 \dots n]$ di stringhe}
+		\KwOut{Prefisso più lungo comune a tutte le stringhe}
+		
+		\tcp{Assumo che le stringhe di $S$ siano tutte diverse da \texttt{null}}
+		
+		$p \gets S[1]$\tcp*{Prefisso corrente}
+		
+		\For{$i \gets 2$ \KwTo $n$}{
+			$p \gets \text{PrefissoComune}(p, S[i])$\tcp*{Prefisso tra $p$ e $S[i]$}
+			\If{$p =$ stringa vuota}{
+				\Return{p}\tcp*{Nessun prefisso comune}
+			}
+		}
+		
+		\Return{$p$}\tcp*{Prefisso comune più lungo}
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Come funziona?}
+		
+		\textbf{Esempio:} $S = [\text{``fiore''}, \text{``fiorire''}, \text{``fioraio''}]$
+		\begin{enumerate}
+			\item $p = \text{``fiore''}$ (prima stringa)
+			\item PrefissoComune($\text{``fiore''}$, $\text{``fiorire''}$) = $\text{``fiori''}$
+			\item PrefissoComune($\text{``fiori''}$, $\text{``fioraio''}$) = $\text{``fior''}$
+			\item Risultato: $\text{``fior''}$
+		\end{enumerate}
+		
+		L'idea è semplice: confrontiamo il prefisso corrente con ogni stringa successiva, accorciandolo se necessario.
+	\end{softnote}
+	
+	\noindent\textbf{Invariante:} Dopo ogni iterazione del ciclo, $p$ è il prefisso comune più lungo delle prime $i$ stringhe.
+	
+	\textbf{Complessità.}
+	Sia $n$ il numero di stringhe in $S$ e sia $m$ la lunghezza della
+	stringa più corta. Ad ogni passo del ciclo la funzione
+	\texttt{PrefissoComune} confronta al più $m$ caratteri, quindi
+	\[
+	T(n,m) = c_1 + c_2 (n-1)m = \Theta(nm).
+	\]
+	Lo spazio aggiuntivo utilizzato è costante, dunque $S(n,m) = \Theta(1)$.
+	
+	\begin{nota}
+		La complessità $\Theta(nm)$ significa che nel caso peggiore confrontiamo $m$ caratteri per ognuna delle $n$ stringhe. Se abbiamo 100 stringhe di 50 caratteri, facciamo al massimo $100 \times 50 = 5000$ confronti.
+	\end{nota}
+	
+	\pagebreak
+	\subsection{InsertionSort e MergeSort}
+	
+	\begin{softnote}
+		Ora studiamo due algoritmi di ordinamento fondamentali. InsertionSort è semplice ma lento, MergeSort è più complesso ma veloce. Capirai la differenza tra approccio \textbf{incrementale} e \textbf{divide et impera}.
+	\end{softnote}
+	
+	\subsubsection{InsertionSort}
+	
+	Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
+	(come le carte da gioco).
+	
+	\begin{nota}
+		\textbf{Analogia con le carte:} quando ordini una mano di carte, prendi una carta alla volta e la inserisci nella posizione giusta tra quelle già ordinate. Questo è esattamente quello che fa InsertionSort!
+	\end{nota}
+	
+	\begin{algorithm}
+		\caption{InsertionSort}
+		\KwIn{$A = \langle a_1, \ldots, a_n \rangle$, array di elementi 
+			confrontabili con $\leq$}
+		\KwOut{$A$ ordinato rispetto a $\leq$}
+		\For{$i = 2$ \KwTo $n$}{
+			$key = A[i]$ \tcp*{Inserisce $A[i]$ nella parte ordinata $a_1, \ldots, a_{i-1}$}
+			$j = i - 1$\;
+			\While{$j > 0$ \textbf{and} $A[j] > key$}{
+				$A[j+1] = A[j]$\;
+				$j = j - 1$\;
+			}
+			$A[j+1] = key$\;
+		}
+		\Return{$A$}
+	\end{algorithm}
+	
+	\begin{softnote}
+		\textbf{Come funziona InsertionSort passo passo:}
+		
+		\begin{enumerate}
+			\item Parte dall'elemento in posizione 2 (il primo è già ``ordinato'')
+			\item Prende l'elemento corrente (\texttt{key})
+			\item Lo confronta con gli elementi precedenti (da destra a sinistra)
+			\item Sposta gli elementi più grandi verso destra
+			\item Inserisce \texttt{key} nella posizione corretta
+			\item Ripete per tutti gli elementi
+		\end{enumerate}
+	\end{softnote}
+	
+	\begin{nota}
+		Ordina gli elementi \textbf{sul posto} (in-place), cioè non usa array aggiuntivi ma modifica direttamente l'array di input.
+	\end{nota}
+	
+	\textbf{Ciclo Algoritmo}
+	
+	\begin{center}
+		
+		\vspace{0.4em}
+		\begin{tabular}{|c|c|c|c|c|}
+			\hline
+			5 & 2 & 4 & 6 & 1 \\
+			\hline
+		\end{tabular}
+		$= A$
+		
+		\vspace{0.4em}
+		{\small\textit{Ogni blocco rappresenta un ciclo for (0 o più cicli while)}}
+		\vspace{0.4em}
+		
+		\scalebox{0.9}{%
+			\begin{tabular}{|c|c|c|c|c|l|}
+				\hline
+				\textit{1} & \textit{2} & \textit{3} & \textit{4} & \textit{5} & \textit{Commento} \\
+				\hline
+				5 & \textcolor{codered}{2} & 4 & 6 & 1 &
+				\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 5 \\ Scambio 5$\to$2}} \\
+				j & i & & & & \\[3pt]
+				\hline
+				2 & 5 & \textcolor{codered}{4} & 6 & 1 &
+				\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,5 \\ Scambio 5$\to$4}} \\
+				$\leftarrow$ & j & i & & & \\[3pt]
+				\hline
+				2 & 4 & 5 & \textcolor{codered}{6} & 1 &
+				\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5 \\ Nessun scambio}} \\
+				& $\leftarrow$ & j & i & & \\[3pt]
+				\hline
+				2 & 4 & 5 & 6 & \textcolor{codered}{1} &
+				\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5,6 \\ 1 $\to$ pos. I}} \\
+				& & $\leftarrow$ & j & i & \\[3pt]
+				\hline
+				1 & 2 & 4 & 5 & 6 &
+				\multirow{2}{*}{\parbox{3cm}{\small Seq. ordinata}} \\
+				& & & & i & \\[3pt]
+				\hline
+			\end{tabular}%
+		}
+	\end{center}
+	
+	\begin{softnote}
+		Nella tabella:
+		\begin{itemize}
+			\item \textcolor{codered}{Rosso} = elemento che stiamo inserendo (\texttt{key})
+			\item $i$ = indice elemento corrente
+			\item $j$ = indice di confronto (parte da $i-1$ e va a ritroso)
+			\item Le frecce $\leftarrow$ mostrano il movimento degli elementi verso destra
+		\end{itemize}
+	\end{softnote}
+	
+	\pagebreak
+	\subsubsection*{Invariante di ciclo}
+	
+	\begin{definizione}[Invariante di ciclo]
+		Un'asserzione (proprietà booleana) sempre vera all'inizio
+		di ogni iterazione di un ciclo.
+	\end{definizione}
+	
+	\begin{nota}
+		L'invariante di ciclo è come una \textbf{promessa} che l'algoritmo mantiene: ``prima di ogni giro del ciclo, questa proprietà è vera''. Serve per dimostrare matematicamente che l'algoritmo funziona correttamente.
+	\end{nota}
+	
+	La validità si dimostra in tre passi:
+	\begin{enumerate}
+		\item \textbf{Inizializzazione:} è vera prima della prima iterazione.
+		\item \textbf{Conservazione:} se è vera prima di un'iterazione,
+		rimane vera prima di quella successiva.
+		\item \textbf{Conclusione:} quando il ciclo termina, l'invariante
+		fornisce una proprietà utile a dimostrare la correttezza.
+	\end{enumerate}
+	
+	\begin{esempio}[Invariante di InsertionSort]
+		\textit{``All'inizio del ciclo \texttt{for}, il sottoarray
+			$A[1:i-1]$ è ordinato e formato dagli stessi elementi
+			che erano in $A[1:i-1]$.''}
+		
+		\begin{itemize}
+			\item \textbf{Inizializzazione:} $i=2$, quindi $A[1:1]$
+			è un solo elemento $\Rightarrow$ ordinato. \checkmark
+			\item \textbf{Conservazione:} \texttt{key}$= A[i]$,
+			il ciclo \texttt{while} sposta $A[i-1], A[i-2],\ldots$
+			a destra finché non trova la posizione corretta per
+			\texttt{key}. Quindi $A[1:i]$ diventa ordinato con
+			gli stessi elementi. All'iterazione successiva
+			$i$ aumenta di 1, l'invariante vale su $A[1:i-1]$.
+			\checkmark
+			\item \textbf{Conclusione:} il ciclo termina con $i = n+1$.
+			Per l'invariante, $A[1:n]$ è ordinato con gli stessi
+			elementi $\Rightarrow$ l'algoritmo è corretto. \checkmark
+		\end{itemize}
+	\end{esempio}
+	
+	\begin{softnote}
+		\textbf{In parole semplici:}
+		\begin{itemize}
+			\item \textbf{Inizializzazione}: all'inizio funziona (un elemento è sempre ordinato)
+			\item \textbf{Conservazione}: se funziona al passo $i$, funziona anche al passo $i+1$
+			\item \textbf{Conclusione}: alla fine, l'intero array è ordinato
+		\end{itemize}
+		
+		È come l'effetto domino: se il primo pezzo cade e ogni pezzo fa cadere il successivo, alla fine cadono tutti!
+	\end{softnote}
+	
+	\subsubsection*{Modello RAM}
+	
+	
+	Per analizzare la complessità si usa un modello astratto di
+	computer: la \textbf{Random Access Machine (RAM)}.
+	
+	\begin{itemize}
+		\item Un solo processore con memoria ad accesso casuale.
+		\item Numeri interi e a virgola mobile con dimensione fissa
+		(es.\ 64 bit per parola).
+		\item Istruzioni elementari (lettura, scrittura, somma,
+		sottrazione, moltiplicazione, divisione, confronto,
+		\texttt{if}, salto, chiamata a procedura).
+		\item Ogni istruzione ha \textbf{costo costante} $= 1$.
+	\end{itemize}
+	
+	\begin{nota}
+		È una semplificazione: nella realtà cache, pipeline e
+		parallelismo influenzano i tempi reali. In questo corso
+		si ignorano questi dettagli.
+		
+		\textbf{Perché usiamo il modello RAM?} Perché ci permette di confrontare algoritmi in modo uniforme, indipendentemente dall'hardware specifico su cui girano.
+	\end{nota}
+	
+	\subsubsection*{Dimensione dell'input e tempo di esecuzione}
+	
+	\begin{definizione}[Dimensione dell'input]
+		Misura della quantità di bit/word necessari per rappresentare
+		l'input. Un indicatore è \textbf{corretto} se la dimensione
+		reale è in relazione polinomiale con esso.
+	\end{definizione}
+	
+	\begin{definizione}[Tempo di esecuzione]
+		Numero totale di operazioni elementari eseguite dall'algoritmo
+		nel modello RAM, in funzione della dimensione $n$ dell'input.
+	\end{definizione}
+	
+	\begin{nota}
+		\textbf{Indicatore corretto:} una misura semplificata della dimensione dell'input che mantiene una relazione ragionevole con la dimensione reale.
+		
+		\textbf{Esempi:}
+		\begin{itemize}
+			\item Per un array di $n$ numeri: indicatore = $n$ (numero di elementi)
+			\item Per una matrice $n \times n$: indicatore = $n$ (anche se contiene $n^2$ elementi)
+			\item Per un numero intero: indicatore = numero di bit necessari a rappresentarlo
+		\end{itemize}
+	\end{nota}
+	
+	Esempi di indicatori corretti:
+	\begin{itemize}
+		\item \textbf{Array di $n$ elementi:} indicatore $= n$. \checkmark
+		\item \textbf{Matrice $n \times n$:} indicatore $= n$
+		(la dimensione reale $n \cdot k(n+1)$ è polinomiale in $n$).
+		\checkmark
+		\item \textbf{Intero $n$:} indicatore $= \lfloor \lg n \rfloor + 1$
+		(numero di bit). \textbf{Non} si può usare $n$ come
+		indicatore perché $2^{|I|} \approx n$, relazione
+		esponenziale. \checkmark
+	\end{itemize}
+	
+	\begin{esempio}[Matrice $n \times n$]
+		Sia $A$ una matrice $n \times n$ di interi, dove ogni intero
+		richiede $k$ bit. La RAM memorizza la matrice riga per riga.
+		
+		Ogni riga occupa $nk$ bit per gli interi, più $k$ bit per il
+		marcatore di fine riga. L'intera matrice richiede:
+		\[
+		|I| = n\bigl(n+1\bigr)k \text{ bit}
+		= n(kn + k) \text{ bit}
+		= \boxed{kn^2 + kn \text{ bit}}
+		= \Theta(n)
 		\]
 		
 		\begin{center}
-			\begin{tabular}{lll}
-				\toprule
-				Algoritmo     & Caso peggiore      & Strategia \\
-				\midrule
-				InsertionSort & $\Theta(n^2)$      & Incrementale \\
-				MergeSort     & $\Theta(n \log n)$ & Divide et impera \\
-				\bottomrule
-			\end{tabular}
+			\begin{tikzpicture}[scale=1.2]
+				% --- matrice n x n ---
+				\draw[step=0.6cm, gray!60, thin] (0,0) grid (3.6, 3.6);
+				\draw[thick] (0,0) rectangle (3.6, 3.6);
+				\node[above] at (1.8, 3.6) {$n$};
+				\node[left]  at (0,  1.8)  {$n$};
+				\node[font=\tiny] at (0.3, 3.3) {$a_{1,1}$};
+				\node[font=\tiny] at (3.3, 3.3) {$a_{1,n}$};
+				\node[font=\tiny] at (0.3, 0.3) {$a_{n,1}$};
+				\node[font=\tiny] at (3.3, 0.3) {$a_{n,n}$};
+				
+				% --- freccia RAM ---
+				\draw[->, thick] (4.0, 1.8) -- (5.2, 1.8);
+				\node[above, font=\small] at (4.6, 1.9) {RAM};
+				
+				% --- stack RAM ---
+				\foreach \y in {0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2}
+				\draw[draw=gray!80, fill=codebg]
+				(5.4, \y) rectangle (7.2, \y+0.35);
+				\node[font=\tiny] at (6.3, 3.35) {$a_{1,1}$};
+				\node[font=\tiny] at (6.3, 2.95) {$a_{1,2}$};
+				\node[font=\tiny] at (6.3, 2.55) {$\vdots$};
+				\node[font=\tiny] at (6.3, 2.15) {$a_{1,n}$};
+				\node[font=\tiny, color=codered] at (6.3, 1.75) {\texttt{fine riga} ($k$ bit)};
+				\node[font=\tiny] at (6.3, 1.35) {$a_{2,1}$};
+				\node[font=\tiny] at (6.3, 0.95) {$\vdots$};
+				\node[font=\tiny] at (6.3, 0.55) {$a_{n,n}$};
+				\node[font=\tiny, color=codered] at (6.3, 0.15) {\texttt{fine riga} ($k$ bit)};
+				
+				% --- graffa dimensione ---
+				\draw[decorate, decoration={brace, amplitude=5pt, mirror}]
+				(7.3, 0) -- (7.3, 3.55)
+				node[midway, right=6pt, font=\small] {$n$ righe};
+				
+				% --- annotazione dimensione riga ---
+				\draw[decorate, decoration={brace, amplitude=4pt}]
+				(5.4, 3.6) -- (7.2, 3.6)
+				node[midway, above=5pt, font=\tiny]
+				{$nk + k$ bit per riga};
+			\end{tikzpicture}
 		\end{center}
 		
-		% ----------------------------------------------------------------
-		\subsection{Analisi probabilistica e algoritmi randomizzati}
+		Si usa come indicatore $|I| = n$. È \textbf{corretto} perché
+		la dimensione reale $kn^2 + kn$ è un \textbf{polinomio in $n$}.
+	\end{esempio}
+	
+	\begin{nota}
+		L'errore comune è usare il \emph{valore} di un intero $n$ come
+		dimensione dell'input invece del numero di bit necessari a
+		rappresentarlo. Questo porta a sottostimare la complessità.
 		
-		\subsubsection{Il problema dell'assunzione}
-		\mbox{}
+		\textbf{Esempio:} il numero 1000 ha valore 1000, ma occupa solo $\lceil \log_2(1000) \rceil = 10$ bit. La dimensione dell'input è 10, non 1000!
+	\end{nota}
+	
+	\subsubsection*{Analisi di InsertionSort}
+	
+	$c_k$ = costo esecuzione istruzione alla riga $k$. \quad
+	$t_i - 1$ = \# cicli \textbf{while} nel $i$-esimo ciclo \textbf{for}.
+	
+	\begin{center}
+		\begin{tabular}{rll r r}
+			\toprule
+			& \textsc{Insertion-Sort}$(A, n)$ & & \textit{cost} & \textit{times} \\
+			\midrule
+			1 & \textbf{for} $i = 2$ \textbf{to} $n$ & & $c_1$ & $n$ \\
+			2 & \quad $key = A[i]$ & & $c_2$ & $n-1$ \\
+			3 & \quad \textcolor{codegreen}{\texttt{// Insert $A[i]$ into the sorted subarray $A[1:i-1]$}} & & $0$ & $n-1$ \\
+			4 & \quad $j = i - 1$ & & $c_4$ & $n-1$ \\
+			5 & \quad \textbf{while} $j > 0$ \textbf{and} $A[j] > key$ & & $c_5$ & $\displaystyle\sum_{i=2}^{n} t_i$ \\[6pt]
+			6 & \qquad $A[j+1] = A[j]$ & & $c_6$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
+			7 & \qquad $j = j - 1$ & & $c_7$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
+			8 & \quad $A[j+1] = key$ & & $c_8$ & $n-1$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\begin{softnote}
+		\textbf{Contare le iterazioni:}
 		
-		\subsubsection{Variabili casuali indicatrici}
-		\mbox{}
+		\textbf{for} $i = \ell$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $\#\text{Cicli} = n - \ell + 1$
 		
-		\subsubsection{Algoritmi randomizzati}
-		\mbox{}
+		\textbf{Esempio:} \textbf{for} $i = 2$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $n - 1$ iterazioni
+	\end{softnote}
+	
+	
+	\[
+	T(n) = c_1 n + c_2(n-1) + c_4(n-1)
+	+ c_5 \sum_{i=2}^{n} t_i
+	+ c_6 \sum_{i=2}^{n} (t_i-1)
+	+ c_7 \sum_{i=2}^{n} (t_i-1)
+	+ c_8(n-1)
+	\]
+	
+	
+	Indichiamo con $c_k$ il costo dell'istruzione alla riga $k$,
+	e con $t_i$ il numero di volte che il ciclo \texttt{while} viene
+	eseguito durante l'$i$-esimo ciclo \texttt{for}.
+	
+	\begin{nota}
+		$t_i$ dipende dai dati:
+		\begin{itemize}
+			\item Se $A[i]$ è già al posto giusto: $t_i = 1$ (un solo confronto)
+			\item Se $A[i]$ deve andare all'inizio: $t_i = i$ (confronta con tutti)
+		\end{itemize}
+	\end{nota}
+	
+	\pagebreak
+	
+	\subsubsection*{Caso migliore: array già ordinato}
+	
+	Se l'array è già ordinato, il corpo del \texttt{while} non viene
+	mai eseguito: $t_i = 1$ per ogni $i$.
+	Le somme $\sum(t_i - 1) = 0$, quindi:
+	
+	\[
+	T(n) = c_1 n + c_2(n-1) + c_4(n-1) + c_5(n-1) + c_8(n-1)
+	\]
+	\[
+	= \underbrace{(c_1 + c_2 + c_4 + c_5 + c_8)}_{a} n
+	- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{b}
+	\]
+	\[
+	= an - b \quad \Rightarrow \quad \boxed{T(n) = \Theta(n)}
+	\]
+	
+	\begin{nota}
+		Nel caso migliore la crescita è \textbf{lineare}: ogni elemento
+		viene confrontato una sola volta con il suo predecessore e
+		nessuno scambio viene effettuato.
 		
-		% ================================================================
-		\subsection{Calcolo della complessità}
-			\subsubsection{Notazione asintotica}
-			
-			\begin{definizione}[$O$, $\Omega$, $\Theta$]
-				Date $f, g : \mathbb{N} \to \mathbb{R}^+$:
-				\begin{itemize}
-					\item $f = O(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \le c\,g(n)$
-					per $n \ge n_0$ \quad(\emph{limite superiore}).
-					\item $f = \Omega(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \ge c\,g(n)$
-					per $n \ge n_0$ \quad(\emph{limite inferiore}).
-					\item $f = \Theta(g)$: $f = O(g)$ e $f = \Omega(g)$
-					\quad(\emph{limite stretto}).
-				\end{itemize}
-			\end{definizione}
-			
-			\noindent Ordine crescente:
-			\[
-			O(1) \subset O(\log n) \subset O(n) \subset O(n\log n)
-			\subset O(n^2) \subset O(2^n) \subset O(n!)
-			\]
-			
-			\subsubsection{Regole per algoritmi iterativi}
-			\begin{itemize}
-				\item \textbf{Sequenza:} $O(\max(f, g))$.
-				\item \textbf{Ciclo semplice} di $n$ iterazioni a corpo $O(1)$: $O(n)$.
-				\item \textbf{Cicli annidati:} prodotto dei range.
-				Due cicli $1\ldots n$: $O(n^2)$.
-				\item \textbf{Passo moltiplicativo} ($i$ raddoppia): $O(\log n)$.
-				\item \textbf{If-else:} massimo dei due rami.
-			\end{itemize}
-			
-			\noindent\textbf{Esempio (limite variabile):}
-			\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
-				for (int i = 1; i <= n; i++)
-				for (int j = 1; j <= i; j++)
-				op(); // O(1)
-			\end{lstlisting}
-			Costo: $\sum_{i=1}^{n} i = \dfrac{n(n+1)}{2} = \Theta(n^2)$.
-			
-			\subsubsection{Ricorrenze: forma generale}
-			\[
-			T(n) = a\,T\!\left(\frac{n}{b}\right) + f(n), \quad T(1)=\Theta(1)
-			\]
-			$a$ = numero sotto-chiamate, $b$ = fattore riduzione, $f(n)$ = costo
-			divisione + combinazione.
-			
-			\subsubsection{Metodo della sostituzione}
-			\begin{enumerate}
-				\item \textbf{Ipotizzare} la forma, es.\ $T(n) = O(n\log n)$.
-				\item \textbf{Sostituire} nella ricorrenza assumendo l'ipotesi vera
-				per $T(n/b)$.
-				\item \textbf{Verificare} la disuguaglianza scegliendo le costanti.
-			\end{enumerate}
-			
-			\noindent\textbf{Esempio:} $T(n) = 2T(n/2)+n$, ipotesi $T(n)\le cn\log n$:
-			\[
-			T(n) \le 2\cdot\frac{cn}{2}\log\frac{n}{2}+n
-			= cn\log n - cn + n \le cn\log n \quad (c\ge 1).
-			\]
-			
-			\subsubsection{Metodo dell'albero di ricorsione}
-			\begin{enumerate}
-				\item Ogni nodo al livello $k$ ha costo $f(n/b^k)$ e genera $a$ figli.
-				\item Numero livelli: $\log_b n$. Foglie: $n^{\log_b a}$.
-				\item Sommare i costi per livello.
-			\end{enumerate}
-			
-			\noindent\textbf{Esempio:} $T(n)=3T(n/4)+cn^2$.
-			Costo per livello $k$: $c\,n^2(3/16)^k$.
-			\[
-			T(n) < cn^2\sum_{k=0}^{\infty}\!\left(\frac{3}{16}\right)^k
-			= cn^2\cdot\frac{16}{13} = O(n^2).
-			\]
-			
-			\subsubsection{Master Theorem}
-			
-			\begin{teorema}[Master Theorem]
-				Data $T(n) = a\,T(n/b)+f(n)$, posto $p = \log_b a$:
-				\begin{enumerate}
-					\item $f(n) = O(n^{p-\varepsilon})$
-					$\Rightarrow T(n) = \Theta(n^p)$ \quad\emph{(foglie dominano)}
-					\item $f(n) = \Theta(n^p\log^k n)$, $k\ge 0$
-					$\Rightarrow T(n) = \Theta(n^p\log^{k+1}n)$ \quad\emph{(pareggio)}
-					\item $f(n) = \Omega(n^{p+\varepsilon})$ e $a\,f(n/b)\le c\,f(n)$, $c<1$
-					$\Rightarrow T(n) = \Theta(f(n))$ \quad\emph{(radice domina)}
-				\end{enumerate}
-			\end{teorema}
-			
-			\noindent\textbf{Esempi applicativi:}
-			\begin{center}
-				\small
-				\begin{tabular}{llll}
-					\toprule
-					Ricorrenza & $p=\log_b a$ & Caso & Soluzione \\
-					\midrule
-					$2T(n/2)+\Theta(n)$   & $1$        & 2 & $\Theta(n\log n)$ \\
-					$2T(n/2)+\Theta(n^2)$ & $1$        & 3 & $\Theta(n^2)$ \\
-					$4T(n/2)+\Theta(n)$   & $2$        & 1 & $\Theta(n^2)$ \\
-					$2T(n/3)+\Theta(1)$   & $\log_3 2$ & 1 & $\Theta(n^{\log_3 2})$ \\
-					$T(n/2)+\Theta(1)$    & $0$        & 2 & $\Theta(\log n)$ \\
-					\bottomrule
-				\end{tabular}
-			\end{center}
-			
-			\begin{osservazione}
-				Il Master Theorem \textbf{non si applica} se $f(n)$ non è polinomialmente
-				confrontabile con $n^p$ o se la forma non è $a\,T(n/b)+f(n)$.
-			\end{osservazione}
-			
-			\subsubsection{Ricorrenze non standard (telescoping)}
-			
-			\begin{center}
-				\begin{tabular}{ll}
-					\toprule
-					Ricorrenza & Soluzione \\
-					\midrule
-					$T(n) = T(n-1) + O(1)$                     & $\Theta(n)$ \\
-					$T(n) = T(n-1) + O(n^c)$                   & $\Theta(n^{c+1})$ \\
-					$T(n) = 2T(n-1) + O(1)$                    & $\Theta(2^n)$ \\
-					$T(n) \le T(\alpha n)+T((1-\alpha)n)+O(n)$ & $O(n\log n)$ \\
-					\bottomrule
-				\end{tabular}
-			\end{center}
-			
-			\noindent\textbf{Telescoping:}
-			$T(n) = T(n-1)+f(n) = T(1) + \sum_{k=2}^{n} f(k)$.
-			Per $f(k)=k^c$: somma $= \Theta(n^{c+1})$.
-			
+		\textbf{Esempio pratico:} se l'array è $[1, 2, 3, 4, 5]$, l'algoritmo fa solo $n-1$ confronti e nessuno spostamento. Velocissimo!
+	\end{nota}
+	
+	\subsubsection*{Caso peggiore: array ordinato al contrario}
+	
+	Se l'array è in ordine decrescente, ogni $A[i]$ deve essere
+	confrontato con \textbf{tutti} gli elementi in $A[1:i-1]$,
+	quindi $t_i = i$. Usando $\sum_{i=2}^{n} i = \frac{n(n+1)}{2} - 1$:
+	
+	\[
+	T(n) = c_1 n + c_2(n-1) + c_4(n-1)
+	+ c_5\!\left(\frac{n(n+1)}{2} - 1\right)
+	+ (c_6 + c_7)\frac{n(n-1)}{2}
+	+ c_8(n-1)
+	\]
+	
+	Raccogliendo i termini per grado:
+	
+	\[
+	T(n) = \underbrace{\frac{c_5 + c_6 + c_7}{2}}_{a} n^2
+	+ \underbrace{\left(c_1 + c_2 + c_4 + \frac{c_5 - c_6 - c_7}{2} + c_8\right)}_{b} n
+	- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{c}
+	\]
+	\[
+	\Rightarrow \quad \boxed{T(n) = \Theta(n^2)}
+	\]
+	
+	\begin{nota}
+		Nel caso peggiore la crescita è \textbf{quadratica}: ogni nuovo
+		elemento deve ``scendere'' fino in fondo alla parte già ordinata,
+		confrontandosi con tutti gli elementi precedenti.
+		
+		\textbf{Esempio pratico:} se l'array è $[5, 4, 3, 2, 1]$:
+		\begin{itemize}
+			\item Il 4 fa 1 confronto
+			\item Il 3 fa 2 confronti
+			\item Il 2 fa 3 confronti
+			\item L'1 fa 4 confronti
+		\end{itemize}
+		Totale: $1 + 2 + 3 + 4 = 10 = \frac{n(n-1)}{2}$ confronti. Molto lento!
+	\end{nota}
+	
+	\begin{center}
+		\begin{tabular}{lll}
+			\toprule
+			Caso & Input & Complessità \\
+			\midrule
+			Migliore & Array già ordinato      & $\Theta(n)$   \\
+			Peggiore & Array ordinato inverso  & $\Theta(n^2)$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\begin{hardnote}
+		Solitamente si considera come complessità di un algoritmo il
+		tempo di esecuzione con input che rappresenta il caso peggiore.
+		
+		\begin{enumerate}[label=\arabic*.]
+			\item È una garanzia sulla descrizione del comportamento dell'algoritmo.
+			\item In alcuni casi, il caso peggiore è il più frequente.
+			\item Il caso medio spesso è simile al caso peggiore (vedi InsertionSort).
+		\end{enumerate}
+		
+		\textbf{Per InsertionSort:} il caso medio è $\Theta(n^2)$ come il caso peggiore, perché in media metà degli elementi vanno spostati.
+	\end{hardnote}
+	
+	\subsection{Tasso di crescita e ordine di grandezza}
+	
+	\begin{softnote}
+		Finalmente parliamo della notazione $O$, $\Omega$, $\Theta$! Queste sono le notazioni fondamentali per descrivere l'efficienza degli algoritmi ignorando i dettagli irrilevanti.
+	\end{softnote}
+	
+	Nell'analisi di InsertionSort si sono usate costanti $c_k$ per
+	rappresentare i costi astratti delle operazioni nel modello RAM.
+	Queste costanti possono essere raggruppate: ad esempio
+	$(c_2 + c_4 + c_5 + c_8)$ diventa una costante generica $a$.
+	
+	\begin{softnote}
+		\textbf{Ultima astrazione:} è più importante valutare la
+		\textbf{velocità con cui cresce} il tempo di esecuzione
+		(\textit{tasso di crescita}) che i dettagli delle costanti.
+		
+		\medskip
+		Di un polinomio $T(n) = an^2 + bn + c$ è sufficiente
+		considerare solo il termine dominante $an^2$.
+		Visto che la costante $a$ è astratta, la si assorbe
+		nell'ordine di grandezza:
+		\[
+		T(n) = an^2 + bn + c \;\approx\; an^2
+		\;\Longrightarrow\; \Theta(n^2)
+		\]
+	\end{softnote}
+	
+	\begin{nota}
+		\textbf{Perché ignoriamo le costanti?}
+		
+		Immagina due algoritmi:
+		\begin{itemize}
+			\item A: $T_A(n) = 1000n$
+			\item B: $T_B(n) = n^2$
+		\end{itemize}
+		
+		Per $n$ piccoli, A sembra peggio. Ma per $n > 1000$, B diventa molto più lento! Il termine $n^2$ ``domina'' alla lunga, quindi diciamo che B è $\Theta(n^2)$ e A è $\Theta(n)$.
+	\end{nota}
+	
+	\begin{hardnote}
+		Un algoritmo è considerato \textbf{più efficiente} di un altro
+		se il suo tempo di computazione nel caso peggiore ha un
+		\textbf{tasso di crescita inferiore}.
+	\end{hardnote}
+	
+	\begin{center}
+		\begin{tabular}{lll}
+			\toprule
+			$T(n)$ & Ordine di grandezza & Nome \\
+			\midrule
+			$an + b$         & $\Theta(n)$      & Lineare \\
+			$an^2 + bn + c$  & $\Theta(n^2)$    & Quadratica \\
+			$an^3 + \cdots$  & $\Theta(n^3)$    & Cubica \\
+			$a\lg n + b$     & $\Theta(\lg n)$  & Logaritmica \\
+			$an\lg n + b$    & $\Theta(n\lg n)$ & Linearitmica \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\begin{softnote}
+		\textbf{Scala di velocità} (dal più veloce al più lento):
+		\[
+		\Theta(1) < \Theta(\log n) < \Theta(n) < \Theta(n \log n) < \Theta(n^2) < \Theta(n^3) < \Theta(2^n) < \Theta(n!)
+		\]
+		
+		\textbf{Regola pratica:} un algoritmo $\Theta(n \log n)$ è ``veloce'', $\Theta(n^2)$ è ``accettabile per $n$ piccoli'', $\Theta(2^n)$ è ``impossibile per $n > 30$''.
+	\end{softnote}
+	
+	\subsubsection{MergeSort (Divide et impera)}
+	
+	\begin{softnote}
+		MergeSort usa una strategia completamente diversa da InsertionSort: invece di costruire la soluzione incrementalmente, \textbf{divide} il problema in pezzi, \textbf{risolve} i pezzi ricorsivamente, poi \textbf{combina} le soluzioni. Questa è la tecnica ``Divide et Impera''!
+	\end{softnote}
+	
+	\begin{enumerate}
+		\item \textbf{Dividi:} spezza in due metà.
+		\item \textbf{Impera:} ordina ricorsivamente.
+		\item \textbf{Combina:} fondi in $\Theta(n)$.
+	\end{enumerate}
+	\[
+	T(n) = 2\,T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n)
+	\]
+	
+	\begin{nota}
+		\textbf{Come funziona MergeSort?}
+		
+		\textbf{Esempio:} ordina $[38, 27, 43, 3]$
+		\begin{enumerate}
+			\item \textbf{Dividi}: $[38, 27]$ e $[43, 3]$
+			\item \textbf{Dividi ancora}: $[38]$, $[27]$, $[43]$, $[3]$
+			\item \textbf{Combina}: $[27, 38]$ e $[3, 43]$
+			\item \textbf{Combina finale}: $[3, 27, 38, 43]$
+		\end{enumerate}
+		
+		La \textbf{fusione} (merge) di due array ordinati in un array ordinato si fa in tempo lineare confrontando gli elementi più piccoli di ciascun array.
+	\end{nota}
+	
+	\begin{center}
+		\begin{tabular}{lll}
+			\toprule
+			Algoritmo     & Caso peggiore      & Strategia \\
+			\midrule
+			InsertionSort & $\Theta(n^2)$      & Incrementale \\
+			MergeSort     & $\Theta(n \log n)$ & Divide et impera \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\begin{hardnote}
+		\textbf{Differenza drammatica:}
+		
+		Per $n = 1.000.000$ elementi:
+		\begin{itemize}
+			\item InsertionSort: $\approx 10^{12}$ operazioni $\to$ ore
+			\item MergeSort: $\approx 2 \times 10^7$ operazioni $\to$ secondi
+		\end{itemize}
+		
+		MergeSort è circa \textbf{50.000 volte più veloce}!
+	\end{hardnote}
+	
 	% ----------------------------------------------------------------
-
+	\subsection{Analisi probabilistica e algoritmi randomizzati}
+	
+	\subsubsection{Il problema dell'assunzione}
+	\mbox{}
+	
+	\subsubsection{Variabili casuali indicatrici}
+	\mbox{}
+	
+	\subsubsection{Algoritmi randomizzati}
+	\mbox{}
+	
+	% ================================================================
+	\subsection{Calcolo della complessità}
+	
+	\begin{softnote}
+		Questa sezione riassume le tecniche matematiche per calcolare la complessità. Studia bene il Master Theorem: è fondamentale per analizzare algoritmi ricorsivi!
+	\end{softnote}
+	
+	\subsubsection{Notazione asintotica}
+	
+	\begin{definizione}[$O$, $\Omega$, $\Theta$]
+		Date $f, g : \mathbb{N} \to \mathbb{R}^+$:
+		\begin{itemize}
+			\item $f = O(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \le c\,g(n)$
+			per $n \ge n_0$ \quad(\emph{limite superiore}).
+			\item $f = \Omega(g)$: $\exists\, c, n_0$ t.c.\ $f(n) \ge c\,g(n)$
+			per $n \ge n_0$ \quad(\emph{limite inferiore}).
+			\item $f = \Theta(g)$: $f = O(g)$ e $f = \Omega(g)$
+			\quad(\emph{limite stretto}).
+		\end{itemize}
+	\end{definizione}
+	
+	\begin{softnote}
+		\textbf{In parole semplici:}
+		\begin{itemize}
+			\item $f = O(g)$ significa ``$f$ cresce \textbf{al massimo} come $g$'' (limite superiore)
+			\item $f = \Omega(g)$ significa ``$f$ cresce \textbf{almeno} come $g$'' (limite inferiore)
+			\item $f = \Theta(g)$ significa ``$f$ cresce \textbf{esattamente} come $g$'' (limite stretto)
+		\end{itemize}
+		
+		\textbf{Analogia:} se $g(n) = n^2$:
+		\begin{itemize}
+			\item $10n^2 + 5n = O(n^2)$ $\checkmark$ (cresce come $n^2$)
+			\item $10n^2 + 5n = O(n^3)$ $\checkmark$ (cresce meno di $n^3$)
+			\item $10n^2 + 5n = \Theta(n^2)$ $\checkmark$ (cresce esattamente come $n^2$)
+			\item $10n^2 + 5n = \Theta(n)$ $\times$ (cresce più di $n$)
+		\end{itemize}
+	\end{softnote}
+	
+	\noindent Ordine crescente:
+	\[
+	O(1) \subset O(\log n) \subset O(n) \subset O(n\log n)
+	\subset O(n^2) \subset O(2^n) \subset O(n!)
+	\]
+	
+	\subsubsection{Regole per algoritmi iterativi}
+	\begin{itemize}
+		\item \textbf{Sequenza:} $O(\max(f, g))$.
+		\item \textbf{Ciclo semplice} di $n$ iterazioni a corpo $O(1)$: $O(n)$.
+		\item \textbf{Cicli annidati:} prodotto dei range.
+		Due cicli $1\ldots n$: $O(n^2)$.
+		\item \textbf{Passo moltiplicativo} ($i$ raddoppia): $O(\log n)$.
+		\item \textbf{If-else:} massimo dei due rami.
+	\end{itemize}
+	
+	\begin{softnote}
+		\textbf{Regole pratiche per analizzare cicli:}
+		
+		\begin{enumerate}
+			\item \textbf{Un ciclo} che va da 1 a $n$: $O(n)$
+			\item \textbf{Due cicli annidati} 1 a $n$: $O(n) \times O(n) = O(n^2)$
+			\item \textbf{Ciclo che dimezza} ($i$ raddoppia o $n$ si dimezza): $O(\log n)$
+			\item \textbf{If-else}: prendi il ramo più costoso
+		\end{enumerate}
+	\end{softnote}
+	
+	\noindent\textbf{Esempio (limite variabile):}
+	\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
+		for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= i; j++)
+		op(); // O(1)
+	\end{lstlisting}
+	Costo: $\sum_{i=1}^{n} i = \dfrac{n(n+1)}{2} = \Theta(n^2)$.
+	
+	\begin{nota}
+		Il ciclo interno fa 1 operazione quando $i=1$, 2 operazioni quando $i=2$, ..., $n$ operazioni quando $i=n$. Totale: $1 + 2 + \cdots + n = n(n+1)/2 = \Theta(n^2)$.
+	\end{nota}
+	
+	\subsubsection{Ricorrenze: forma generale}
+	\[
+	T(n) = a\,T\!\left(\frac{n}{b}\right) + f(n), \quad T(1)=\Theta(1)
+	\]
+	$a$ = numero sotto-chiamate, $b$ = fattore riduzione, $f(n)$ = costo
+	divisione + combinazione.
+	
+	\begin{nota}
+		\textbf{Significato dei parametri:}
+		\begin{itemize}
+			\item $a$ = quante volte chiamiamo ricorsivamente la funzione
+			\item $b$ = di quanto riduciamo la dimensione del problema
+			\item $f(n)$ = costo per dividere e ricombinare
+		\end{itemize}
+		
+		\textbf{Esempio MergeSort:} $T(n) = 2T(n/2) + \Theta(n)$
+		\begin{itemize}
+			\item $a=2$ (ordiniamo due metà)
+			\item $b=2$ (dividiamo in due)
+			\item $f(n)=\Theta(n)$ (costo della fusione)
+		\end{itemize}
+	\end{nota}
+	
+	\subsubsection{Metodo della sostituzione}
+	\begin{enumerate}
+		\item \textbf{Ipotizzare} la forma, es.\ $T(n) = O(n\log n)$.
+		\item \textbf{Sostituire} nella ricorrenza assumendo l'ipotesi vera
+		per $T(n/b)$.
+		\item \textbf{Verificare} la disuguaglianza scegliendo le costanti.
+	\end{enumerate}
+	
+	\noindent\textbf{Esempio:} $T(n) = 2T(n/2)+n$, ipotesi $T(n)\le cn\log n$:
+	\[
+	T(n) \le 2\cdot\frac{cn}{2}\log\frac{n}{2}+n
+	= cn\log n - cn + n \le cn\log n \quad (c\ge 1).
+	\]
+	
+	\begin{softnote}
+		Il metodo della sostituzione richiede di ``indovinare'' la soluzione e poi verificarla matematicamente. Con la pratica imparerai a riconoscere i pattern comuni.
+	\end{softnote}
+	
+	\subsubsection{Metodo dell'albero di ricorsione}
+	\begin{enumerate}
+		\item Ogni nodo al livello $k$ ha costo $f(n/b^k)$ e genera $a$ figli.
+		\item Numero livelli: $\log_b n$. Foglie: $n^{\log_b a}$.
+		\item Sommare i costi per livello.
+	\end{enumerate}
+	
+	\noindent\textbf{Esempio:} $T(n)=3T(n/4)+cn^2$.
+	Costo per livello $k$: $c\,n^2(3/16)^k$.
+	\[
+	T(n) < cn^2\sum_{k=0}^{\infty}\!\left(\frac{3}{16}\right)^k
+	= cn^2\cdot\frac{16}{13} = O(n^2).
+	\]
+	
+	\begin{nota}
+		L'albero di ricorsione visualizza come si sviluppano le chiamate ricorsive. Ogni livello contribuisce un costo, e sommando tutti i livelli otteniamo il costo totale.
+	\end{nota}
+	
+	\subsubsection{Master Theorem}
+	
+	\begin{teorema}[Master Theorem]
+		Data $T(n) = a\,T(n/b)+f(n)$, posto $p = \log_b a$:
+		\begin{enumerate}
+			\item $f(n) = O(n^{p-\varepsilon})$
+			$\Rightarrow T(n) = \Theta(n^p)$ \quad\emph{(foglie dominano)}
+			\item $f(n) = \Theta(n^p\log^k n)$, $k\ge 0$
+			$\Rightarrow T(n) = \Theta(n^p\log^{k+1}n)$ \quad\emph{(pareggio)}
+			\item $f(n) = \Omega(n^{p+\varepsilon})$ e $a\,f(n/b)\le c\,f(n)$, $c<1$
+			$\Rightarrow T(n) = \Theta(f(n))$ \quad\emph{(radice domina)}
+		\end{enumerate}
+	\end{teorema}
+	
+	\begin{hardnote}
+		\textbf{Come usare il Master Theorem:}
+		
+		\textbf{Passo 1:} Calcola $p = \log_b a$ (quante ``foglie'' ci sono)
+		
+		\textbf{Passo 2:} Confronta $f(n)$ con $n^p$:
+		\begin{itemize}
+			\item Se $f(n)$ è \textbf{polinomialmente più piccolo} di $n^p$ $\to$ Caso 1
+			\item Se $f(n) \approx n^p$ (a meno di log) $\to$ Caso 2
+			\item Se $f(n)$ è \textbf{polinomialmente più grande} di $n^p$ $\to$ Caso 3
+		\end{itemize}
+	\end{hardnote}
+	
+	\noindent\textbf{Esempi applicativi:}
+	\begin{center}
+		\small
+		\begin{tabular}{llll}
+			\toprule
+			Ricorrenza & $p=\log_b a$ & Caso & Soluzione \\
+			\midrule
+			$2T(n/2)+\Theta(n)$   & $1$        & 2 & $\Theta(n\log n)$ \\
+			$2T(n/2)+\Theta(n^2)$ & $1$        & 3 & $\Theta(n^2)$ \\
+			$4T(n/2)+\Theta(n)$   & $2$        & 1 & $\Theta(n^2)$ \\
+			$2T(n/3)+\Theta(1)$   & $\log_3 2$ & 1 & $\Theta(n^{\log_3 2})$ \\
+			$T(n/2)+\Theta(1)$    & $0$        & 2 & $\Theta(\log n)$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\begin{softnote}
+		\textbf{Esempi commentati:}
+		
+		\textbf{MergeSort:} $T(n) = 2T(n/2) + \Theta(n)$
+		\begin{itemize}
+			\item $p = \log_2 2 = 1$
+			\item $f(n) = n = \Theta(n^1)$ $\to$ Caso 2
+			\item Soluzione: $\Theta(n \log n)$
+		\end{itemize}
+		
+		\textbf{Ricerca binaria:} $T(n) = T(n/2) + \Theta(1)$
+		\begin{itemize}
+			\item $p = \log_2 1 = 0$
+			\item $f(n) = 1 = \Theta(n^0)$ $\to$ Caso 2
+			\item Soluzione: $\Theta(\log n)$
+		\end{itemize}
+	\end{softnote}
+	
+	\begin{osservazione}
+		Il Master Theorem \textbf{non si applica} se $f(n)$ non è polinomialmente
+		confrontabile con $n^p$ o se la forma non è $a\,T(n/b)+f(n)$.
+	\end{osservazione}
+	
+	\subsubsection{Ricorrenze non standard (telescoping)}
+	
+	\begin{center}
+		\begin{tabular}{ll}
+			\toprule
+			Ricorrenza & Soluzione \\
+			\midrule
+			$T(n) = T(n-1) + O(1)$                     & $\Theta(n)$ \\
+			$T(n) = T(n-1) + O(n^c)$                   & $\Theta(n^{c+1})$ \\
+			$T(n) = 2T(n-1) + O(1)$                    & $\Theta(2^n)$ \\
+			$T(n) \le T(\alpha n)+T((1-\alpha)n)+O(n)$ & $O(n\log n)$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\noindent\textbf{Telescoping:}
+	$T(n) = T(n-1)+f(n) = T(1) + \sum_{k=2}^{n} f(k)$.
+	Per $f(k)=k^c$: somma $= \Theta(n^{c+1})$.
+	
+	\begin{nota}
+		Il \textbf{telescoping} è utile quando la ricorrenza riduce di 1 invece che dividere per 2. Si ``apre'' la ricorsione scrivendo tutti i termini e poi si somma.
+	\end{nota}
+	
+	% ----------------------------------------------------------------
+	
 	
 	% ================================================================
 	
 	
 	% ================================================================
 	\section{Può tornare utile}
-		\subsection{Appendice A (Sommatorie)}
-		\mbox{}
-		
-		\subsection{Appendice B (Insiemi, relazioni, funzioni, grafi, alberi)}
-		\mbox{}
-		
-		\subsection{Appendice C (Calcolo combinatorio e probabilità)}
-		\mbox{}
-		
-		\subsection{Appendice D (Matrici)}
-		\mbox{}
-		
-		% ----------------------------------------------------------------
-		\subsection{Domande d'esame (Appello 2)}
 	
-	\subsubsection{Definizione di algoritmo}
+	\begin{softnote}
+		Questa sezione contiene materiale di riferimento (appendici) e domande d'esame.
+	\end{softnote}
+	
+	\subsection{Appendice A (Sommatorie)}
+	
+	\subsubsection{Formule fondamentali}
+	
+	\begin{align*}
+		\sum_{i=1}^{n} 1 &= n \\
+		\sum_{i=1}^{n} i &= \frac{n(n+1)}{2} = \Theta(n^2) \\
+		\sum_{i=1}^{n} i^2 &= \frac{n(n+1)(2n+1)}{6} = \Theta(n^3) \\
+		\sum_{i=1}^{n} i^k &= \Theta(n^{k+1}) \quad \text{per } k \geq 0 \\
+		\sum_{i=0}^{n} x^i &= \frac{x^{n+1}-1}{x-1} \quad \text{per } x \neq 1 \\
+		\sum_{i=0}^{\infty} x^i &= \frac{1}{1-x} \quad \text{per } |x| < 1
+	\end{align*}
+	
+	\subsubsection{Serie geometrica}
+	
+	\begin{nota}
+		La serie geometrica è fondamentale nell'analisi degli algoritmi ricorsivi.
+		
+		\textbf{Formula generale:}
+		\[
+		\sum_{i=0}^{n} ar^i = a \cdot \frac{r^{n+1}-1}{r-1}
+		\]
+		
+		\textbf{Caso particolare importante} ($r = 2$):
+		\[
+		\sum_{i=0}^{n} 2^i = 2^{n+1} - 1
+		\]
+		
+		\textbf{Serie infinita convergente} ($|r| < 1$):
+		\[
+		\sum_{i=0}^{\infty} ar^i = \frac{a}{1-r}
+		\]
+	\end{nota}
+	
+	\subsubsection{Serie armonica}
+	
+	\[
+	H_n = \sum_{i=1}^{n} \frac{1}{i} = 1 + \frac{1}{2} + \frac{1}{3} + \cdots + \frac{1}{n} = \Theta(\log n)
+	\]
+	
+	\begin{nota}
+		La serie armonica cresce \textbf{logaritmicamente}. Utile per analizzare:
+		\begin{itemize}
+			\item Quicksort (numero medio di confronti)
+			\item Hashing (lunghezza catene)
+			\item Alberi bilanciati (altezza media)
+		\end{itemize}
+		
+		\textbf{Approssimazione:} $H_n \approx \ln n + \gamma$ dove $\gamma \approx 0.5772$ (costante di Eulero-Mascheroni)
+	\end{nota}
+	
+	\subsubsection{Tecniche di manipolazione}
+	
+	\textbf{1. Separazione dei termini:}
+	\[
+	\sum_{i=1}^{n} (a_i + b_i) = \sum_{i=1}^{n} a_i + \sum_{i=1}^{n} b_i
+	\]
+	
+	\textbf{2. Estrazione di costanti:}
+	\[
+	\sum_{i=1}^{n} c \cdot a_i = c \sum_{i=1}^{n} a_i
+	\]
+	
+	\textbf{3. Telescoping (sommatoria telescopica):}
+	\[
+	\sum_{i=1}^{n} (a_i - a_{i-1}) = a_n - a_0
+	\]
+	
+	\begin{esempio}[Telescoping applicato]
+		\[
+		\sum_{i=1}^{n} \frac{1}{i(i+1)} = \sum_{i=1}^{n} \left(\frac{1}{i} - \frac{1}{i+1}\right) = 1 - \frac{1}{n+1} = \frac{n}{n+1}
+		\]
+	\end{esempio}
+	
+	\textbf{4. Cambio di variabile:}
+	
+	Se $j = n - i$, allora:
+	\[
+	\sum_{i=0}^{n} f(i) = \sum_{j=n}^{0} f(n-j) = \sum_{j=0}^{n} f(n-j)
+	\]
+	
+	\subsubsection{Approssimazione con integrali}
+	
+	Per $f$ crescente:
+	\[
+	\int_{1}^{n} f(x)\,dx \leq \sum_{i=1}^{n} f(i) \leq f(n) + \int_{1}^{n} f(x)\,dx
+	\]
+	
+	\begin{esempio}[Somma di potenze]
+		\begin{align*}
+			\sum_{i=1}^{n} i^k &\approx \int_{1}^{n} x^k\,dx = \frac{n^{k+1}}{k+1} \\
+			&\Rightarrow \sum_{i=1}^{n} i^k = \Theta(n^{k+1})
+		\end{align*}
+	\end{esempio}
+	
+	\subsection{Appendice B (Insiemi, relazioni, funzioni, grafi, alberi)}
+	
+	\subsubsection{Insiemi}
+	
+	\begin{definizione}[Insieme]
+		Collezione non ordinata di elementi distinti. Notazione: $A = \{1, 2, 3\}$
+	\end{definizione}
+	
+	\textbf{Operazioni fondamentali:}
+	\begin{itemize}
+		\item \textbf{Unione:} $A \cup B = \{x : x \in A \text{ oppure } x \in B\}$
+		\item \textbf{Intersezione:} $A \cap B = \{x : x \in A \text{ e } x \in B\}$
+		\item \textbf{Differenza:} $A \setminus B = \{x : x \in A \text{ e } x \notin B\}$
+		\item \textbf{Complemento:} $\overline{A} = \{x : x \notin A\}$ (rispetto a un universo)
+	\end{itemize}
+	
+	\begin{nota}
+		\textbf{Cardinalità:} $|A|$ = numero di elementi in $A$
+		
+		\textbf{Insieme delle parti:} $\mathcal{P}(A) = $ insieme di tutti i sottoinsiemi di $A$
+		
+		Se $|A| = n$ allora $|\mathcal{P}(A)| = 2^n$
+	\end{nota}
+	
+	\subsubsection{Relazioni}
+	
+	\begin{definizione}[Relazione]
+		Una relazione $R$ da $A$ a $B$ è un sottoinsieme di $A \times B$ (prodotto cartesiano).
+		
+		Scriviamo $aRb$ se $(a,b) \in R$.
+	\end{definizione}
+	
+	\textbf{Proprietà di relazioni su $A$ (relazione binaria):}
+	\begin{itemize}
+		\item \textbf{Riflessiva:} $\forall a \in A: aRa$
+		\item \textbf{Simmetrica:} $\forall a,b \in A: aRb \Rightarrow bRa$
+		\item \textbf{Transitiva:} $\forall a,b,c \in A: (aRb \land bRc) \Rightarrow aRc$
+		\item \textbf{Antisimmetrica:} $\forall a,b \in A: (aRb \land bRa) \Rightarrow a = b$
+	\end{itemize}
+	
+	\begin{definizione}[Relazione di equivalenza]
+		Una relazione è di \textbf{equivalenza} se è riflessiva, simmetrica e transitiva.
+		
+		Esempio: uguaglianza ($=$), congruenza modulo $n$
+	\end{definizione}
+	
+	\begin{definizione}[Ordine parziale]
+		Una relazione è di \textbf{ordine parziale} se è riflessiva, antisimmetrica e transitiva.
+		
+		Esempio: $\leq$ sui numeri reali, $\subseteq$ sugli insiemi
+	\end{definizione}
+	
+	\subsubsection{Funzioni}
+	
+	\begin{definizione}[Funzione]
+		Una funzione $f: A \to B$ assegna a ogni elemento di $A$ esattamente un elemento di $B$.
+		
+		\begin{itemize}
+			\item $A$ = \textbf{dominio}
+			\item $B$ = \textbf{codominio}
+			\item $f(A) = \{f(a) : a \in A\}$ = \textbf{immagine}
+		\end{itemize}
+	\end{definizione}
+	
+	\textbf{Tipi di funzioni:}
+	\begin{itemize}
+		\item \textbf{Iniettiva} (uno-a-uno): $f(a_1) = f(a_2) \Rightarrow a_1 = a_2$
+		\item \textbf{Suriettiva} (sopra): $\forall b \in B, \exists a \in A: f(a) = b$
+		\item \textbf{Biettiva} (biunivoca): iniettiva e suriettiva
+	\end{itemize}
+	
+	\begin{nota}
+		Una funzione biettiva ha \textbf{funzione inversa} $f^{-1}: B \to A$ tale che:
+		\[
+		f^{-1}(f(a)) = a \quad \text{e} \quad f(f^{-1}(b)) = b
+		\]
+	\end{nota}
+	
+	\subsubsection{Grafi}
+	
+	\begin{definizione}[Grafo]
+		Un grafo $G = (V, E)$ consiste di:
+		\begin{itemize}
+			\item $V$ = insieme di \textbf{vertici} (o nodi)
+			\item $E \subseteq V \times V$ = insieme di \textbf{archi}
+		\end{itemize}
+	\end{definizione}
+	
+	\textbf{Tipi di grafi:}
+	\begin{itemize}
+		\item \textbf{Grafo non orientato:} $(u,v) \in E \Leftrightarrow (v,u) \in E$
+		\item \textbf{Grafo orientato} (digrafo): gli archi hanno una direzione
+		\item \textbf{Grafo pesato:} ogni arco ha un peso $w: E \to \mathbb{R}$
+	\end{itemize}
+	
+	\textbf{Terminologia:}
+	\begin{itemize}
+		\item \textbf{Grado} di $v$: numero di archi incidenti
+		\begin{itemize}
+			\item Grafo orientato: \textit{grado entrante} + \textit{grado uscente}
+		\end{itemize}
+		\item \textbf{Cammino:} sequenza di vertici $v_1, v_2, \ldots, v_k$ con $(v_i, v_{i+1}) \in E$
+		\item \textbf{Ciclo:} cammino con $v_1 = v_k$
+		\item \textbf{Connesso:} esiste un cammino tra ogni coppia di vertici
+	\end{itemize}
+	
+	\textbf{Rappresentazioni:}
+	\begin{enumerate}
+		\item \textbf{Matrice di adiacenza} ($n \times n$):
+		\[
+		A[i][j] = \begin{cases}
+			1 & \text{se } (i,j) \in E \\
+			0 & \text{altrimenti}
+		\end{cases}
+		\]
+		Spazio: $\Theta(n^2)$, accesso arco: $O(1)$
+		
+		\item \textbf{Liste di adiacenza:}
+		Array di $n$ liste, $\text{Adj}[u]$ contiene i vicini di $u$
+		
+		Spazio: $\Theta(n + m)$, iterare vicini: $O(\deg(u))$
+	\end{enumerate}
+	
+	\subsubsection{Alberi}
+	
+	\begin{definizione}[Albero]
+		Un albero è un grafo \textbf{connesso} e \textbf{aciclico}.
+		
+		Equivalentemente:
+		\begin{itemize}
+			\item Grafo connesso con $n$ nodi e $n-1$ archi
+			\item Esiste un unico cammino tra ogni coppia di nodi
+		\end{itemize}
+	\end{definizione}
+	
+	\textbf{Albero radicato:} albero con un nodo speciale detto \textbf{radice}.
+	\begin{itemize}
+		\item \textbf{Padre/Figlio:} $u$ è padre di $v$ se $(u,v) \in E$ e $u$ è più vicino alla radice
+		\item \textbf{Foglia:} nodo senza figli
+		\item \textbf{Altezza:} lunghezza del cammino più lungo dalla radice a una foglia
+		\item \textbf{Profondità} di $v$: distanza dalla radice a $v$
+	\end{itemize}
+	
+	\begin{definizione}[Albero binario]
+		Albero radicato in cui ogni nodo ha al più 2 figli (sinistro e destro).
+		
+		\textbf{Albero binario completo:} tutte le foglie allo stesso livello, ogni nodo interno ha 2 figli.
+		
+		Un albero binario completo di altezza $h$ ha $2^{h+1} - 1$ nodi.
+	\end{definizione}
+	
+	\textbf{Visite di alberi binari:}
+	\begin{itemize}
+		\item \textbf{Preorder:} radice $\to$ sinistro $\to$ destro
+		\item \textbf{Inorder:} sinistro $\to$ radice $\to$ destro
+		\item \textbf{Postorder:} sinistro $\to$ destro $\to$ radice
+	\end{itemize}
+	
+	\subsection{Appendice C (Calcolo combinatorio e probabilità)}
+	
+	\subsubsection{Principi di conteggio}
+	
+	\textbf{1. Principio del prodotto:}
+	
+	Se un evento può avvenire in $m$ modi e un altro in $n$ modi, allora entrambi possono avvenire in $m \times n$ modi.
+	
+	\begin{esempio}
+		Quante stringhe binarie di lunghezza 3?
+		
+		Ogni posizione: 2 scelte $\Rightarrow$ totale: $2 \times 2 \times 2 = 8$
+	\end{esempio}
+	
+	\textbf{2. Principio della somma:}
+	
+	Se un evento può avvenire in $m$ modi disgiunti o in $n$ modi disgiunti, può avvenire in $m + n$ modi.
+	
+	\subsubsection{Permutazioni e combinazioni}
+	
+	\begin{definizione}[Permutazione]
+		Numero di modi per ordinare $n$ oggetti distinti:
+		\[
+		P(n) = n! = n \times (n-1) \times \cdots \times 2 \times 1
+		\]
+	\end{definizione}
+	
+	\begin{definizione}[Permutazione con ripetizioni]
+		Se tra $n$ oggetti ci sono gruppi di $n_1, n_2, \ldots, n_k$ oggetti identici:
+		\[
+		\frac{n!}{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}
+		\]
+	\end{definizione}
+	
+	\begin{esempio}
+		Permutazioni della parola ``MISSISSIPPI'' (11 lettere: 4 I, 4 S, 2 P, 1 M):
+		\[
+		\frac{11!}{4! \cdot 4! \cdot 2! \cdot 1!} = 34650
+		\]
+	\end{esempio}
+	
+	\begin{definizione}[Disposizioni]
+		Numero di modi per scegliere $k$ oggetti da $n$ tenendo conto dell'ordine:
+		\[
+		D(n,k) = \frac{n!}{(n-k)!} = n \times (n-1) \times \cdots \times (n-k+1)
+		\]
+	\end{definizione}
+	
+	\begin{definizione}[Combinazioni (coefficiente binomiale)]
+		Numero di modi per scegliere $k$ oggetti da $n$ \textbf{senza} considerare l'ordine:
+		\[
+		C(n,k) = \binom{n}{k} = \frac{n!}{k!(n-k)!}
+		\]
+	\end{definizione}
+	
+	\textbf{Proprietà dei coefficienti binomiali:}
+	\begin{align*}
+		\binom{n}{0} &= \binom{n}{n} = 1 \\
+		\binom{n}{k} &= \binom{n}{n-k} \quad \text{(simmetria)} \\
+		\binom{n}{k} &= \binom{n-1}{k-1} + \binom{n-1}{k} \quad \text{(ricorsione - Pascal)} \\
+		\sum_{k=0}^{n} \binom{n}{k} &= 2^n
+	\end{align*}
+	
+	\subsubsection{Probabilità}
+	
+	\begin{definizione}[Spazio campionario]
+		Insieme $\Omega$ di tutti i possibili risultati di un esperimento.
+	\end{definizione}
+	
+	\begin{definizione}[Evento]
+		Sottoinsieme $A \subseteq \Omega$ dello spazio campionario.
+	\end{definizione}
+	
+	\begin{definizione}[Probabilità]
+		Funzione $P: \mathcal{P}(\Omega) \to [0,1]$ tale che:
+		\begin{itemize}
+			\item $P(\Omega) = 1$
+			\item $P(A \cup B) = P(A) + P(B)$ se $A \cap B = \emptyset$ (additività)
+		\end{itemize}
+		
+		\textbf{Caso equiprobabile:}
+		\[
+		P(A) = \frac{|A|}{|\Omega|} = \frac{\text{casi favorevoli}}{\text{casi possibili}}
+		\]
+	\end{definizione}
+	
+	\textbf{Regole fondamentali:}
+	\begin{itemize}
+		\item $P(\emptyset) = 0$
+		\item $P(\overline{A}) = 1 - P(A)$ (complemento)
+		\item $P(A \cup B) = P(A) + P(B) - P(A \cap B)$ (unione)
+	\end{itemize}
+	
+	\subsubsection{Probabilità condizionata e indipendenza}
+	
+	\begin{definizione}[Probabilità condizionata]
+		La probabilità di $A$ dato $B$ (con $P(B) > 0$):
+		\[
+		P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+		\]
+	\end{definizione}
+	
+	\begin{teorema}[Regola del prodotto]
+		\[
+		P(A \cap B) = P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A)
+		\]
+	\end{teorema}
+	
+	\begin{definizione}[Eventi indipendenti]
+		$A$ e $B$ sono indipendenti se:
+		\[
+		P(A \cap B) = P(A) \cdot P(B)
+		\]
+		
+		Equivalentemente: $P(A \mid B) = P(A)$
+	\end{definizione}
+	
+	\begin{teorema}[Teorema di Bayes]
+		\[
+		P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}
+		\]
+	\end{teorema}
+	
+	\subsubsection{Variabili casuali e valore atteso}
+	
+	\begin{definizione}[Variabile casuale]
+		Funzione $X: \Omega \to \mathbb{R}$ che assegna un valore numerico a ogni risultato.
+	\end{definizione}
+	
+	\begin{definizione}[Valore atteso]
+		Media pesata dei valori:
+		\[
+		E[X] = \sum_{x} x \cdot P(X = x)
+		\]
+	\end{definizione}
+	
+	\textbf{Proprietà del valore atteso:}
+	\begin{itemize}
+		\item $E[aX + b] = aE[X] + b$ (linearità)
+		\item $E[X + Y] = E[X] + E[Y]$ (sempre vera)
+		\item $E[XY] = E[X] \cdot E[Y]$ (solo se $X$ e $Y$ indipendenti)
+	\end{itemize}
+	
+	\begin{definizione}[Variabile indicatrice]
+		Variabile casuale che vale 1 se un evento si verifica, 0 altrimenti.
+		\[
+		I_A = \begin{cases}
+			1 & \text{se } A \text{ si verifica} \\
+			0 & \text{altrimenti}
+		\end{cases}
+		\]
+		
+		\textbf{Proprietà fondamentale:} $E[I_A] = P(A)$
+	\end{definizione}
+	
+	\begin{esempio}[Numero atteso di confronti in QuickSort]
+		Usando variabili indicatrici si dimostra che il numero atteso di confronti è $\Theta(n \log n)$.
+	\end{esempio}
+	
+	\subsection{Appendice D (Matrici)}
+	
+	\subsubsection{Definizioni base}
+	
+	\begin{definizione}[Matrice]
+		Una matrice $A$ di dimensione $m \times n$ è una tabella di $m$ righe e $n$ colonne:
+		\[
+		A = \begin{bmatrix}
+			a_{11} & a_{12} & \cdots & a_{1n} \\
+			a_{21} & a_{22} & \cdots & a_{2n} \\
+			\vdots & \vdots & \ddots & \vdots \\
+			a_{m1} & a_{m2} & \cdots & a_{mn}
+		\end{bmatrix}
+		\]
+		
+		Notazione: $A = (a_{ij})$ dove $a_{ij}$ è l'elemento in posizione $(i,j)$
+	\end{definizione}
+	
+	\textbf{Tipi speciali:}
+	\begin{itemize}
+		\item \textbf{Matrice quadrata:} $m = n$
+		\item \textbf{Matrice identità} $I_n$: diagonale di 1, resto di 0
+		\[
+		I_3 = \begin{bmatrix}
+			1 & 0 & 0 \\
+			0 & 1 & 0 \\
+			0 & 0 & 1
+		\end{bmatrix}
+		\]
+		\item \textbf{Matrice diagonale:} solo la diagonale può essere non-zero
+		\item \textbf{Matrice triangolare superiore:} $a_{ij} = 0$ per $i > j$
+		\item \textbf{Matrice simmetrica:} $A = A^T$ (vale $a_{ij} = a_{ji}$)
+	\end{itemize}
+	
+	\subsubsection{Operazioni fondamentali}
+	
+	\textbf{1. Somma:} (solo se $A$ e $B$ hanno stesse dimensioni)
+	\[
+	(A + B)_{ij} = a_{ij} + b_{ij}
+	\]
+	Complessità: $\Theta(mn)$
+	
+	\textbf{2. Prodotto per scalare:}
+	\[
+	(cA)_{ij} = c \cdot a_{ij}
+	\]
+	Complessità: $\Theta(mn)$
+	
+	\textbf{3. Trasposizione:} scambia righe con colonne
+	\[
+	(A^T)_{ij} = a_{ji}
+	\]
+	Se $A$ è $m \times n$, allora $A^T$ è $n \times m$
+	
+	Complessità: $\Theta(mn)$
+	
+	\textbf{4. Prodotto:} $A$ è $m \times n$, $B$ è $n \times p$
+	\[
+	(AB)_{ij} = \sum_{k=1}^{n} a_{ik} b_{kj}
+	\]
+	$AB$ è $m \times p$
+	
+	Complessità (algoritmo naive): $\Theta(mnp)$
+	
+	Per matrici quadrate $n \times n$: $\Theta(n^3)$
+	
+	\subsubsection{Proprietà del prodotto}
+	
+	\begin{itemize}
+		\item \textbf{Associativa:} $(AB)C = A(BC)$
+		\item \textbf{Distributiva:} $A(B + C) = AB + AC$
+		\item \textbf{NON commutativa:} in generale $AB \neq BA$
+		\item $(AB)^T = B^T A^T$ (inversione ordine)
+		\item $IA = AI = A$ (elemento neutro)
+	\end{itemize}
+	
+	\subsubsection{Determinante e matrice inversa}
+	
+	\begin{definizione}[Determinante]
+		Per matrice $2 \times 2$:
+		\[
+		\det \begin{bmatrix}
+			a & b \\
+			c & d
+		\end{bmatrix} = ad - bc
+		\]
+		
+		Per matrici $n \times n$: sviluppo di Laplace (ricorsivo)
+	\end{definizione}
+	
+	\textbf{Proprietà:}
+	\begin{itemize}
+		\item $\det(AB) = \det(A) \cdot \det(B)$
+		\item $\det(A^T) = \det(A)$
+		\item $\det(I) = 1$
+		\item $\det(cA) = c^n \det(A)$ per matrice $n \times n$
+	\end{itemize}
+	
+	\begin{definizione}[Matrice inversa]
+		$A$ è invertibile se esiste $A^{-1}$ tale che:
+		\[
+		AA^{-1} = A^{-1}A = I
+		\]
+		
+		\textbf{Condizione necessaria e sufficiente:} $\det(A) \neq 0$
+	\end{definizione}
+	
+	\textbf{Proprietà della matrice inversa:}
+	\begin{itemize}
+		\item $(A^{-1})^{-1} = A$
+		\item $(AB)^{-1} = B^{-1}A^{-1}$ (inversione ordine)
+		\item $(A^T)^{-1} = (A^{-1})^T$
+	\end{itemize}
+	
+	\subsubsection{Applicazioni agli algoritmi}
+	
+	\textbf{1. Grafi:} matrice di adiacenza
+	
+	$A^k[i][j]$ = numero di cammini di lunghezza $k$ da $i$ a $j$
+	
+	\textbf{2. Programmazione dinamica:} Floyd-Warshall usa prodotto matriciale generalizzato
+	
+	\textbf{3. Complessità prodotto matriciale:}
+	\begin{itemize}
+		\item Algoritmo standard: $\Theta(n^3)$
+		\item Algoritmo di Strassen: $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.81})$
+		\item Algoritmi avanzati: $O(n^{2.37})$ (teorici, non pratici)
+	\end{itemize}
+	
+	
+	% ----------------------------------------------------------------
+	\subsection{Domande d'esame (Appello 2)}
+	
+	\begin{hardnote}
+		Queste sono domande reali dell'esame.\footnotemark
+	\end{hardnote}
+	\footnotetext{Se si studiano solo queste l'esame si passa solo se si è colpiti da un fulmine mentre si fa un salto mortale carpiato suonando il flauto}
+	
+	
+	\subsubsection*{Definizione di algoritmo}
 	\textbf{D:} Definizione sufficiente di algoritmo?\\
 	\textbf{R:} Procedura ben definita che produce output da input in tempo finito.
 	
-	\subsubsection{Problema computazionale}
+	\subsubsection*{Problema computazionale}
 	\textbf{D:} Cos'è un problema computazionale?\\
 	\textbf{R:} Relazione input-output desiderata. Il problema dice \textit{cosa},
 	l'algoritmo dice \textit{come}.
 	
-	\subsubsection{Efficienza}
+	\subsubsection*{Efficienza}
 	\textbf{D:} Cosa si intende per efficienza?\\
 	\textbf{R:} Come crescono le risorse al crescere di $n$
 	(non il tempo in secondi, dipendente dall'hardware).
 	
-	\subsubsection{InsertionSort vs MergeSort}
+	\subsubsection*{InsertionSort vs MergeSort}
 	\textbf{D:} InsSort $= 10n^2$, MergeSort $= 32n\log_2 n$. Quando è più
 	veloce InsSort?\\
 	\textbf{R:} Per $n$ piccoli: $10n^2 < 32n\log_2 n$ solo inizialmente.
 	
-	\subsubsection{\texorpdfstring{$100n^2$ vs $2^n$}{100n2 vs 2n}}
+	\subsubsection*{\texorpdfstring{$100n^2$ vs $2^n$}{100n2 vs 2n}}
 	\textbf{D:} Minimo $n$ tale che $100n^2 < 2^n$?\\
 	\textbf{R:} $n \ge 15$.
 	
-	\subsubsection{Invariante di ciclo}
+	\subsubsection*{Invariante di ciclo}
 	\textbf{D:} Cos'è un'invariante di ciclo?\\
 	\textbf{R:} Proprietà vera all'inizio di ogni iterazione. Si dimostra per
 	inizializzazione, conservazione e conclusione.
 	
-	\subsubsection{\texorpdfstring{Vale $\max(f,g) = \Theta(f+g)$?}%
+	\subsubsection*{\texorpdfstring{Vale $\max(f,g) = \Theta(f+g)$?}%
 		{Vale max(f,g) = Theta(f+g)?}}
 	\textbf{R:} Sì: $\max(f,g) \le f+g \le 2\max(f,g)$, con $c_1=1$, $c_2=2$.
 	
-	\subsubsection{\texorpdfstring{$2^{n+1}$ e $2^{2n}$ vs $O(2^n)$}%
+	\subsubsection*{\texorpdfstring{$2^{n+1}$ e $2^{2n}$ vs $O(2^n)$}%
 		{2n+1 e 22n vs O(2n)}}
 	\textbf{R:} $2^{n+1} = O(2^n)$ (costante 2). $2^{2n} = 4^n \neq O(2^n)$
 	(richiederebbe $2^n \le c$, impossibile).
 	
-	\subsubsection{Costo costante in RAM}
+	\subsubsection*{Costo costante in RAM}
 	\textbf{R:} Quando la parola di memoria ha dimensione fissa (es.\ 64 bit).
 	
-	\subsubsection{Prestazioni su istanze note}
+	\subsubsection*{Prestazioni su istanze note}
 	\textbf{R:} Precomputare le soluzioni e restituirle direttamente
 	quando quell'istanza viene ricevuta.
 	
-	\subsubsection{\texorpdfstring{$T(n)=T(n-1)+n^c$}{T(n)=T(n-1)+nc}}
+	\subsubsection*{\texorpdfstring{$T(n)=T(n-1)+n^c$}{T(n)=T(n-1)+nc}}
 	\textbf{R:} $T(n) = \Theta(n^{c+1})$.
 	Dim.: $\sum_{k=1}^n k^c \approx \int_1^n x^c\,dx = \frac{n^{c+1}}{c+1}$.
 	
-	\subsubsection{\texorpdfstring{$T(n)=2T(n/3)+1$}{T(n)=2T(n/3)+1}}
+	\subsubsection*{\texorpdfstring{$T(n)=2T(n/3)+1$}{T(n)=2T(n/3)+1}}
 	\textbf{R:} Master Theorem, caso 1: $T(n) = \Theta(n^{\log_3 2})$
 	($\log_3 2 \approx 0.63$).
 	
-	\subsubsection{Divide et impera: classe di problemi}
+	\subsubsection*{Divide et impera: classe di problemi}
 	\textbf{R:} Problemi divisibili in 2+ sotto-istanze con combinazione
 	a costo al più polinomiale.
 	
-	\subsubsection{Analisi probabilistica}
+	\subsubsection*{Analisi probabilistica}
 	\textbf{R:} Uso del calcolo della probabilità nell'analisi degli algoritmi
 	(non solo caso medio).
 	
-	\subsubsection{permute-without-identity}
+	\subsubsection*{permute-without-identity}
 	\textbf{R:} No: con $n=3$ produce solo 3 permutazioni invece delle 5 attese.
 	
-	\subsubsection{Hire-Assistant: probabilità}
+	\subsubsection*{Hire-Assistant: probabilità}
 	\textbf{R:} Esattamente 1 assunzione: $1/n$. Esattamente $n$ assunzioni:
 	$1/n!$.
 	
-	\subsubsection{Generatore casuale}
+	\subsubsection*{Generatore casuale}
 	\textbf{R:} Valore intero in un intervallo con probabilità uniforme.
 	
-	\subsubsection{Algoritmo randomizzato}
+	\subsubsection*{Algoritmo randomizzato}
 	\textbf{R:} Il comportamento dipende dall'input \emph{e} da valori casuali.
 	
-	\subsubsection{Ricorrenza con frazioni}
+	\subsubsection*{Ricorrenza con frazioni}
 	\textbf{D:} $T(n)\le T(10n/11)+T(n/11)+O(n)$?\\
 	\textbf{R:} $T(n) = O(n\log n)$. Ogni livello costa $O(n)$, profondità
 	$O(\log n)$.
 	
-	\subsubsection{Partition su array}
+	\subsubsection*{Partition su array}
 	\textbf{D:} Partition su $[13,19,9,5,12,8,7,4,21,2,6,11]$, pivot $A[11]$?\\
 	\textbf{R:} $[9,5,8,7,4,2,6,\mathbf{11},21,13,19,12]$, pivot in pos.\ 7.
 	
-	\subsubsection{Quicksort con elementi uguali}
+	\subsubsection*{Quicksort con elementi uguali}
 	\textbf{R:} $O(n^2)$: ogni Partition genera partizione $(n{-}1)$ vs $0$.
 	
-	\subsubsection{Partition elementi uguali: fix}
+	\subsubsection*{Partition elementi uguali: fix}
 	\textbf{R:} Restituisce indice massimo. Fix: flag booleano; se tutti uguali,
 	restituire $\lfloor(p+r)/2\rfloor$.
 	
-	\subsubsection{Quicksort non crescente}
+	\subsubsection*{Quicksort non crescente}
 	\textbf{R:} Invertire il confronto in Partition: da $\le$ a $\ge$.
 	
-	\subsubsection{Rand-Select: caso peggiore}
+	\subsubsection*{Rand-Select: caso peggiore}
 	\textbf{R:} Il pivot è sempre il massimo: dimensione scende di 1 a ogni
 	passo, $O(n^2)$.
 	
-	\subsubsection{\texorpdfstring{IV statistica d'ordine}{IV statistica d'ordine}}
+	\subsubsection*{\texorpdfstring{IV statistica d'ordine}{IV statistica d'ordine}}
 	\textbf{D:} IV statistica di $[8,4,8,3,4,2,3,2]$?\\
 	\textbf{R:} Ordinato: $[2,2,3,3,4,4,8,8]$. IV elemento $= 3$.
 	
-	\subsubsection{Eliminare duplicati}
+	\subsubsection*{Eliminare duplicati}
 	\textbf{D:} Eliminare duplicati in $\Theta(n\log n)$?\\
 	\textbf{R:} Ordinare, poi scorrere linearmente rimuovendo consecutivi uguali.
 	
-	\subsubsection{Build-Max-Heap: indice decrescente}
+	\subsubsection*{Build-Max-Heap: indice decrescente}
 	\textbf{R:} Le foglie sono già heap. MaxHeapify richiede figli sistemati:
 	si parte dal basso.
 	
-	\subsubsection{Visita inorder con pila}
+	\subsubsection*{Visita inorder con pila}
 	\textbf{R:} Visita in ordine (inorder), $O(n)$.
 	Pattern: push-sinistra, pop-visita-destra.
 	
-	\subsubsection{LCS senza tabella b}
+	\subsubsection*{LCS senza tabella b}
 	\begin{lstlisting}[language={}, numbers=none, frame=none,
 		backgroundcolor=\color{white}, basicstyle=\ttfamily\footnotesize]
 		PRINT-LCS(c, X, Y, i, j)
@@ -1341,45 +2372,45 @@
 	\end{lstlisting}
 	Costo $O(m+n)$: ogni chiamata riduce $i$ o $j$ di 1.
 	
-	\subsubsection{Cammino minimo vs TSP}
+	\subsubsection*{Cammino minimo vs TSP}
 	\textbf{R:} Cammino minimo: sorgente $\to$ destinazione, polinomiale
 	(Dijkstra). TSP: circuito visitando ogni nodo una volta, NP-difficile.
 	
-	\subsubsection{Prima e ultima cifra (Java)}
+	\subsubsection*{Prima e ultima cifra (Java)}
 	\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
 		int last  = n % 10;
 		int first = n / (int) Math.pow(10, (int)(Math.log10(n)));
 	\end{lstlisting}
 	
-	\subsubsection{\texorpdfstring{\texttt{T extends Comparable}}%
+	\subsubsection*{\texorpdfstring{\texttt{T extends Comparable}}%
 		{T extends Comparable}}
 	\textbf{R:} La ricerca binaria usa confronti: serve \texttt{compareTo()},
 	disponibile solo se $T$ estende \texttt{Comparable}.
 	
-	\subsubsection{Ereditarietà e attributo omonimo}
+	\subsubsection*{Ereditarietà e attributo omonimo}
 	\textbf{R:} \texttt{super.getIdA()} per \texttt{A.idA},
 	\texttt{this.getIdA()} per \texttt{B.idA}.
 	Le variabili private non sono ereditate.
 	
-	\subsubsection{Errore in makeCombination}
+	\subsubsection*{Errore in makeCombination}
 	\textbf{R:} \texttt{values = numbers} copia solo il riferimento locale.
 	Fix: copia elemento per elemento.
 	
-	\subsubsection{Eccezione in try-with-resources}
+	\subsubsection*{Eccezione in try-with-resources}
 	\textbf{R:} L'eccezione di \texttt{close()} è soppressa (JLS 14.20.3):
 	diventa \textit{suppressed exception} della prima.
 	
-	\subsubsection{Downcasting Java}
+	\subsubsection*{Downcasting Java}
 	\textbf{D:} \texttt{A value = new B(); B value1 = (A) value; value = null;}?\\
 	\textbf{R:} \texttt{value} $\to$ null; \texttt{value1} punta all'oggetto
 	\texttt{B} ancora in memoria.
 	
-	\subsubsection{Stack con due code}
+	\subsubsection*{Stack con due code}
 	\noindent\textbf{Push} $i$-esimo: enqueue in ausiliaria, svuota corrente
 	nell'ausiliaria, scambia. Costo: $O(i)$. Totale $n$ push: $O(n^2)$.\\
 	\noindent\textbf{Pop}: dequeue. Costo: $O(1)$.
 	
-	\subsubsection{Ricerca in matrice destrorsa}
+	\subsubsection*{Ricerca in matrice destrorsa}
 	\textbf{R:} Ricerca binaria su ogni riga. Complessità: $O(n\log n)$.
 	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
 		public static <T extends Comparable<T>>
