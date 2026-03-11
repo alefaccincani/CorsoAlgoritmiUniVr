@@ -33,6 +33,7 @@
 \usepackage{colortbl}
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage{multirow}
 \pgfplotsset{compat=1.18}  
 
 
@@ -46,6 +47,7 @@
 \usepackage{emptypage}
 \usepackage{titlesec}
 \usepackage{tocloft}
+\usepackage{enumitem}
 
 % --- HYPERREF SEMPRE PER ULTIMO ---
 \usepackage[hidelinks, plainpages=false, pdfpagelabels]{hyperref}
@@ -120,6 +122,8 @@
 \newtheorem{nozione}{Nozione}[section]
 \theoremstyle{remark}
 \newtheorem{osservazione}{Osservazione}
+\newtheorem{esempio}{Esempio}[section]
+
 \theoremstyle{remark}
 \usepackage{tcolorbox}
 \tcbuselibrary{theorems}
@@ -134,6 +138,19 @@
 	}{%
 	\end{tcolorbox}
 }
+\newtcolorbox{softnote}{
+	colback=cyan!5,
+	colframe=cyan!40!black,
+	fonttitle=\bfseries,
+}
+\newtcolorbox{hardnote}{
+	colback=red!15,
+	colframe=red!70!black,
+	fonttitle=\bfseries,
+	coltitle=white,
+	boxrule=1pt
+}
+
 
 % --- KwAnd per algorithm2e ---
 \SetKw{KwAnd}{and}
@@ -409,13 +426,13 @@
 				L'algoritmo esegue due cicli annidati. Il ciclo esterno itera $n-1$ volte, e per ogni $i$ il ciclo interno itera $n-1-i$ volte. Quindi:
 				
 				\[
-				T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = \frac{(n-1)n}{2} \in \Theta(n^2)
+				T(n) = \sum_{i=0}^{n-2} (n-1-i) = \sum_{k=1}^{n-1} k = 	\frac{(n-1)n}{2} \in \Theta(n^2)
 				\]
 				
 				La complessità spaziale è $\Theta(1)$, poiché usiamo solo variabili costanti. 
 				
 				\vspace*{\stretch{1}} 
-			\subsubsection*{CODICE JAVA}
+				\subsubsection*{Codice JAVA}
 				\begin{lstlisting}[language=Java, numbers=none, basicstyle=\ttfamily\footnotesize]
 				class twoSum {
 					public int[] twoSum(int[] nums, int target) {
@@ -610,30 +627,407 @@
 				\]
 				Lo spazio aggiuntivo utilizzato è costante, dunque $S(n,m) = \Theta(1)$.
 				
-
+				\pagebreak
 		\subsection{InsertionSort e MergeSort}
 		\subsubsection{InsertionSort}
-		Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
-		(come le carte da gioco).
 		
-		\begin{algorithm}[H]
-			\caption{InsertionSort}
-			\KwIn{$A[1\ldots n]$}
-			\KwOut{$A$ ordinato}
-			\For{$i = 2$ \KwTo $n$}{
-				$\mathit{key} \gets A[i]$\;
-				$j \gets i - 1$\;
-				\While{$j > 0$ \KwAnd $A[j] > \mathit{key}$}{
-					$A[j+1] \gets A[j]$\;
-					$j \gets j - 1$\;
+			Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
+			(come le carte da gioco).
+			
+			\begin{algorithm}
+				\caption{InsertionSort}
+				\KwIn{$A = \langle a_1, \ldots, a_n \rangle$, array di elementi 
+					confrontabili con $\leq$}
+				\KwOut{$A$ ordinato rispetto a $\leq$}
+				\For{$i = 2$ \KwTo $n$}{
+					$key = A[i]$ \tcp*{Inserisce $A[i]$ nella parte ordinata $a_1, \ldots, a_{i-1}$}
+					$j = i - 1$\;
+					\While{$j > 0$ \textbf{and} $A[j] > key$}{
+						$A[j+1] = A[j]$\;
+						$j = j - 1$\;
+					}
+					$A[j+1] = key$\;
 				}
-				$A[j+1] \gets \mathit{key}$\;
-			}
-		\end{algorithm}
+				\Return{$A$}
+			\end{algorithm}
+			
+			\begin{nota}
+				Ordina gli elementi \textbf{sul posto}.
+			\end{nota}
+			
+			\begin{center}
+				\textbf{Ciclo Algoritmo}
+				
+				\vspace{0.4em}
+				\begin{tabular}{|c|c|c|c|c|}
+					\hline
+					5 & 2 & 4 & 6 & 1 \\
+					\hline
+				\end{tabular}
+				$= A$
+				
+				\vspace{0.4em}
+				{\small\textit{Ogni blocco rappresenta un ciclo for (0 o più cicli while)}}
+				\vspace{0.4em}
+				
+				\scalebox{0.9}{%
+					\begin{tabular}{|c|c|c|c|c|l|}
+						\hline
+						\textit{1} & \textit{2} & \textit{3} & \textit{4} & \textit{5} & \textit{Commento} \\
+						\hline
+						5 & \textcolor{codered}{2} & 4 & 6 & 1 &
+						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 5 \\ Scambio 5$\to$2}} \\
+						j & i & & & & \\[3pt]
+						\hline
+						2 & 5 & \textcolor{codered}{4} & 6 & 1 &
+						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,5 \\ Scambio 5$\to$4}} \\
+						$\leftarrow$ & j & i & & & \\[3pt]
+						\hline
+						2 & 4 & 5 & \textcolor{codered}{6} & 1 &
+						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5 \\ Nessun scambio}} \\
+						& $\leftarrow$ & j & i & & \\[3pt]
+						\hline
+						2 & 4 & 5 & 6 & \textcolor{codered}{1} &
+						\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5,6 \\ 1 $\to$ pos. I}} \\
+						& & $\leftarrow$ & j & i & \\[3pt]
+						\hline
+						1 & 2 & 4 & 5 & 6 &
+						\multirow{2}{*}{\parbox{3cm}{\small Seq. ordinata}} \\
+						& & & & i & \\[3pt]
+						\hline
+					\end{tabular}%
+				}
+			\end{center}
+			
+			\pagebreak
+			\subsubsection*{Invariante di ciclo}
+			
+			\begin{definizione}[Invariante di ciclo]
+				Un'asserzione (proprietà booleana) sempre vera all'inizio
+				di ogni iterazione di un ciclo.
+			\end{definizione}
+			
+			La validità si dimostra in tre passi:
+			\begin{enumerate}
+				\item \textbf{Inizializzazione:} è vera prima della prima iterazione.
+				\item \textbf{Conservazione:} se è vera prima di un'iterazione,
+				rimane vera prima di quella successiva.
+				\item \textbf{Conclusione:} quando il ciclo termina, l'invariante
+				fornisce una proprietà utile a dimostrare la correttezza.
+			\end{enumerate}
+			
+			\begin{esempio}[Invariante di InsertionSort]
+				\textit{``All'inizio del ciclo \texttt{for}, il sottoarray
+					$A[1:i-1]$ è ordinato e formato dagli stessi elementi
+					che erano in $A[1:i-1]$.''}
+				
+				\begin{itemize}
+					\item \textbf{Inizializzazione:} $i=2$, quindi $A[1:1]$
+					è un solo elemento $\Rightarrow$ ordinato. \checkmark
+					\item \textbf{Conservazione:} \texttt{key}$= A[i]$,
+					il ciclo \texttt{while} sposta $A[i-1], A[i-2],\ldots$
+					a destra finché non trova la posizione corretta per
+					\texttt{key}. Quindi $A[1:i]$ diventa ordinato con
+					gli stessi elementi. All'iterazione successiva
+					$i$ aumenta di 1, l'invariante vale su $A[1:i-1]$.
+					\checkmark
+					\item \textbf{Conclusione:} il ciclo termina con $i = n+1$.
+					Per l'invariante, $A[1:n]$ è ordinato con gli stessi
+					elementi $\Rightarrow$ l'algoritmo è corretto. \checkmark
+				\end{itemize}
+			\end{esempio}
+			
+			\subsubsection*{Modello RAM}
+			
+			
+			Per analizzare la complessità si usa un modello astratto di
+			computer: la \textbf{Random Access Machine (RAM)}.
+			
+			\begin{itemize}
+				\item Un solo processore con memoria ad accesso casuale.
+				\item Numeri interi e a virgola mobile con dimensione fissa
+				(es.\ 64 bit per parola).
+				\item Istruzioni elementari (lettura, scrittura, somma,
+				sottrazione, moltiplicazione, divisione, confronto,
+				\texttt{if}, salto, chiamata a procedura).
+				\item Ogni istruzione ha \textbf{costo costante} $= 1$.
+			\end{itemize}
+			
+			\begin{nota}
+				È una semplificazione: nella realtà cache, pipeline e
+				parallelismo influenzano i tempi reali. In questo corso
+				si ignorano questi dettagli.
+			\end{nota}
+			
+			\subsubsection*{Dimensione dell'input e tempo di esecuzione}
+			
+			\begin{definizione}[Dimensione dell'input]
+				Misura della quantità di bit/word necessari per rappresentare
+				l'input. Un indicatore è \textbf{corretto} se la dimensione
+				reale è in relazione polinomiale con esso.
+			\end{definizione}
+			
+			\begin{definizione}[Tempo di esecuzione]
+				Numero totale di operazioni elementari eseguite dall'algoritmo
+				nel modello RAM, in funzione della dimensione $n$ dell'input.
+			\end{definizione}
+			
+			Esempi di indicatori corretti:
+			\begin{itemize}
+				\item \textbf{Array di $n$ elementi:} indicatore $= n$. \checkmark
+				\item \textbf{Matrice $n \times n$:} indicatore $= n$
+				(la dimensione reale $n \cdot k(n+1)$ è polinomiale in $n$).
+				\checkmark
+				\item \textbf{Intero $n$:} indicatore $= \lfloor \lg n \rfloor + 1$
+				(numero di bit). \textbf{Non} si può usare $n$ come
+				indicatore perché $2^{|I|} \approx n$, relazione
+				esponenziale. \checkmark
+			\end{itemize}
+			
+			\begin{esempio}[Matrice $n \times n$]
+				Sia $A$ una matrice $n \times n$ di interi, dove ogni intero
+				richiede $k$ bit. La RAM memorizza la matrice riga per riga.
+				
+				Ogni riga occupa $nk$ bit per gli interi, più $k$ bit per il
+				marcatore di fine riga. L'intera matrice richiede:
+				\[
+				|I| = n\bigl(n+1\bigr)k \text{ bit}
+				= n(kn + k) \text{ bit}
+				= \boxed{kn^2 + kn \text{ bit}}
+				= \Theta(n)
+				\]
+				
+				\begin{center}
+					\begin{tikzpicture}[scale=1.2]
+						% --- matrice n x n ---
+						\draw[step=0.6cm, gray!60, thin] (0,0) grid (3.6, 3.6);
+						\draw[thick] (0,0) rectangle (3.6, 3.6);
+						\node[above] at (1.8, 3.6) {$n$};
+						\node[left]  at (0,  1.8)  {$n$};
+						\node[font=\tiny] at (0.3, 3.3) {$a_{1,1}$};
+						\node[font=\tiny] at (3.3, 3.3) {$a_{1,n}$};
+						\node[font=\tiny] at (0.3, 0.3) {$a_{n,1}$};
+						\node[font=\tiny] at (3.3, 0.3) {$a_{n,n}$};
+						
+						% --- freccia RAM ---
+						\draw[->, thick] (4.0, 1.8) -- (5.2, 1.8);
+						\node[above, font=\small] at (4.6, 1.9) {RAM};
+						
+						% --- stack RAM ---
+						\foreach \y in {0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2}
+						\draw[draw=gray!80, fill=codebg]
+						(5.4, \y) rectangle (7.2, \y+0.35);
+						\node[font=\tiny] at (6.3, 3.35) {$a_{1,1}$};
+						\node[font=\tiny] at (6.3, 2.95) {$a_{1,2}$};
+						\node[font=\tiny] at (6.3, 2.55) {$\vdots$};
+						\node[font=\tiny] at (6.3, 2.15) {$a_{1,n}$};
+						\node[font=\tiny, color=codered] at (6.3, 1.75) {\texttt{fine riga} ($k$ bit)};
+						\node[font=\tiny] at (6.3, 1.35) {$a_{2,1}$};
+						\node[font=\tiny] at (6.3, 0.95) {$\vdots$};
+						\node[font=\tiny] at (6.3, 0.55) {$a_{n,n}$};
+						\node[font=\tiny, color=codered] at (6.3, 0.15) {\texttt{fine riga} ($k$ bit)};
+						
+						% --- graffa dimensione ---
+						\draw[decorate, decoration={brace, amplitude=5pt, mirror}]
+						(7.3, 0) -- (7.3, 3.55)
+						node[midway, right=6pt, font=\small] {$n$ righe};
+						
+						% --- annotazione dimensione riga ---
+						\draw[decorate, decoration={brace, amplitude=4pt}]
+						(5.4, 3.6) -- (7.2, 3.6)
+						node[midway, above=5pt, font=\tiny]
+						{$nk + k$ bit per riga};
+					\end{tikzpicture}
+				\end{center}
+				
+				Si usa come indicatore $|I| = n$. È \textbf{corretto} perché
+				la dimensione reale $kn^2 + kn$ è un \textbf{polinomio in $n$}.
+			\end{esempio}
+			
+			\begin{nota}
+				L'errore comune è usare il \emph{valore} di un intero $n$ come
+				dimensione dell'input invece del numero di bit necessari a
+				rappresentarlo. Questo porta a sottostimare la complessità.
+			\end{nota}
+			
+			\begin{definizione}[Tempo di esecuzione]
+				Il tempo di esecuzione di un algoritmo per un dato input di
+				dimensione n è il numero totale di operazioni elementari eseguite
+				(passi) nel modello RAM.
+			\end{definizione}
+			
+			\subsubsection*{Analisi di InsertionSort}
+			
+			$c_k$ = costo esecuzione istruzione alla riga $k$. \quad
+			$t_i - 1$ = \# cicli \textbf{while} nel $i$-esimo ciclo \textbf{for}.
+			
+			\begin{center}
+				\begin{tabular}{rll r r}
+					\toprule
+					& \textsc{Insertion-Sort}$(A, n)$ & & \textit{cost} & \textit{times} \\
+					\midrule
+					1 & \textbf{for} $i = 2$ \textbf{to} $n$ & & $c_1$ & $n$ \\
+					2 & \quad $key = A[i]$ & & $c_2$ & $n-1$ \\
+					3 & \quad \textcolor{codegreen}{\texttt{// Insert $A[i]$ into the sorted subarray $A[1:i-1]$}} & & $0$ & $n-1$ \\
+					4 & \quad $j = i - 1$ & & $c_4$ & $n-1$ \\
+					5 & \quad \textbf{while} $j > 0$ \textbf{and} $A[j] > key$ & & $c_5$ & $\displaystyle\sum_{i=2}^{n} t_i$ \\[6pt]
+					6 & \qquad $A[j+1] = A[j]$ & & $c_6$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
+					7 & \qquad $j = j - 1$ & & $c_7$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
+					8 & \quad $A[j+1] = key$ & & $c_8$ & $n-1$ \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			\begin{softnote}
+				\textbf{Contare le iterazioni:}
+				
+				\textbf{for} $i = \ell$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $\#\text{Cicli} = n - \ell + 1$
+				
+				\textbf{Esempio:} \textbf{for} $i = 2$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $n - 1$ iterazioni
+			\end{softnote}
+			
+			
+			\[
+			T(n) = c_1 n + c_2(n-1) + c_4(n-1)
+			+ c_5 \sum_{i=2}^{n} t_i
+			+ c_6 \sum_{i=2}^{n} (t_i-1)
+			+ c_7 \sum_{i=2}^{n} (t_i-1)
+			+ c_8(n-1)
+			\]
+			
+			
+			Indichiamo con $c_k$ il costo dell'istruzione alla riga $k$,
+			e con $t_i$ il numero di volte che il ciclo \texttt{while} viene
+			eseguito durante l'$i$-esimo ciclo \texttt{for}.
+			
+			Il tempo totale è:
+			\[
+			T(n) = c_1 n + c_2(n-1) + c_4(n-1)
+			+ c_5 \sum_{i=2}^{n} t_i
+			+ c_6 \sum_{i=2}^{n} (t_i - 1)
+			+ c_7 \sum_{i=2}^{n} (t_i - 1)
+			+ c_8(n-1)
+			\]
+			
+			\pagebreak
+			
+			\subsubsection*{Caso migliore: array già ordinato}
+			
+			Se l'array è già ordinato, il corpo del \texttt{while} non viene
+			mai eseguito: $t_i = 1$ per ogni $i$.
+			Le somme $\sum(t_i - 1) = 0$, quindi:
+			
+			\[
+			T(n) = c_1 n + c_2(n-1) + c_4(n-1) + c_5(n-1) + c_8(n-1)
+			\]
+			\[
+			= \underbrace{(c_1 + c_2 + c_4 + c_5 + c_8)}_{a} n
+			- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{b}
+			\]
+			\[
+			= an - b \quad \Rightarrow \quad \boxed{T(n) = \Theta(n)}
+			\]
+			
+			\begin{nota}
+				Nel caso migliore la crescita è \textbf{lineare}: ogni elemento
+				viene confrontato una sola volta con il suo predecessore e
+				nessuno scambio viene effettuato.
+			\end{nota}
+			
+			\subsubsection*{Caso peggiore: array ordinato al contrario}
+			
+			Se l'array è in ordine decrescente, ogni $A[i]$ deve essere
+			confrontato con \textbf{tutti} gli elementi in $A[1:i-1]$,
+			quindi $t_i = i$. Usando $\sum_{i=2}^{n} i = \frac{n(n+1)}{2} - 1$:
+			
+			\[
+			T(n) = c_1 n + c_2(n-1) + c_4(n-1)
+			+ c_5\!\left(\frac{n(n+1)}{2} - 1\right)
+			+ (c_6 + c_7)\frac{n(n-1)}{2}
+			+ c_8(n-1)
+			\]
+			
+			Raccogliendo i termini per grado:
+			
+			\[
+			T(n) = \underbrace{\frac{c_5 + c_6 + c_7}{2}}_{a} n^2
+			+ \underbrace{\left(c_1 + c_2 + c_4 + \frac{c_5 - c_6 - c_7}{2} + c_8\right)}_{b} n
+			- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{c}
+			\]
+			\[
+			\Rightarrow \quad \boxed{T(n) = \Theta(n^2)}
+			\]
+			
+			\begin{nota}
+				Nel caso peggiore la crescita è \textbf{quadratica}: ogni nuovo
+				elemento deve ``scendere'' fino in fondo alla parte già ordinata,
+				confrontandosi con tutti gli elementi precedenti.
+			\end{nota}
+			
+			\begin{center}
+				\begin{tabular}{lll}
+					\toprule
+					Caso & Input & Complessità \\
+					\midrule
+					Migliore & Array già ordinato      & $\Theta(n)$   \\
+					Peggiore & Array ordinato inverso  & $\Theta(n^2)$ \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			\begin{hardnote}
+				Solitamente si considera come complessità di un algoritmo il
+				tempo di esecuzione con input che rappresenta il caso peggiore.
+				
+				\begin{enumerate}[label=\arabic*.]
+					\item È una garanzia sulla descrizione del comportamento dell'algoritmo.
+					\item In alcuni casi, il caso peggiore è il più frequente.
+					\item Il caso medio spesso è simile al caso peggiore (vedi InsertionSort).
+				\end{enumerate}
+			\end{hardnote}
+			
+		\subsection{Tasso di crescita e ordine di grandezza}
 		
-		\noindent\textbf{Invariante:} $A[1:i-1]$ è ordinato all'inizio di ogni iterazione.
+		Nell'analisi di InsertionSort si sono usate costanti $c_k$ per
+		rappresentare i costi astratti delle operazioni nel modello RAM.
+		Queste costanti possono essere raggruppate: ad esempio
+		$(c_2 + c_4 + c_5 + c_8)$ diventa una costante generica $a$.
 		
-		\noindent\textbf{Complessità:} caso migliore $\Theta(n)$, caso peggiore $\Theta(n^2)$.
+		\begin{softnote}
+			\textbf{Ultima astrazione:} è più importante valutare la
+			\textbf{velocità con cui cresce} il tempo di esecuzione
+			(\textit{tasso di crescita}) che i dettagli delle costanti.
+			
+			\medskip
+			Di un polinomio $T(n) = an^2 + bn + c$ è sufficiente
+			considerare solo il termine dominante $an^2$.
+			Visto che la costante $a$ è astratta, la si assorbe
+			nell'ordine di grandezza:
+			\[
+			T(n) = an^2 + bn + c \;\approx\; an^2
+			\;\Longrightarrow\; \Theta(n^2)
+			\]
+		\end{softnote}
+		
+		\begin{hardnote}
+			Un algoritmo è considerato \textbf{più efficiente} di un altro
+			se il suo tempo di computazione nel caso peggiore ha un
+			\textbf{tasso di crescita inferiore}.
+		\end{hardnote}
+		
+		\begin{center}
+			\begin{tabular}{lll}
+				\toprule
+				$T(n)$ & Ordine di grandezza & Nome \\
+				\midrule
+				$an + b$         & $\Theta(n)$      & Lineare \\
+				$an^2 + bn + c$  & $\Theta(n^2)$    & Quadratica \\
+				$an^3 + \cdots$  & $\Theta(n^3)$    & Cubica \\
+				$a\lg n + b$     & $\Theta(\lg n)$  & Logaritmica \\
+				$an\lg n + b$    & $\Theta(n\lg n)$ & Linearitmica \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
 		
 		\subsubsection{MergeSort (Divide et impera)}
 		\begin{enumerate}
@@ -801,222 +1195,7 @@
 
 	
 	% ================================================================
-	\section{Ordinamento e statistiche d'ordine}
-		\subsection{Heapsort}
-		\subsubsection{Heap}
-		\mbox{}
-		
-		\subsubsection{Mantenere la proprietà heap}
-		\mbox{}
-		
-		\subsubsection{Costruire un heap}
-		\mbox{}
-		
-		\subsubsection{Heapsort}
-		\mbox{}
-		
-		\subsubsection{Code di priorità}
-		\mbox{}
-		
-		\subsection{Quicksort}
-		
-		\subsubsection{Descrizione}
-		\mbox{}
-		
-		\subsubsection{Prestazioni nel caso peggiore}
-		\mbox{}
-		
-		\subsubsection{Versione randomizzata}
-		\mbox{}
-		
-		\subsubsection{Analisi}
-		\mbox{}
-		
-		\subsection{Ordinamento in tempo lineare}
-		
-		\subsubsection{Limite inferiore per l'ordinamento}
-		\mbox{}
-		
-		\subsubsection{Counting sort}
-		\mbox{}
-		
-		\subsubsection{Radix sort}
-		\mbox{}
-		
-		\subsubsection{Bucket sort}
-		\mbox{}
-		
-		\subsection{Mediane e statistiche d'ordine}
 	
-	\subsubsection{Minimo e massimo}
-	\mbox{}
-	
-	\subsubsection{Selezione in tempo lineare atteso}
-	\mbox{}
-	
-	\subsubsection{Selezione in tempo lineare nel caso peggiore}
-	\mbox{}
-	
-	% ================================================================
-	\section{Strutture Dati}
-		\subsection{Strutture dati elementari}
-		
-		\subsubsection{Array, matrici, pile, code}
-		\mbox{}
-		
-		\subsubsection{Liste concatenate}
-		\mbox{}
-		
-		\subsubsection{Rappresentazione di alberi radicati}
-		\mbox{}
-		
-		\subsection{Tabelle hash}
-		
-		\subsubsection{Indirizzamento diretto}
-		\mbox{}
-		
-		\subsubsection{Funzioni hash}
-		\mbox{}
-		
-		\subsubsection{Indirizzamento aperto}
-		\mbox{}
-		
-		\subsection{Alberi binari di ricerca}
-		
-		\subsubsection{Struttura e proprietà}
-		\mbox{}
-		
-		\subsubsection{Ricerca, inserimento e cancellazione}
-		\mbox{}
-		
-		\subsection{Alberi rosso-neri}
-	
-	\subsubsection{Proprietà e rotazioni}
-	\mbox{}
-	
-	\subsubsection{Inserimento e cancellazione}
-	\mbox{}
-	
-	% ================================================================
-	\section{Tecniche avanzate di progettazione e analisi}
-		\subsection{Programmazione dinamica}
-		
-		\subsubsection{Taglio delle aste}
-		\mbox{}
-		
-		\subsubsection{Moltiplicazione di catene di matrici}
-		\mbox{}
-		
-		\subsubsection{Elementi della programmazione dinamica}
-		\mbox{}
-		
-		\subsubsection{Sottosequenza comune più lunga (LCS)}
-		\mbox{}
-		
-		\subsubsection{Alberi binari di ricerca ottimali}
-		\mbox{}
-		
-		\subsection{Algoritmi greedy}
-		
-		\subsubsection{Selezione di attività}
-		\mbox{}
-		
-		\subsubsection{Strategia greedy}
-		\mbox{}
-		
-		\subsubsection{Codici di Huffman}
-		\mbox{}
-		
-		\subsubsection{Caching offline}
-		\mbox{}
-		
-		\subsection{Analisi ammortizzata}
-	
-	\subsubsection{Analisi aggregata}
-	\mbox{}
-	
-	\subsubsection{Metodo del credito}
-	\mbox{}
-	
-	\subsubsection{Metodo del potenziale}
-	\mbox{}
-	
-	\subsubsection{Tabelle dinamiche}
-	\mbox{}
-	
-	% ================================================================
-	\section{Strutture dati avanzate}
-		\subsection{Aumentare le strutture dati}
-		
-		\subsubsection{Statistiche d'ordine dinamiche}
-		\mbox{}
-		
-		\subsubsection{Come aumentare una struttura dati}
-		\mbox{}
-		
-		\subsubsection{Alberi di intervalli}
-		\mbox{}
-		
-		\subsection{B-Tree}
-		\mbox{}
-		
-		\subsection{Strutture dati per insiemi disgiunti (Union-Find)}
-	\mbox{}
-	
-	% ================================================================
-	\section{Algoritmi per grafi}
-		\subsection{Algoritmi elementari su grafi}
-		
-		\subsubsection{Rappresentazioni dei grafi}
-		\mbox{}
-		
-		\subsubsection{Visita in ampiezza (BFS)}
-		\mbox{}
-		
-		\subsubsection{Visita in profondità (DFS)}
-		\mbox{}
-		
-		\subsubsection{Ordinamento topologico}
-		\mbox{}
-		
-		\subsubsection{Componenti fortemente connesse}
-		\mbox{}
-		
-		\subsection{Alberi di copertura minimi (MST)}
-		
-		\subsubsection{Costruzione incrementale}
-		\mbox{}
-		
-		\subsubsection{Algoritmo di Kruskal}
-		\mbox{}
-		
-		\subsubsection{Algoritmo di Prim}
-		\mbox{}
-		
-		\subsection{Cammini minimi da sorgente singola}
-		
-		\subsubsection{Algoritmo di Bellman-Ford}
-		\mbox{}
-		
-		\subsubsection{Cammini minimi su DAG}
-		\mbox{}
-		
-		\subsubsection{Algoritmo di Dijkstra}
-		\mbox{}
-		
-		\subsection{Cammini minimi tra tutte le coppie}
-		
-		\subsubsection{Floyd-Warshall}
-		\mbox{}
-		
-		\subsubsection{Algoritmo di Johnson}
-		\mbox{}
-		
-		\subsection{Flusso massimo (Ford-Fulkerson)}
-		\mbox{}
-		
-		\subsection{Matching in grafi bipartiti}
-	\mbox{}
 	
 	% ================================================================
 	\section{Può tornare utile}
