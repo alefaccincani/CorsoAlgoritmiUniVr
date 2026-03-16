@@ -373,12 +373,76 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.5\textwidth]{Immagini/FibonacciT.png}
-		\caption{Tempo computazionale dell'algoritmo \texttt{FibonacciR}}
-		\label{fig:fibonacci-tempo}
-		Come mostrato in Figura~\ref{fig:fibonacci-tempo}, il tempo cresce esponenzialmente.
-		
+		\begin{tikzpicture}
+			\begin{axis}[
+				xlabel={$n$},
+				ylabel={tempo di esecuzione (secondi)},
+				xmin=20, xmax=50,
+				ymin=0, ymax=60,
+				grid=major,
+				width=12cm,
+				height=8cm,
+				legend style={
+					at={(0.35,0.65)},
+					anchor=north west,
+					font=\large,
+					fill=white,
+					draw=black,
+					line width=0.8pt
+				},
+				tick label style={font=\normalsize},
+				label style={font=\large},
+				line width=1.2pt
+				]
+				
+				% Ruby
+				\addplot[red, very thick, smooth] coordinates {
+					(20,0) (22,0) (24,0) (26,0.1) (28,0.3) (29,0.8) (30,1.5)
+					(31,3) (32,5) (33,9) (34,16) (35,28) (36,50) (37,60)
+				};
+				\addlegendentry{Ruby}
+				
+				% Scheme
+				\addplot[brown, very thick, smooth] coordinates {
+					(20,0) (23,0) (26,0) (28,0.1) (30,0.3) (32,1) (33,2)
+					(34,4) (35,7) (36,12) (37,22) (38,38) (39,60)
+				};
+				\addlegendentry{Scheme}
+				
+				% Python
+				\addplot[orange, very thick, smooth] coordinates {
+					(20,0) (24,0) (27,0) (29,0.1) (31,0.3) (33,1) (34,2)
+					(35,4) (36,8) (37,15) (38,27) (39,46) (40,60)
+				};
+				\addlegendentry{Python}
+				
+				% C
+				\addplot[blue, very thick, smooth] coordinates {
+					(20,0) (30,0) (35,0) (38,0.1) (40,0.4) (41,0.8) (42,2)
+					(43,4) (44,8) (45,15) (46,27) (47,47) (48,60)
+				};
+				\addlegendentry{C}
+				
+				% Java
+				\addplot[violet, very thick, smooth] coordinates {
+					(20,0) (30,0) (36,0) (39,0.1) (41,0.4) (42,0.8) (43,2)
+					(44,4) (45,8) (46,15) (47,28) (48,48) (49,60)
+				};
+				\addlegendentry{Java}
+				
+				% C-gcc
+				\addplot[blue!40, very thick, smooth] coordinates {
+					(20,0) (30,0) (36,0) (39,0.2) (41,0.5) (42,1) (43,2.5)
+					(44,5) (45,9) (46,17) (47,30) (48,50) (49,60)
+				};
+				\addlegendentry{C-gcc}
+				
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Confronto dei tempi di esecuzione dell'algoritmo ricorsivo \texttt{FibonacciR} in diversi linguaggi. I linguaggi interpretati (Ruby, Scheme, Python) saturano a valori di $n$ molto più bassi rispetto ai linguaggi compilati (C, Java, C-gcc).}
+		\label{fig:fibonacci-linguaggi}
 	\end{figure}
+	
 	
 	\begin{hardnote}
 		\textbf{Problema grave:} anche se l'algoritmo è corretto, è \textbf{terribilmente lento}.
@@ -1324,6 +1388,214 @@
 		\textbf{Per InsertionSort:} il caso medio è $\Theta(n^2)$ come il caso peggiore, perché in media metà degli elementi vanno spostati.
 	\end{hardnote}
 	
+	\pagebreak
+	
+	\subsection{MergeSort}
+	
+	MergeSort è un algoritmo di ordinamento basato sul metodo \textbf{divide et impera},
+	più efficiente di InsertionSort nel caso peggiore: $\Theta(n \lg n)$ contro $\Theta(n^2)$.
+	
+	\subsubsection{Metodo Divide et Impera}
+	
+	Il metodo divide et impera è un paradigma di progettazione degli algoritmi
+	che si articola in tre fasi ricorsive:
+	
+	\begin{itemize}
+		\item \textbf{Divide:} il problema di dimensione $n$ viene suddiviso
+		in $a$ sotto-problemi di dimensione $n/b$.
+		\item \textbf{Impera:} ogni sotto-problema viene risolto ricorsivamente.
+		La ricorsione si ferma quando il problema è sufficientemente piccolo
+		da essere risolto direttamente (caso base).
+		\item \textbf{Combina:} le soluzioni dei sotto-problemi vengono
+		unite per ottenere la soluzione del problema originale.
+	\end{itemize}
+	
+	\begin{nota}
+		InsertionSort usa un approccio \textbf{incrementale}: estende la
+		soluzione di $A[1 \ldots i-1]$ inserendo $A[i]$ nella posizione corretta.
+		MergeSort usa invece \textbf{divide et impera}: risolve due metà
+		indipendentemente e le fonde.
+	\end{nota}
+	
+	\subsubsection{Descrizione dell'algoritmo}
+	
+	Applicando divide et impera al problema dell'ordinamento:
+	
+	\begin{itemize}
+		\item \textbf{Divide:} l'array $A[p \ldots r]$ viene spezzato in due
+		sotto-array $A[p \ldots q]$ e $A[q+1 \ldots r]$, dove
+		$q = \lfloor (p+r)/2 \rfloor$.
+		\item \textbf{Impera:} i due sotto-array vengono ordinati ricorsivamente
+		con MergeSort. Quando $p = r$ (sotto-array di un solo elemento),
+		la ricorsione termina.
+		\item \textbf{Combina:} i due sotto-array ordinati vengono fusi
+		dall'operazione \textsc{Merge}$(A, p, q, r)$.
+	\end{itemize}
+	
+	L'operazione chiave è \textsc{Merge}: dati due sotto-array adiacenti già
+	ordinati, li fonde in un unico sotto-array ordinato.
+	
+	\subsubsection{Pseudocodice}
+	
+	Dato $A[1 \ldots n]$, MergeSort si invoca con
+	\textsc{Merge-Sort}$(A,\, 1,\, n)$.
+	
+	\begin{algorithm}[H]
+		\caption{\textsc{Merge-Sort}$(A, p, r)$}
+		\KwIn{Array $A$, indici $p \leq r$}
+		\KwOut{$A[p \ldots r]$ ordinato in loco}
+		\BlankLine
+		\If{$p < r$}{
+			$q = \lfloor (p + r) / 2 \rfloor$\;
+			\textsc{Merge-Sort}$(A,\, p,\, q)$\;
+			\textsc{Merge-Sort}$(A,\, q+1,\, r)$\;
+			\textsc{Merge}$(A,\, p,\, q,\, r)$\;
+		}
+	\end{algorithm}
+	
+	\begin{algorithm}[H]
+		\caption{\textsc{Merge}$(A, p, q, r)$}
+		\KwIn{$A[p \ldots q]$ e $A[q+1 \ldots r]$ già ordinati}
+		\KwOut{$A[p \ldots r]$ ordinato}
+		\BlankLine
+		$n_L = q - p + 1$\;
+		$n_R = r - q$\;
+		crea array $L[0 \ldots n_L-1]$ e $R[0 \ldots n_R-1]$\;
+		\BlankLine
+		\For{$i = 0$ \KwTo $n_L - 1$}{
+			$L[i] = A[p + i]$\;
+		}
+		\For{$j = 0$ \KwTo $n_R - 1$}{
+			$R[j] = A[q + 1 + j]$\;
+		}
+		\BlankLine
+		$i = 0$;\quad $j = 0$;\quad $k = p$\;
+		\BlankLine
+		\While{$i < n_L$ \normalfont\textbf{and} $j < n_R$}{
+			\eIf{$L[i] \leq R[j]$}{
+				$A[k] = L[i]$;\; $i = i + 1$\;
+			}{
+				$A[k] = R[j]$;\; $j = j + 1$\;
+			}
+			$k = k + 1$\;
+		}
+		\BlankLine
+		\While{$i < n_L$}{
+			$A[k] = L[i]$;\; $i = i + 1$;\; $k = k + 1$\;
+		}
+		\While{$j < n_R$}{
+			$A[k] = R[j]$;\; $j = j + 1$;\; $k = k + 1$\;
+		}
+	\end{algorithm}
+	
+	\begin{nota}
+		Questa è la versione più semplice di \textsc{Merge}. Nel Cormen (ed.\ IV)
+		e in rete esistono versioni più compatte che usano la tecnica della
+		\textbf{sentinella}: si aggiunge $+\infty$ in fondo a $L$ e $R$,
+		eliminando i due cicli \textbf{while} finali.
+	\end{nota}
+	
+	
+	\subsubsection{Correttezza: Invariante di ciclo di Merge}
+	
+	\begin{definizione}[Invariante di \textsc{Merge}]
+		All'inizio di ogni iterazione del ciclo \textbf{while} principale,
+		$A[p \ldots k-1]$ contiene, ordinati, gli $i+j$ elementi minori
+		di tutti gli elementi in $L[0 \ldots n_L-1]$ e $R[0 \ldots n_R-1]$.
+		$L[i]$ e $R[j]$ sono gli elementi più piccoli dei rispettivi array
+		non ancora copiati in $A$.
+	\end{definizione}
+	
+	\begin{proof}
+		\begin{enumerate}
+			\item \textbf{Inizializzazione:} $k = p$, quindi $A[p \ldots k-1]$
+			è vuoto ($0$ elementi copiati). Con $i = j = 0$, $L[0]$ e
+			$R[0]$ sono i minimi non ancora copiati. L'invariante è vera. \checkmark
+			
+			\item \textbf{Conservazione:} supponiamo $L[i] \leq R[j]$ (il caso
+			$L[i] > R[j]$ è simmetrico). $L[i]$ è il minimo tra tutti gli
+			elementi non ancora copiati, quindi viene copiato in $A[k]$.
+			Incrementando $k$ e $i$, l'array $A[p \ldots k-1]$ contiene
+			ora $i+j$ elementi ordinati e $L[i]$ è il nuovo minimo
+			non copiato di $L$. L'invariante è mantenuta. \checkmark
+			
+			\item \textbf{Conclusione:} il ciclo termina quando $i = n_L$
+			oppure $j = n_R$, cioè quando uno dei due array è esaurito.
+			I rimanenti elementi dell'altro array (già ordinati e tutti
+			maggiori di quelli copiati) vengono aggiunti dai due cicli
+			\textbf{while} finali. Al termine, $A[p \ldots r]$ è ordinato
+			e contiene gli stessi elementi originali. \checkmark
+		\end{enumerate}
+	\end{proof}
+	
+	\subsubsection{Complessità}
+	
+	\paragraph{Complessità di \textsc{Merge}.}
+	
+	Sia $n = r - p + 1$ la dimensione del sotto-array da fondere:
+	\begin{itemize}
+		\item Copiare in $L$ e $R$: $n_L + n_R = n$ operazioni
+		\item Ciclo \textbf{while} principale: al più $n$ iterazioni
+		\item Cicli \textbf{while} finali: al più $n$ iterazioni totali
+	\end{itemize}
+	\[
+	T_{\textsc{Merge}}(n) = \Theta(n)
+	\]
+	
+	\paragraph{Equazione di ricorrenza di MergeSort.}
+	
+	Con $a = 2$ sotto-problemi di dimensione $n/2$, costo di divisione
+	$D(n) = \Theta(1)$ e costo di fusione $C(n) = \Theta(n)$:
+	\[
+	T(n) = \begin{cases}
+		\Theta(1)                & \text{se } n = 1           \\[4pt]
+		2\,T(n/2) + \Theta(n)   & \text{altrimenti}
+	\end{cases}
+	\]
+	
+	Applicando il \textbf{Teorema dell'Esperto}:
+	\[
+	\boxed{T(n) = \Theta(n \lg n)} \qquad \text{dove } \lg = \log_2
+	\]
+	
+	\paragraph{Soluzione per albero di ricorsione.}
+	
+\begin{center}
+		\begin{nota}
+		Ad ogni livello $i$ dell'albero vi sono $2^i$ sotto-problemi di
+		dimensione $n/2^i$, ciascuno con costo di fusione $\Theta(n/2^i)$.
+		Il costo totale per livello è:
+		\[
+		2^i \cdot \Theta\!\left(\frac{n}{2^i}\right) = \Theta(n)
+		\]
+		Il numero di livelli è $\lg n + 1$ (le foglie hanno dimensione 1,
+		con $n/2^{\lg n} = 1$). Sommando su tutti i livelli:
+		\[
+		T(n) = (\lg n + 1) \cdot \Theta(n) = \Theta(n \lg n)
+		\]
+	\end{nota}
+\end{center}
+	
+	\subsubsection{Confronto con InsertionSort}
+	
+	\begin{center}
+		\renewcommand{\arraystretch}{1.3}
+		\begin{tabular}{lcc}
+			\toprule
+			\textbf{Proprietà}       & \textbf{InsertionSort} & \textbf{MergeSort}    \\
+			\midrule
+			Paradigma                & Incrementale           & Divide et impera      \\
+			Caso peggiore            & $\Theta(n^2)$          & $\Theta(n \lg n)$     \\
+			Caso migliore            & $\Theta(n)$            & $\Theta(n \lg n)$     \\
+			Caso medio               & $\Theta(n^2)$          & $\Theta(n \lg n)$     \\
+			Ordinamento in-place     & Sì                     & No                    \\
+			Memoria aggiuntiva       & $\Theta(1)$            & $\Theta(n)$           \\
+			Stabile                  & Sì                     & Sì                    \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	
 	\subsection{Tasso di crescita e ordine di grandezza}
 	
 	\begin{softnote}
@@ -1445,8 +1717,7 @@
 	\end{hardnote}
 	
 	% ----------------------------------------------------------------
-	\subsection{Analisi probabilistica e algoritmi randomizzati}
-	
+
 	\subsubsection{Il problema dell'assunzione}
 	\mbox{}
 	
