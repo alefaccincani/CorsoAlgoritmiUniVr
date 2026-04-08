@@ -994,7 +994,7 @@
 	\end{algorithm}
 	
 	\begin{softnote}
-		\textbf{Come funziona InsertionSort passo passo:}
+		\textbf{Come funziona InsertionSort passo p\\asso:}
 		
 		\begin{enumerate}
 			\item Parte dall'elemento in posizione 2 (il primo è già ``ordinato'')
@@ -1580,287 +1580,410 @@
 	
 	% ================================================================
 	\section{Notazione Asintotica}
-	
-	\begin{softnote}
-		Questa sezione introduce gli strumenti matematici per confrontare
-		la \textbf{velocità di crescita} degli algoritmi. Non ci interessa
-		il tempo esatto in secondi (dipende dall'hardware), ma \textit{come}
-		cresce il tempo all'aumentare della dimensione dell'input~$n$.
-	\end{softnote}
-	
-	% ----------------------------------------------------------------
-	\subsection{Introduzione}
-	
-	Quando si analizza il tempo di computazione di un algoritmo, per input
-	sufficientemente grandi, è rilevante soltanto il \textbf{tasso di crescita}.
-	Studiare il tasso di crescita significa studiare
-	l'\textbf{efficienza asintotica} degli algoritmi.
-	
-	\begin{nota}
-		\textbf{Perché ``asintotica''?} Ignoriamo le costanti e i termini
-		di ordine inferiore, che contano poco per input grandi.
 		
-		\textbf{Esempio:}
-		\begin{itemize}
-			\item $T(n) = 3n^2 + 100n + 5$ \quad funzione precisa
-			\item $T(n) \in \Theta(n^2)$ \quad classe asintotica
-		\end{itemize}
-		Per $n = 10000$, il termine $3n^2 = 3\cdot10^8$ domina
-		completamente $100n = 10^6$. La costante e i termini minori
-		diventano irrilevanti.
-	\end{nota}
-	
-	Anziché dare una funzione precisa per il tempo di esecuzione,
-	si preferisce dare una \textbf{classe di funzioni}: la notazione asintotica.
-	
-	% ----------------------------------------------------------------
-	\subsection{Notazione \texorpdfstring{$O$}{O} — Limite superiore}
-	
-	\begin{softnote}
-		$O$-grande risponde a: \textit{``al massimo quanto cresce questo
-			algoritmo?''}. È la notazione più usata perché fornisce una
-		\textbf{garanzia sul caso peggiore}.
-	\end{softnote}
-	
-	\begin{definizione}[$O$-grande]
-		Data una funzione $g(n)$:
+		\begin{softnote}
+			Questa sezione introduce gli strumenti matematici per confrontare
+			la \textbf{velocità di crescita} degli algoritmi. Non ci interessa
+			il tempo esatto in secondi (dipende dall'hardware), ma \textit{come}
+			cresce il tempo all'aumentare della dimensione dell'input~$n$.
+		\end{softnote}
+		
+		% ----------------------------------------------------------------
+		\subsection{Introduzione}
+		
+		Quando si analizza il tempo di computazione di un algoritmo, per input
+		sufficientemente grandi, è rilevante soltanto il \textbf{tasso di crescita}.
+		Studiare il tasso di crescita significa studiare
+		l'\textbf{efficienza asintotica} degli algoritmi.
+		
+		\begin{nota}
+			\textbf{Perché ``asintotica''?} Ignoriamo le costanti e i termini
+			di ordine inferiore, che contano poco per input grandi.
+			
+			\textbf{Esempio:}
+			\begin{itemize}
+				\item $T(n) = 3n^2 + 100n + 5$ \quad funzione precisa
+				\item $T(n) \in \Theta(n^2)$ \quad classe asintotica
+			\end{itemize}
+			Per $n = 10000$, il termine $3n^2 = 3\cdot10^8$ domina
+			completamente $100n = 10^6$. La costante e i termini minori
+			diventano irrilevanti.
+		\end{nota}
+		
+		Anziché dare una funzione precisa per il tempo di esecuzione,
+		si preferisce dare una \textbf{classe di funzioni}: la notazione asintotica.
+		
+		% ----------------------------------------------------------------
+		\subsection{Notazione \texorpdfstring{$O$}{O} — Limite superiore}
+		
+		\begin{softnote}
+			$O$-grande risponde a: \textit{``al massimo quanto cresce questo
+				algoritmo?''}. È la notazione più usata perché fornisce una
+			\textbf{garanzia sul caso peggiore}.
+		\end{softnote}
+		
+		\begin{definizione}[$O$-grande]
+			Data una funzione $g(n)$:
+			\[
+			O(g(n)) = \bigl\{\,f(n) \mid \exists\,c>0,\;n_0>0 :
+			0 \le f(n) \le c\,g(n) \;\forall\,n \ge n_0\bigr\}
+			\]
+			Si scrive $f(n) = O(g(n))$ (abuso di notazione per
+			$f(n) \in O(g(n))$).
+		\end{definizione}
+		
+		\begin{nota}
+			\textbf{In parole semplici:} $f$ cresce \textit{al più} come $g$,
+			a meno di una costante moltiplicativa, per $n$ abbastanza grande.
+			
+			\textbf{Analogia:} $O$ è come il prezzo massimo di un menù fisso.
+			Se so che costa $O(20\text{€})$, non pagherò mai di più (a meno
+			di una costante).
+		\end{nota}
+		
+		\begin{esempio}
+			Dimostriamo che $\tfrac{1}{2}n^2 + 3n \in O(n^2)$.
+			
+			Dobbiamo trovare $c > 0$, $n_0 > 0$ tali che
+			$\tfrac{1}{2}n^2 + 3n \le c\,n^2$ per ogni $n \ge n_0$.
+			
+			Dividendo per $n^2$: $\;\tfrac{1}{2} + 3/n \le c$.
+			
+			Per $n \ge 7$: $\;\tfrac{1}{2}+3/7 < 1$. Quindi $c=1$, $n_0=7$. \checkmark
+		\end{esempio}
+		
+		\begin{figure}[H]
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[
+					xlabel={$n$},
+					ylabel={valore},
+					xmin=0, xmax=12,
+					ymin=0, ymax=80,
+					grid=major,
+					width=11cm, height=7cm,
+					legend style={at={(0.05,0.95)}, anchor=north west,
+						fill=white, draw=black, font=\small},
+					tick label style={font=\small},
+					label style={font=\normalsize, color=primary},
+					line width=1.2pt,
+					]
+					\addplot[blue, very thick, domain=0:12, samples=200]
+					{0.5*x^2 + 3*x};
+					\addlegendentry{$f(n)=\frac{1}{2}n^2+3n$}
+					
+					\addplot[red!70!black, dashed, very thick, domain=0:12, samples=200]
+					{x^2};
+					\addlegendentry{$c\,g(n)=n^2$}
+					
+					\addplot[gray, dotted, thick] coordinates {(7,0) (7,49)};
+					\node[above right, font=\small, color=gray] at (axis cs:7,0)
+					{$n_0=7$};
+				\end{axis}
+			\end{tikzpicture}
+			\caption{Da $n_0=7$ la curva rossa ($n^2$) domina quella blu
+				($\tfrac{1}{2}n^2+3n$), confermando
+				$\tfrac{1}{2}n^2+3n = O(n^2)$.}
+		\end{figure}
+		
+		\begin{hardnote}
+			$O$ viene usata quasi sempre per i tempi di esecuzione perché è
+			\textbf{facile da determinare}: basta trovare \textit{un} valore
+			di $c$ e $n_0$ che funzionino — non è necessario trovare i valori
+			ottimali.
+		\end{hardnote}
+		
+		% ----------------------------------------------------------------
+		\subsection{Notazione \texorpdfstring{$\Omega$}{Omega} — Limite inferiore}
+		
+		\begin{softnote}
+			$\Omega$ risponde a: \textit{``almeno quanto cresce questo
+				algoritmo?''}. Fornisce un \textbf{lower bound} sulla complessità.
+		\end{softnote}
+		
+		\begin{definizione}[$\Omega$-grande]
+			Data una funzione $g(n)$:
+			\[
+			\Omega(g(n)) = \bigl\{\,f(n) \mid \exists\,c>0,\;n_0>0 :
+			0 \le c\,g(n) \le f(n) \;\forall\,n \ge n_0\bigr\}
+			\]
+		\end{definizione}
+		
+		\begin{nota}
+			\textbf{In parole semplici:} $f$ cresce \textit{almeno} come $g$.
+			
+			\textbf{Attenzione:} quando si caratterizza un tempo di esecuzione
+			con $\Omega$ significativo (diverso da $\Omega(n)$), si deve
+			specificare il tipo di analisi (caso peggiore o migliore), perché
+			non esiste una prassi consolidata.
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Notazione \texorpdfstring{$\Theta$}{Theta} — Limite stretto}
+		
+		\begin{softnote}
+			$\Theta$ è la notazione più \textbf{precisa}: la funzione è
+			``incastrata'' tra due costanti di $g(n)$. Si usa quando si
+			conosce sia il limite superiore che inferiore.
+		\end{softnote}
+		
+		\begin{definizione}[$\Theta$]
+			Data una funzione $g(n)$:
+			\[
+			\Theta(g(n)) = \bigl\{\,f(n) \mid \exists\,c_1>0,\,c_2>0,
+			\,n_0>0 : 0 \le c_1\,g(n) \le f(n) \le c_2\,g(n)
+			\;\forall\,n \ge n_0\bigr\}
+			\]
+		\end{definizione}
+		
+		\begin{teorema}
+			Date $f(n)$, $g(n)$:
+			\[
+			f(n) \in \Theta(g(n)) \iff f(n) \in \Omega(g(n))
+			\;\text{ e }\; f(n) \in O(g(n))
+			\]
+		\end{teorema}
+		
+		\begin{esempio}
+			Dimostriamo che $\tfrac{1}{2}n^2 - 3n \in \Theta(n^2)$.
+			
+			Si devono trovare $c_1, c_2, n_0$ tali che
+			$c_1 n^2 \le \tfrac{1}{2}n^2 - 3n \le c_2 n^2$.
+			
+			Dividendo per $n^2$: $c_1 \le \tfrac{1}{2} - 3/n \le c_2$.
+			
+			Per $n \ge 7$: scegliendo $c_1 = \tfrac{1}{14}$ e $c_2 = \tfrac{1}{2}$,
+			la disuguaglianza è soddisfatta. \checkmark
+		\end{esempio}
+		
+		\begin{figure}[H]
+			\centering
+			\begin{tikzpicture}
+				\begin{axis}[
+					xlabel={$n$},
+					ylabel={valore},
+					xmin=0, xmax=15,
+					ymin=-5, ymax=80,
+					grid=major,
+					width=11cm, height=7cm,
+					legend style={at={(0.05,0.95)}, anchor=north west,
+						fill=white, draw=black, font=\small},
+					tick label style={font=\small},
+					label style={font=\normalsize, color=primary},
+					line width=1.2pt,
+					]
+					\addplot[blue, very thick, domain=0:15, samples=200]
+					{0.5*x^2 - 3*x};
+					\addlegendentry{$f(n)=\frac{1}{2}n^2-3n$}
+					
+					\addplot[red!70!black, dashed, thick, domain=0:15, samples=200]
+					{0.5*x^2};
+					\addlegendentry{$c_2\,n^2 = \frac{1}{2}n^2$}
+					
+					\addplot[green!60!black, dashed, thick, domain=0:15, samples=200]
+					{(1/14)*x^2};
+					\addlegendentry{$c_1\,n^2 = \frac{1}{14}n^2$}
+					
+					\addplot[gray, dotted, thick] coordinates {(7,-5) (7,35)};
+					\node[above right, font=\small, color=gray] at (axis cs:7,-5)
+					{$n_0=7$};
+				\end{axis}
+			\end{tikzpicture}
+			\caption{Per $n \ge 7$, $f(n)$ è compresa tra le due curve tratteggiate:
+				$\tfrac{1}{14}n^2 \le \tfrac{1}{2}n^2-3n \le \tfrac{1}{2}n^2$,
+				confermando $\Theta(n^2)$.}
+		\end{figure}
+		
+		\begin{nota}
+			\textbf{Esempio pratico —} InsertionSort:
+			\begin{itemize}
+				\item caso migliore (array già ordinato): $\Omega(n)$
+				\item caso peggiore (array inverso): $O(n^2)$
+				\item se consideriamo \textit{solo} il caso peggiore: $\Theta(n^2)$
+			\end{itemize}
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Uso nelle equazioni e disequazioni}
+		
+		\begin{softnote}
+			La notazione asintotica può comparire dentro espressioni algebriche.
+			La convenzione è che il \textbf{lato destro} sia sempre meno preciso del sinistro:
+			$\Theta(n)$ a destra significa ``una qualche funzione in $\Theta(n)$''.
+		\end{softnote}
+		
+		\begin{osservazione}
+			Si scrive $2n^2 + \Theta(n) = \Theta(n^2)$ con la seguente lettura: per ogni
+			funzione $f(n)\in\Theta(n)$, la funzione $2n^2+f(n)$ appartiene a $\Theta(n^2)$.
+			Il lato sinistro è più preciso del destro: $\Theta(n)$ a destra indica
+			\textit{``una qualche funzione in quella classe''}, non un'identità tra insiemi.
+		\end{osservazione}
+		
+		\begin{nota}
+			\textbf{Regola pratica:} quando la notazione appare a sinistra dell'uguale,
+			indica un membro anonimo della classe; a destra indica la classe complessiva.
+			Usare $=$ è un abuso di notazione comodo ma non simmetrico:
+			$\Theta(n) = \Theta(n^2)$ sarebbe privo di senso.
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Proprietà di confronto tra funzioni}
+		
+		\begin{softnote}
+			Le relazioni asintotiche si comportano in modo analogo ai confronti tra
+			numeri reali ($\le$, $\ge$, $=$), ma \textbf{non tutte le proprietà valgono}.
+		\end{softnote}
+		
+		Siano $f$, $g$, $h$ funzioni asintoticamente positive.
+		
+		\begin{teorema}[Proprietà]
+			\begin{enumerate}
+				\item \textbf{Transitività:}
+				$f = O(g)$ e $g = O(h) \;\Rightarrow\; f = O(h)$
+				(vale anche per $\Omega$, $\Theta$, $o$, $\omega$).
+				\item \textbf{Riflessività:}
+				$f = \Theta(f)$, $\;f = O(f)$, $\;f = \Omega(f)$.
+				\item \textbf{Simmetria:}
+				$f = \Theta(g) \;\Leftrightarrow\; g = \Theta(f)$.
+				\item \textbf{Proprietà trasposta:}
+				$f = O(g) \;\Leftrightarrow\; g = \Omega(f)$; \quad
+				$f = o(g) \;\Leftrightarrow\; g = \omega(f)$.
+			\end{enumerate}
+		\end{teorema}
+		
+		\begin{nota}
+			La \textbf{proprietà trasposta} è la più utile: dimostrare un limite superiore
+			su $g$ equivale a dimostrare un limite inferiore su $f$, e viceversa.
+		\end{nota}
+		
+		\begin{osservazione}[Funzioni non confrontabili]
+			Non tutte le coppie di funzioni sono confrontabili asintoticamente.
+			Ad esempio, $f(n)=n$ e $g(n)=n^{1+\sin n}$ non soddisfano né
+			$f=O(g)$ né $f=\Omega(g)$, perché l'esponente $1+\sin n$
+			oscilla tra $0$ e $2$ senza stabilizzarsi.
+		\end{osservazione}
+		
+		% ----------------------------------------------------------------
+		\subsection{Limiti asintotici delle funzioni elementari}
+		
+		\begin{softnote}
+			I tre teoremi seguenti forniscono la \textbf{gerarchia fondamentale}
+			tra classi di funzioni: polinomi, logaritmi e esponenziali.
+			Sono usati continuamente nell'analisi degli algoritmi.
+		\end{softnote}
+		
+		\begin{teorema}[Polinomi]
+			Sia $f(n) = a_d n^d + a_{d-1}n^{d-1} + \cdots + a_0$ un polinomio
+			di grado $d$ con $a_d > 0$. Allora $f(n) = \Theta(n^d)$.
+		\end{teorema}
+		\begin{proof}
+			Basta mostrare $f(n) = O(n^d)$ e $f(n) = \Omega(n^d)$.
+			Per il limite superiore: $f(n) \le (|a_d|+\cdots+|a_0|)\,n^d$
+			per ogni $n \ge 1$. Per il limite inferiore: $f(n) \ge \frac{a_d}{2}\,n^d$
+			per $n$ sufficientemente grande, poiché i termini minori crescono
+			più lentamente di $a_d n^d$.
+		\end{proof}
+		
+		\begin{teorema}[Logaritmi e polinomi]
+			Per ogni costante $a > 0$, $m \ge 0$ e $k \ge 0$:
+			\[
+			(\log n^m)^k = (m \log n)^k = \Theta\!\bigl((\log n)^k\bigr) = O(n^a).
+			\]
+			In particolare, $\log n = O(n)$.
+		\end{teorema}
+		\begin{proof}
+			Si dimostra $\log n = O(n^a)$ per ogni $a>0$ usando i limiti:
+			$\lim_{n\to\infty} \frac{\log n}{n^a} = 0$ (per L'Hôpital o per
+			la definizione di esponenziale).
+		\end{proof}
+		
+		\begin{teorema}[Esponenziali e polinomi]
+			Per ogni costante $a > 1$ e $k \ge 0$:
+			\[
+			n^k = O(a^n).
+			\]
+		\end{teorema}
+		\begin{proof}
+			$\lim_{n\to\infty} n^k / a^n = 0$ per ogni $a>1$ e $k$ fissato,
+			poiché gli esponenziali crescono più velocemente di qualunque polinomio.
+		\end{proof}
+		
+		\begin{corollario}
+			Per ogni $a > 1$:
+			\[
+			(\log n)^k = O(n^a), \qquad
+			n^k = O(a^n), \qquad
+			a^n = O(n!).
+			\]
+		\end{corollario}
+		
+		\begin{hardnote}
+			\textbf{Gerarchia da ricordare} (dal più lento al più veloce):
+			\[
+			O(1) \;\subset\; O(\log n) \;\subset\; O(n) \;\subset\;
+			O(n\log n) \;\subset\; O(n^2) \;\subset\; O(n^k) \;\subset\;
+			O(a^n) \;\subset\; O(n!)
+			\]
+			Queste inclusioni derivano direttamente dai tre teoremi sopra.
+		\end{hardnote}
+		% ----------------------------------------------------------------
+		\subsection{Equazioni e disequazioni asintotiche}
+		
+		Le notazioni asintotiche servono per \textbf{eliminare dettagli non
+			importanti}. Si trovano spesso a destra di un ``$=$'' che sostituisce
+		$\in$:
+		
 		\[
-		O(g(n)) = \bigl\{\,f(n) \mid \exists\,c>0,\;n_0>0 :
-		0 \le f(n) \le c\,g(n) \;\forall\,n \ge n_0\bigr\}
+		2n^2 + \Theta(n) = \Theta(n^2)
 		\]
-		Si scrive $f(n) = O(g(n))$ (abuso di notazione per
-		$f(n) \in O(g(n))$).
-	\end{definizione}
-	
-	\begin{nota}
-		\textbf{In parole semplici:} $f$ cresce \textit{al più} come $g$,
-		a meno di una costante moltiplicativa, per $n$ abbastanza grande.
 		
-		\textbf{Analogia:} $O$ è come il prezzo massimo di un menù fisso.
-		Se so che costa $O(20\text{€})$, non pagherò mai di più (a meno
-		di una costante).
-	\end{nota}
-	
-	\begin{esempio}
-		Dimostriamo che $\tfrac{1}{2}n^2 + 3n \in O(n^2)$.
+		\begin{nota}
+			\textbf{Regola fondamentale:} il lato destro di un'equazione
+			asintotica è sempre \textit{meno preciso} del lato sinistro.
+			Si può leggere come: ``il lato sinistro appartiene all'insieme
+			descritto dal lato destro''.
+		\end{nota}
 		
-		Dobbiamo trovare $c > 0$, $n_0 > 0$ tali che
-		$\tfrac{1}{2}n^2 + 3n \le c\,n^2$ per ogni $n \ge n_0$.
+		\begin{esempio}
+			Verificare le seguenti:
+			\begin{itemize}
+				\item $2n^2 + 3n + 1 = 2n^2 + \Theta(n) = \Theta(n^2)$ \quad \checkmark
+				\item $n^2 + 4n + 1 = n^2 + \Theta(n)$? \quad \checkmark
+				\item $n^2 + \Theta(n) = O(n^2)$? \quad \checkmark
+			\end{itemize}
+		\end{esempio}
 		
-		Dividendo per $n^2$: $\;\tfrac{1}{2} + 3/n \le c$.
+		% ----------------------------------------------------------------
+		\subsection{Proprietà delle notazioni asintotiche}
 		
-		Per $n \ge 7$: $\;\tfrac{1}{2}+3/7 < 1$. Quindi $c=1$, $n_0=7$. \checkmark
-	\end{esempio}
-	
-	\begin{figure}[H]
-		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				xlabel={$n$},
-				ylabel={valore},
-				xmin=0, xmax=12,
-				ymin=0, ymax=80,
-				grid=major,
-				width=11cm, height=7cm,
-				legend style={at={(0.05,0.95)}, anchor=north west,
-					fill=white, draw=black, font=\small},
-				tick label style={font=\small},
-				label style={font=\normalsize, color=primary},
-				line width=1.2pt,
-				]
-				\addplot[blue, very thick, domain=0:12, samples=200]
-				{0.5*x^2 + 3*x};
-				\addlegendentry{$f(n)=\frac{1}{2}n^2+3n$}
-				
-				\addplot[red!70!black, dashed, very thick, domain=0:12, samples=200]
-				{x^2};
-				\addlegendentry{$c\,g(n)=n^2$}
-				
-				\addplot[gray, dotted, thick] coordinates {(7,0) (7,49)};
-				\node[above right, font=\small, color=gray] at (axis cs:7,0)
-				{$n_0=7$};
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Da $n_0=7$ la curva rossa ($n^2$) domina quella blu
-			($\tfrac{1}{2}n^2+3n$), confermando
-			$\tfrac{1}{2}n^2+3n = O(n^2)$.}
-	\end{figure}
-	
-	\begin{hardnote}
-		$O$ viene usata quasi sempre per i tempi di esecuzione perché è
-		\textbf{facile da determinare}: basta trovare \textit{un} valore
-		di $c$ e $n_0$ che funzionino — non è necessario trovare i valori
-		ottimali.
-	\end{hardnote}
-	
-	% ----------------------------------------------------------------
-	\subsection{Notazione \texorpdfstring{$\Omega$}{Omega} — Limite inferiore}
-	
-	\begin{softnote}
-		$\Omega$ risponde a: \textit{``almeno quanto cresce questo
-			algoritmo?''}. Fornisce un \textbf{lower bound} sulla complessità.
-	\end{softnote}
-	
-	\begin{definizione}[$\Omega$-grande]
-		Data una funzione $g(n)$:
-		\[
-		\Omega(g(n)) = \bigl\{\,f(n) \mid \exists\,c>0,\;n_0>0 :
-		0 \le c\,g(n) \le f(n) \;\forall\,n \ge n_0\bigr\}
-		\]
-	\end{definizione}
-	
-	\begin{nota}
-		\textbf{In parole semplici:} $f$ cresce \textit{almeno} come $g$.
+		Siano $f(n)$ e $g(n)$ asintoticamente positive ($f(n), g(n) > 0$
+		per $n$ sufficientemente grande).
 		
-		\textbf{Attenzione:} quando si caratterizza un tempo di esecuzione
-		con $\Omega$ significativo (diverso da $\Omega(n)$), si deve
-		specificare il tipo di analisi (caso peggiore o migliore), perché
-		non esiste una prassi consolidata.
-	\end{nota}
-	
-	% ----------------------------------------------------------------
-	\subsection{Notazione \texorpdfstring{$\Theta$}{Theta} — Limite stretto}
-	
-	\begin{softnote}
-		$\Theta$ è la notazione più \textbf{precisa}: la funzione è
-		``incastrata'' tra due costanti di $g(n)$. Si usa quando si
-		conosce sia il limite superiore che inferiore.
-	\end{softnote}
-	
-	\begin{definizione}[$\Theta$]
-		Data una funzione $g(n)$:
-		\[
-		\Theta(g(n)) = \bigl\{\,f(n) \mid \exists\,c_1>0,\,c_2>0,
-		\,n_0>0 : 0 \le c_1\,g(n) \le f(n) \le c_2\,g(n)
-		\;\forall\,n \ge n_0\bigr\}
-		\]
-	\end{definizione}
-	
-	\begin{teorema}
-		Date $f(n)$, $g(n)$:
-		\[
-		f(n) \in \Theta(g(n)) \iff f(n) \in \Omega(g(n))
-		\;\text{ e }\; f(n) \in O(g(n))
-		\]
-	\end{teorema}
-	
-	\begin{esempio}
-		Dimostriamo che $\tfrac{1}{2}n^2 - 3n \in \Theta(n^2)$.
+		\begin{center}
+			\renewcommand{\arraystretch}{1.3}
+			\begin{tabular}{lll}
+				\toprule
+				\textbf{Proprietà} & \textbf{$\Theta$} & \textbf{$O$ / $\Omega$} \\
+				\midrule
+				Transitiva & $f\!=\!\Theta(g),\,g\!=\!\Theta(h) \Rightarrow f\!=\!\Theta(h)$
+				& vale anche per $O$ e $\Omega$ \\
+				Riflessiva & $f = \Theta(f)$ & $f=O(f)$, $f=\Omega(f)$ \\
+				Simmetrica & $f=\Theta(g) \Leftrightarrow g=\Theta(f)$ & — \\
+				Trasposta  & — & $f=O(g) \Leftrightarrow g=\Omega(f)$ \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
 		
-		Si devono trovare $c_1, c_2, n_0$ tali che
-		$c_1 n^2 \le \tfrac{1}{2}n^2 - 3n \le c_2 n^2$.
+		\begin{hardnote}
+			\textbf{Non tutte le funzioni sono confrontabili!}
+			
+			Ad esempio $n$ e $n^{1+\sin n}$: poiché $\sin n$ oscilla tra
+			$-1$ e $+1$, l'esponente oscilla tra $0$ e $2$. Non si può
+			affermare né $n = O(n^{1+\sin n})$ né il contrario.
+		\end{hardnote}
 		
-		Dividendo per $n^2$: $c_1 \le \tfrac{1}{2} - 3/n \le c_2$.
-		
-		Per $n \ge 7$: scegliendo $c_1 = \tfrac{1}{14}$ e $c_2 = \tfrac{1}{2}$,
-		la disuguaglianza è soddisfatta. \checkmark
-	\end{esempio}
-	
-	\begin{figure}[H]
-		\centering
-		\begin{tikzpicture}
-			\begin{axis}[
-				xlabel={$n$},
-				ylabel={valore},
-				xmin=0, xmax=15,
-				ymin=-5, ymax=80,
-				grid=major,
-				width=11cm, height=7cm,
-				legend style={at={(0.05,0.95)}, anchor=north west,
-					fill=white, draw=black, font=\small},
-				tick label style={font=\small},
-				label style={font=\normalsize, color=primary},
-				line width=1.2pt,
-				]
-				\addplot[blue, very thick, domain=0:15, samples=200]
-				{0.5*x^2 - 3*x};
-				\addlegendentry{$f(n)=\frac{1}{2}n^2-3n$}
-				
-				\addplot[red!70!black, dashed, thick, domain=0:15, samples=200]
-				{0.5*x^2};
-				\addlegendentry{$c_2\,n^2 = \frac{1}{2}n^2$}
-				
-				\addplot[green!60!black, dashed, thick, domain=0:15, samples=200]
-				{(1/14)*x^2};
-				\addlegendentry{$c_1\,n^2 = \frac{1}{14}n^2$}
-				
-				\addplot[gray, dotted, thick] coordinates {(7,-5) (7,35)};
-				\node[above right, font=\small, color=gray] at (axis cs:7,-5)
-				{$n_0=7$};
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Per $n \ge 7$, $f(n)$ è compresa tra le due curve tratteggiate:
-			$\tfrac{1}{14}n^2 \le \tfrac{1}{2}n^2-3n \le \tfrac{1}{2}n^2$,
-			confermando $\Theta(n^2)$.}
-	\end{figure}
-	
-	\begin{nota}
-		\textbf{Esempio pratico —} InsertionSort:
-		\begin{itemize}
-			\item caso migliore (array già ordinato): $\Omega(n)$
-			\item caso peggiore (array inverso): $O(n^2)$
-			\item se consideriamo \textit{solo} il caso peggiore: $\Theta(n^2)$
-		\end{itemize}
-	\end{nota}
-	
-	% ----------------------------------------------------------------
-	\subsection{Equazioni e disequazioni asintotiche}
-	
-	Le notazioni asintotiche servono per \textbf{eliminare dettagli non
-		importanti}. Si trovano spesso a destra di un ``$=$'' che sostituisce
-	$\in$:
-	
-	\[
-	2n^2 + \Theta(n) = \Theta(n^2)
-	\]
-	
-	\begin{nota}
-		\textbf{Regola fondamentale:} il lato destro di un'equazione
-		asintotica è sempre \textit{meno preciso} del lato sinistro.
-		Si può leggere come: ``il lato sinistro appartiene all'insieme
-		descritto dal lato destro''.
-	\end{nota}
-	
-	\begin{esempio}
-		Verificare le seguenti:
-		\begin{itemize}
-			\item $2n^2 + 3n + 1 = 2n^2 + \Theta(n) = \Theta(n^2)$ \quad \checkmark
-			\item $n^2 + 4n + 1 = n^2 + \Theta(n)$? \quad \checkmark
-			\item $n^2 + \Theta(n) = O(n^2)$? \quad \checkmark
-		\end{itemize}
-	\end{esempio}
-	
-	% ----------------------------------------------------------------
-	\subsection{Proprietà delle notazioni asintotiche}
-	
-	Siano $f(n)$ e $g(n)$ asintoticamente positive ($f(n), g(n) > 0$
-	per $n$ sufficientemente grande).
-	
-	\begin{center}
-		\renewcommand{\arraystretch}{1.3}
-		\begin{tabular}{lll}
-			\toprule
-			\textbf{Proprietà} & \textbf{$\Theta$} & \textbf{$O$ / $\Omega$} \\
-			\midrule
-			Transitiva & $f\!=\!\Theta(g),\,g\!=\!\Theta(h) \Rightarrow f\!=\!\Theta(h)$
-			& vale anche per $O$ e $\Omega$ \\
-			Riflessiva & $f = \Theta(f)$ & $f=O(f)$, $f=\Omega(f)$ \\
-			Simmetrica & $f=\Theta(g) \Leftrightarrow g=\Theta(f)$ & — \\
-			Trasposta  & — & $f=O(g) \Leftrightarrow g=\Omega(f)$ \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
-	\begin{hardnote}
-		\textbf{Non tutte le funzioni sono confrontabili!}
-		
-		Ad esempio $n$ e $n^{1+\sin n}$: poiché $\sin n$ oscilla tra
-		$-1$ e $+1$, l'esponente oscilla tra $0$ e $2$. Non si può
-		affermare né $n = O(n^{1+\sin n})$ né il contrario.
-	\end{hardnote}
-	
-	% ----------------------------------------------------------------
-	\subsection{Limiti asintotici delle funzioni elementari}
+		% ----------------------------------------------------------------
+		\subsection{Limiti asintotici delle funzioni elementari}
 	
 	\begin{softnote}
 		Questa sezione stabilisce la \textbf{gerarchia di crescita} tra
@@ -1962,399 +2085,1366 @@
 	
 	% ================================================================
 	\section{Divide et Impera}
-	
-	\begin{softnote}
-		Il \textbf{divide et impera} è una delle tecniche algoritmiche
-		più potenti. L'idea è semplice: se un problema è troppo grande
-		per essere risolto direttamente, spezzalo in pezzi più piccoli,
-		risolvi i pezzi, e combina le soluzioni.
-	\end{softnote}
-	
-	% ----------------------------------------------------------------
-	\subsection{Idea Generale}
-	
-	Il paradigma divide et impera prevede tre passi:
-	\begin{enumerate}
-		\item \textbf{Divide:} suddividi il problema in sottoproblemi
-		di dimensione inferiore;
-		\item \textbf{Impera:} risolvi ricorsivamente i sottoproblemi
-		(quando la dimensione è abbastanza piccola, risolvi
-		direttamente);
-		\item \textbf{Combina:} unisci i risultati per ottenere
-		la soluzione al problema originale.
-	\end{enumerate}
-	
-	\begin{nota}
-		\textbf{Analogia:} immagina di dover ordinare un mazzo di 52 carte.
-		Invece di ordinarle tutte in una volta (difficile), le dividi in
-		due mazzi da 26, ordini ciascun mazzo separatamente, e poi fondi
-		i due mazzi ordinati. Questo è esattamente MergeSort!
-	\end{nota}
-	
-	\subsubsection*{Aspetti cruciali}
-	
-	\begin{itemize}
-		\item \textbf{Suddivisione:} deve produrre sottoproblemi il più
-		possibile \textit{disgiunti}.
-		\item \textbf{Ricorsione:} deve terminare quando la dimensione
-		permette una risoluzione diretta (caso base).
-		\item \textbf{Combinazione:} non deve richiedere un tempo
-		maggiore di quello della risoluzione dei sottoproblemi.
-	\end{itemize}
-	
-	% ----------------------------------------------------------------
-	\subsection{Schema Generale}
-	
-	\begin{algorithm}[H]
-		\caption{DivideEtImpera($X$)}
-		\KwIn{$X$: istanza di dimensione $|X| = n$}
-		\KwOut{$Y$: soluzione}
-		\If{$|X| \le n_0$}{
-			\Return{adhoc($X$)}\tcp*{Caso base: soluzione diretta}
-		}
-		Dividi $X$ in sottoistanze $X_1, X_2, \ldots, X_a$\;
-		\For{$i = 1$ \KwTo $a$}{
-			$Y_i \gets \text{DivideEtImpera}(X_i)$\tcp*{Ricorsione}
-		}
-		$Y \gets \text{combina}(Y_1, \ldots, Y_a)$\;
-		\Return{$Y$}\;
-	\end{algorithm}
-	
-	\begin{softnote}
+		
+		\begin{softnote}
+			Il \textbf{divide et impera} è una delle tecniche algoritmiche
+			più potenti. L'idea è semplice: se un problema è troppo grande
+			per essere risolto direttamente, spezzalo in pezzi più piccoli,
+			risolvi i pezzi, e combina le soluzioni.
+		\end{softnote}
+		\subsection{Idea Generale}
+		
+		Il paradigma divide et impera prevede tre passi:
+		\begin{enumerate}
+			\item \textbf{Divide:} suddividi il problema in sottoproblemi
+			di dimensione inferiore;
+			\item \textbf{Impera:} risolvi ricorsivamente i sottoproblemi
+			(quando la dimensione è abbastanza piccola, risolvi
+			direttamente);
+			\item \textbf{Combina:} unisci i risultati per ottenere
+			la soluzione al problema originale.
+		\end{enumerate}
+		
+		\begin{nota}
+			\textbf{Analogia:} immagina di dover ordinare un mazzo di 52 carte.
+			Invece di ordinarle tutte in una volta (difficile), le dividi in
+			due mazzi da 26, ordini ciascun mazzo separatamente, e poi fondi
+			i due mazzi ordinati. Questo è esattamente MergeSort!
+		\end{nota}
+		
+		\subsubsection*{Aspetti cruciali}
+		
 		\begin{itemize}
-			\item \textbf{adhoc}($X$): risolve istanze piccole in tempo
-			costante o lineare.
-			\item \textbf{dividi}: produce $a$ sottoistanze di dimensione
-			$n/b$ ciascuna ($b>1$).
-			\item Se $a=1$: si chiama \textit{semplificazione} (es.\ ricerca binaria).
-			\item \textbf{combina}: ha solitamente complessità $O(n^d)$.
+			\item \textbf{Suddivisione:} deve produrre sottoproblemi il più
+			possibile \textit{disgiunti}.
+			\item \textbf{Ricorsione:} deve terminare quando la dimensione
+			permette una risoluzione diretta (caso base).
+			\item \textbf{Combinazione:} non deve richiedere un tempo
+			maggiore di quello della risoluzione dei sottoproblemi.
 		\end{itemize}
-	\end{softnote}
-	
-	% ----------------------------------------------------------------
-	\subsection{Costo Computazionale}
-	
-	Il costo è la soluzione di un'\textbf{equazione di ricorrenza}:
-	
-	\[
-	T(n) =
-	\begin{cases}
-		g(n)           & n \le n_0 \\
-		a\,T(n/b)+f(n) & \text{altrimenti}
-	\end{cases}
-	\]
-	
-	dove $f(n) = \text{tempo(dividi)} + \text{tempo(combina)}$.
-	
-	\begin{nota}
-		\textbf{Ricorsione o iterazione?}
-		\begin{itemize}
-			\item \textbf{Pro iterazione:} elimina l'overhead delle chiamate
-			ricorsive; risparmia fino a $\Theta(h)$ spazio ausiliario.
-			\item \textbf{Contro:} l'algoritmo diventa più complicato da scrivere.
-		\end{itemize}
-	\end{nota}
-	
-	% ----------------------------------------------------------------
-	\subsection{Esempi di Applicazione}
-	
-	\subsubsection{Prodotto di Interi Grandi}
-	
-	\begin{definizione}[Problema Prodotto]
-		\textbf{Input:} due interi $x$, $y$ di $n$ bit ciascuno ($n = 2^k$).\\
-		\textbf{Output:} il loro prodotto $xy$.\\
-		\textbf{Costo naïve:} $O(n^2)$.
-	\end{definizione}
-	
-	Si suddivide $x = 2^{n/2}x_L + x_R$, $y = 2^{n/2}y_L + y_R$:
-	\[
-	xy = 2^n(x_L y_L) + 2^{n/2}(x_L y_R + x_R y_L) + x_R y_R
-	\]
-	
-	Questo richiede 4 moltiplicazioni di dimensione $n/2$, dando
-	$T(n) = 4T(n/2) + O(n) = O(n^2)$ — nessun miglioramento.
-	
-	\begin{hardnote}
-		\textbf{Trucco di Gauss} (1777--1855): bastano \textbf{3 moltiplicazioni}:
-		\[
-		P_1 = x_L y_L,\quad P_2 = x_R y_R,\quad
-		P_3 = (x_L+x_R)(y_L+y_R)
-		\]
-		\[
-		xy = 2^n P_1 + 2^{n/2}(P_3 - P_1 - P_2) + P_2
-		\]
-	\end{hardnote}
-	
-	\begin{algorithm}[H]
-		\caption{Prodotto($x$, $y$)}
-		\KwIn{$x$, $y$ interi non negativi di $n = 2^\ell$ bit}
-		\KwOut{prodotto $xy$}
-		\If{$n \le 64$}{\Return{$x \cdot y$}\tcp*{Caso base $\Theta(1)$}}
-		$x_L, x_R \gets$ metà sinistra/destra di $x$\tcp*{Divide $\Theta(n)$}
-		$y_L, y_R \gets$ metà sinistra/destra di $y$\;
-		$P_1 \gets \text{Prodotto}(x_L,\,y_L)$\;
-		$P_2 \gets \text{Prodotto}(x_R,\,y_R)$\tcp*{Impera $3T(n/2)$}
-		$P_3 \gets \text{Prodotto}(x_L+x_R,\,y_L+y_R)$\;
-		\Return{$(P_1 \ll n) + ((P_3-P_1-P_2) \ll n/2) + P_2$}
-		\tcp*{Combina $\Theta(n)$}
-	\end{algorithm}
-	
-	\begin{softnote}
-		\textbf{Complessità:}
-		\[
-		T(n) = 3\,T(n/2) + \Theta(n) = \Theta(n^{\log_2 3})
-		= \Theta(n^{1.585})
-		\]
-	\end{softnote}
-	
-	% --------------------------------
-	\subsubsection{MergeSort}
-	
-	Lo schema divide et impera per MergeSort:
-	\begin{itemize}
-		\item \textbf{Divide:} 2 sottoarray di $n/2$ elementi — costo $\Theta(1)$.
-		\item \textbf{Impera:} ordina i due sottoarray ricorsivamente.
-		\item \textbf{Combina:} fondi i due sottoarray ordinati — costo $\Theta(n)$.
-	\end{itemize}
-	
-	\subsubsection*{Analisi di complessità}
-	
-	\[
-	T(n) =
-	\begin{cases}
-		\Theta(1)             & n = 1 \\
-		2\,T(n/2) + \Theta(n) & n > 1
-	\end{cases}
-	\;\Rightarrow\; T(n) = \Theta(n \log n)
-	\]
-	
-	\begin{figure}[H]
-		\centering
-		\begin{tikzpicture}[
-			level distance=1.4cm,
-			level 1/.style={sibling distance=6.5cm},
-			level 2/.style={sibling distance=3.2cm},
-			level 3/.style={sibling distance=1.6cm},
-			every node/.style={draw, rounded corners, minimum width=1.3cm,
-				minimum height=0.6cm, font=\small,
-				fill=primary!10, draw=primary},
-			edge from parent/.style={draw=primary!60, -Stealth}
-			]
-			\node {$cn$}
-			child { node {$cn/2$}
-				child { node {$cn/4$}
-					child { node {$\Theta(1)$} }
-					child { node {$\Theta(1)$} }
-				}
-				child { node {$cn/4$}
-					child { node {$\Theta(1)$} }
-					child { node {$\Theta(1)$} }
-				}
+		
+		% ----------------------------------------------------------------
+		\subsection{Schema Generale}
+		
+		\begin{algorithm}[H]
+			\caption{DivideEtImpera($X$)}
+			\KwIn{$X$: istanza di dimensione $|X| = n$}
+			\KwOut{$Y$: soluzione}
+			\If{$|X| \le n_0$}{
+				\Return{adhoc($X$)}\tcp*{Caso base: soluzione diretta}
 			}
-			child { node {$cn/2$}
-				child { node {$cn/4$}
-					child { node {$\Theta(1)$} }
-					child { node {$\Theta(1)$} }
-				}
-				child { node {$cn/4$}
-					child { node {$\Theta(1)$} }
-					child { node {$\Theta(1)$} }
-				}
-			};
-		\end{tikzpicture}
-		\caption{Albero di ricorsione di MergeSort. Ogni livello costa $cn$;
-			con $\log_2 n$ livelli, il totale è $\Theta(n\log n)$.}
-	\end{figure}
-	
-	\begin{hardnote}
-		È stato dimostrato che \textit{nessun} algoritmo basato su
-		confronti può ordinare in meno di $\Omega(n \log n)$ nel caso
-		peggiore. MergeSort raggiunge questo limite!
-	\end{hardnote}
-	
-	% --------------------------------
-	\subsubsection{Massimo SottoArray}
-	
-	\begin{definizione}[Massimo SottoArray]
-		\textbf{Input:} un array di interi $A[1:n]$.\\
-		\textbf{Output:} il sottoarray non vuoto $A[i:j]$ con somma massima:
-		\[
-		\max_{1 \le i \le j \le n} \sum_{k=i}^{j} A[k]
-		\]
-	\end{definizione}
-	
-	\begin{esempio}
-		Profitti 2001--2012: il massimo sottoarray è 2008--2010 con somma
-		$32 - 5 + 10 = 37$.
-	\end{esempio}
-	
-	\subsubsection*{Strategia divide et impera}
-	
-	Posto $mid = \lfloor(low+high)/2\rfloor$, la soluzione è in uno di tre casi:
-	\begin{enumerate}
-		\item Interamente in $A[low:mid]$
-		\item Interamente in $A[mid+1:high]$
-		\item \textbf{A cavallo} di $mid$
-	\end{enumerate}
-	
-	\begin{algorithm}[H]
-		\caption{FindMaxCrossingSubarray($A$, $low$, $mid$, $high$)}
-		\KwIn{Array $A$, indici $low \le mid < high$}
-		\KwOut{$(i^*, j^*, \text{somma})$}
-		$\mathit{leftSum} \gets -\infty$\; $\mathit{sum} \gets 0$\;
-		\For{$i \gets mid$ \textbf{downto} $low$}{
-			$\mathit{sum} \gets \mathit{sum} + A[i]$\;
-			\If{$\mathit{sum} > \mathit{leftSum}$}{
-				$\mathit{leftSum} \gets \mathit{sum}$\; $i^* \gets i$\;
+			Dividi $X$ in sottoistanze $X_1, X_2, \ldots, X_a$\;
+			\For{$i = 1$ \KwTo $a$}{
+				$Y_i \gets \text{DivideEtImpera}(X_i)$\tcp*{Ricorsione}
 			}
-		}
-		$\mathit{rightSum} \gets -\infty$\; $\mathit{sum} \gets 0$\;
-		\For{$j \gets mid+1$ \textbf{to} $high$}{
-			$\mathit{sum} \gets \mathit{sum} + A[j]$\;
-			\If{$\mathit{sum} > \mathit{rightSum}$}{
-				$\mathit{rightSum} \gets \mathit{sum}$\; $j^* \gets j$\;
-			}
-		}
-		\Return{$(i^*,\; j^*,\; \mathit{leftSum}+\mathit{rightSum})$}\;
-	\end{algorithm}
-	
-	\begin{algorithm}[H]
-		\caption{FindMaximumSubarray($A$, $low$, $high$)}
-		\KwIn{Array $A[low:high]$}
-		\KwOut{$(i^*,j^*,\text{somma massima})$}
-		\If{$high = low$}{\Return{$(low,\,high,\,A[low])$}\tcp*{Caso base}}
-		$mid \gets \lfloor(low+high)/2\rfloor$\;
-		$(i_L, j_L, s_L) \gets \text{FindMaximumSubarray}(A, low, mid)$\;
-		$(i_R, j_R, s_R) \gets \text{FindMaximumSubarray}(A, mid+1, high)$\;
-		$(i_C, j_C, s_C) \gets \text{FindMaxCrossingSubarray}(A,low,mid,high)$\;
-		\Return{$\arg\max\{s_L, s_R, s_C\}$}\;
-	\end{algorithm}
-	
-	\[
-	T(n) = 2\,T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n)
-	\]
-	
-	% ----------------------------------------------------------------
-	\subsection{Equazioni di Ricorrenza}
-	
-	\begin{definizione}[Equazione di ricorrenza algoritmica]
+			$Y \gets \text{combina}(Y_1, \ldots, Y_a)$\;
+			\Return{$Y$}\;
+		\end{algorithm}
+		
+		\begin{softnote}
+			\begin{itemize}
+				\item \textbf{adhoc}($X$): risolve istanze piccole in tempo
+				costante o lineare.
+				\item \textbf{dividi}: produce $a$ sottoistanze di dimensione
+				$n/b$ ciascuna ($b>1$).
+				\item Se $a=1$: si chiama \textit{semplificazione} (es.\ ricerca binaria).
+				\item \textbf{combina}: ha solitamente complessità $O(n^d)$.
+			\end{itemize}
+		\end{softnote}
+		
+		% ----------------------------------------------------------------
+		\subsection{Costo Computazionale}
+		
+		Il costo è la soluzione di un'\textbf{equazione di ricorrenza}:
+		
 		\[
 		T(n) =
 		\begin{cases}
-			K             & n \le k \\
-			a\,T(n/b)+C(n)& \text{altrimenti}
+			g(n)           & n \le n_0 \\
+			a\,T(n/b)+f(n) & \text{altrimenti}
 		\end{cases}
 		\]
-	\end{definizione}
-	
-	% --------------------------------
-	\subsubsection{Metodo di Sostituzione}
-	
-	\begin{softnote}
-		\textbf{(1) ipotizza} una soluzione; \textbf{(2) dimostra}
-		per induzione che è corretta.
-	\end{softnote}
-	
-	\begin{esempio}
-		Risolvere $T(n) = 2T\!\left(\lfloor n/2 \rfloor\right) + n$.
 		
-		\textbf{Ipotesi:} $T(n) \le cn\log n$. Passo induttivo:
-		\begin{align*}
-			T(n) &\le 2\bigl(c\lfloor n/2\rfloor \log\lfloor n/2\rfloor\bigr) + n \\
-			&\le cn\log(n/2) + n = cn\log n - cn + n \le cn\log n
-		\end{align*}
-		valido per $c \ge 1$. \checkmark
-	\end{esempio}
-	
-	\begin{hardnote}
-		\textbf{Errore comune:} se ipotizzo $T(n) = O(n)$ e ottengo
-		$T(n) \le cn + n = (c+1)n$, \textbf{non} ho dimostrato $T(n) \le cn$.
-		La soluzione $O(n)$ è quindi errata per questa ricorrenza.
-	\end{hardnote}
-	
-	% --------------------------------
-	\subsubsection{Metodo dell'Albero di Ricorsione}
-	
-	\begin{esempio}
-		Risolvere $T(n) = 3T(\lfloor n/4 \rfloor) + \Theta(n^2)$.
+		dove $f(n) = \text{tempo(dividi)} + \text{tempo(combina)}$.
 		
-		Costo livello $i$: $3^i \cdot c(n/4^i)^2 = (3/16)^i\,cn^2$.
+		\begin{nota}
+			\textbf{Ricorsione o iterazione?}
+			\begin{itemize}
+				\item \textbf{Pro iterazione:} elimina l'overhead delle chiamate
+				ricorsive; risparmia fino a $\Theta(h)$ spazio ausiliario.
+				\item \textbf{Contro:} l'algoritmo diventa più complicato da scrivere.
+			\end{itemize}
+		\end{nota}
 		
-		Totale (serie geometrica con ragione $3/16 < 1$):
-		\[
-		\sum_{i=0}^{\log_4 n}(3/16)^i\,cn^2
-		< \frac{cn^2}{1-3/16} = \frac{16}{13}cn^2 = O(n^2)
-		\]
-	\end{esempio}
-	
-	% --------------------------------
-	\subsubsection{Metodo dell'Esperto}
-	
-	\begin{teorema}[Teorema dell'Esperto]
-		Date costanti $a>0$, $b>1$ e $f(n)$ asintoticamente positiva,
-		per $T(n) = aT(n/b) + f(n)$:
+		% ----------------------------------------------------------------
+		\subsection{Esempi di Applicazione}
+			\subsubsection{Ricorsione o iterazione?}
+			
+			\begin{softnote}
+				Prima di entrare negli esempi, una domanda pratica: conviene sempre
+				usare la ricorsione nei divide et impera?
+			\end{softnote}
+			
+			È sempre possibile sostituire la ricorsione con un ciclo iterativo.
+			
+			\begin{center}
+				\begin{tabular}{lp{7cm}}
+					\toprule
+					\textbf{Pro} & Si elimina l'overhead delle chiamate ricorsive;
+					si risparmia fino a $\Theta(h)$ spazio ausiliario,
+					dove $h$ è la profondità della ricorsione. \\
+					\midrule
+					\textbf{Contro} & L'algoritmo diventa più complesso da scrivere
+					e da leggere. \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			% ----------------------------------------------------------------
+			\subsubsection{Problema Prodotto — Algoritmo di Karatsuba}
+			
+			\begin{softnote}
+				Il primo esempio concreto di divide et impera è la moltiplicazione
+				di interi grandi. La moltiplicazione tradizionale è $O(n^2)$:
+				possiamo fare meglio?
+			\end{softnote}
+			
+			\begin{definizione}[Problema del Prodotto]
+				\textbf{Input:} due interi $x$, $y$ di $n$ bit ciascuno.\\
+				\textbf{Output:} il loro prodotto $x \cdot y$.
+			\end{definizione}
+			
+			Il costo del prodotto tradizionale (moltiplicazione in colonna) è $O(n^2)$.
+			
+			\paragraph{Idea divide et impera.}
+			Si decompongono $x$ e $y$ nelle loro metà alta e bassa:
+			\[
+			x = 2^{n/2}\,x_H + x_L, \qquad y = 2^{n/2}\,y_H + y_L.
+			\]
+			Il prodotto diventa:
+			\[
+			x \cdot y = 2^n\,x_H y_H
+			+ 2^{n/2}(x_H y_L + x_L y_H)
+			+ x_L y_L.
+			\]
+			Questa decomposizione usa \textbf{4 moltiplicazioni} di dimensione $n/2$,
+			quindi $T(n) = 4T(n/2) + \Theta(n) = \Theta(n^2)$: nessun miglioramento.
+			
+			\paragraph{Osservazione di Gauss (Karatsuba).}
+			Con un trucco analogo a quello usato per i numeri complessi,
+			si può calcolare il termine misto $x_H y_L + x_L y_H$
+			usando \textbf{una sola} moltiplicazione aggiuntiva:
+			\[
+			x_H y_L + x_L y_H
+			= (x_H + x_L)(y_H + y_L) - x_H y_H - x_L y_L.
+			\]
+			Poiché $x_H y_H$ e $x_L y_L$ sono già stati calcolati, bastano
+			\textbf{3 moltiplicazioni} in totale.
+			
+			\begin{algorithm}[H]
+				\caption{Prodotto$(x, y, n)$}
+				\KwIn{Interi $x$, $y$ di $n$ bit}
+				\KwOut{$x \cdot y$}
+				\If{$n = 1$}{\Return $x \cdot y$\;}
+				$x_H \gets \lfloor x / 2^{n/2} \rfloor$;\quad
+				$x_L \gets x \bmod 2^{n/2}$\;
+				$y_H \gets \lfloor y / 2^{n/2} \rfloor$;\quad
+				$y_L \gets y \bmod 2^{n/2}$\;
+				$p \gets \text{Prodotto}(x_H,\; y_H,\; n/2)$\;
+				$q \gets \text{Prodotto}(x_L,\; y_L,\; n/2)$\;
+				$r \gets \text{Prodotto}(x_H + x_L,\; y_H + y_L,\; n/2)$\;
+				\Return $2^n p + 2^{n/2}(r - p - q) + q$\;
+			\end{algorithm}
+			
+			\paragraph{Analisi.}
+			\[
+			T(n) = 3\,T(n/2) + \Theta(n).
+			\]
+			Applicando il Teorema dell'Esperto (caso 1, con
+			$\log_2 3 \approx 1.585 > 1$):
+			\[
+			\boxed{T(n) = \Theta(n^{\log_2 3}) \approx \Theta(n^{1.585})}.
+			\]
+			
+			\begin{nota}
+				$\Theta(n^{1.585})$ è significativamente meglio di $\Theta(n^2)$
+				del metodo tradizionale. Per $n = 1000$ bit, il rapporto è circa
+				$1000^{0.415} \approx 50\times$ più veloce.
+			\end{nota}
+			
+			% ----------------------------------------------------------------
+			\subsubsection{Tabella di esempi divide et impera}
+			
+			\begin{center}
+				\begin{tabular}{llll}
+					\toprule
+					\textbf{Algoritmo} & $a$ & $b$ & \textbf{Complessità} \\
+					\midrule
+					Ricerca binaria    & 1 & 2 & $\Theta(\log n)$ \\
+					MergeSort          & 2 & 2 & $\Theta(n \log n)$ \\
+					Karatsuba          & 3 & 2 & $\Theta(n^{1.585})$ \\
+					Massimo Sottoarray & 2 & 2 & $\Theta(n \log n)$ \\
+					Selezione (mediana)& 5 & 5 & $\Theta(n)$ \\
+					Coppia più vicina  & 2 & 2 & $\Theta(n \log n)$ \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			\subsubsection{Prodotto di Interi Grandi}
+			
+			\begin{definizione}[Problema Prodotto]
+				\textbf{Input:} due interi $x$, $y$ di $n$ bit ciascuno ($n = 2^k$).\\
+				\textbf{Output:} il loro prodotto $xy$.\\
+				\textbf{Costo naïve:} $O(n^2)$.
+			\end{definizione}
+			
+			Si suddivide $x = 2^{n/2}x_L + x_R$, $y = 2^{n/2}y_L + y_R$:
+			\[
+			xy = 2^n(x_L y_L) + 2^{n/2}(x_L y_R + x_R y_L) + x_R y_R
+			\]
+			
+			Questo richiede 4 moltiplicazioni di dimensione $n/2$, dando
+			$T(n) = 4T(n/2) + O(n) = O(n^2)$ — nessun miglioramento.
+			
+			\begin{hardnote}
+				\textbf{Trucco di Gauss} (1777--1855): bastano \textbf{3 moltiplicazioni}:
+				\[
+				P_1 = x_L y_L,\quad P_2 = x_R y_R,\quad
+				P_3 = (x_L+x_R)(y_L+y_R)
+				\]
+				\[
+				xy = 2^n P_1 + 2^{n/2}(P_3 - P_1 - P_2) + P_2
+				\]
+			\end{hardnote}
+			
+			\begin{algorithm}[H]
+				\caption{Prodotto($x$, $y$)}
+				\KwIn{$x$, $y$ interi non negativi di $n = 2^\ell$ bit}
+				\KwOut{prodotto $xy$}
+				\If{$n \le 64$}{\Return{$x \cdot y$}\tcp*{Caso base $\Theta(1)$}}
+				$x_L, x_R \gets$ metà sinistra/destra di $x$\tcp*{Divide $\Theta(n)$}
+				$y_L, y_R \gets$ metà sinistra/destra di $y$\;
+				$P_1 \gets \text{Prodotto}(x_L,\,y_L)$\;
+				$P_2 \gets \text{Prodotto}(x_R,\,y_R)$\tcp*{Impera $3T(n/2)$}
+				$P_3 \gets \text{Prodotto}(x_L+x_R,\,y_L+y_R)$\;
+				\Return{$(P_1 \ll n) + ((P_3-P_1-P_2) \ll n/2) + P_2$}
+				\tcp*{Combina $\Theta(n)$}
+			\end{algorithm}
+			
+			\begin{softnote}
+				\textbf{Complessità:}
+				\[
+				T(n) = 3\,T(n/2) + \Theta(n) = \Theta(n^{\log_2 3})
+				= \Theta(n^{1.585})
+				\]
+			\end{softnote}
+			
+			% --------------------------------
+			\subsubsection{MergeSort}
+			
+			Lo schema divide et impera per MergeSort:
+			\begin{itemize}
+				\item \textbf{Divide:} 2 sottoarray di $n/2$ elementi — costo $\Theta(1)$.
+				\item \textbf{Impera:} ordina i due sottoarray ricorsivamente.
+				\item \textbf{Combina:} fondi i due sottoarray ordinati — costo $\Theta(n)$.
+			\end{itemize}
+			
+			\subsubsection*{Analisi di complessità}
+			
+			\[
+			T(n) =
+			\begin{cases}
+				\Theta(1)             & n = 1 \\
+				2\,T(n/2) + \Theta(n) & n > 1
+			\end{cases}
+			\;\Rightarrow\; T(n) = \Theta(n \log n)
+			\]
+			
+			\begin{figure}[H]
+				\centering
+				\begin{tikzpicture}[
+					level distance=1.4cm,
+					level 1/.style={sibling distance=6.5cm},
+					level 2/.style={sibling distance=3.2cm},
+					level 3/.style={sibling distance=1.6cm},
+					every node/.style={draw, rounded corners, minimum width=1.3cm,
+						minimum height=0.6cm, font=\small,
+						fill=primary!10, draw=primary},
+					edge from parent/.style={draw=primary!60, -Stealth}
+					]
+					\node {$cn$}
+					child { node {$cn/2$}
+						child { node {$cn/4$}
+							child { node {$\Theta(1)$} }
+							child { node {$\Theta(1)$} }
+						}
+						child { node {$cn/4$}
+							child { node {$\Theta(1)$} }
+							child { node {$\Theta(1)$} }
+						}
+					}
+					child { node {$cn/2$}
+						child { node {$cn/4$}
+							child { node {$\Theta(1)$} }
+							child { node {$\Theta(1)$} }
+						}
+						child { node {$cn/4$}
+							child { node {$\Theta(1)$} }
+							child { node {$\Theta(1)$} }
+						}
+					};
+				\end{tikzpicture}
+				\caption{Albero di ricorsione di MergeSort. Ogni livello costa $cn$;
+					con $\log_2 n$ livelli, il totale è $\Theta(n\log n)$.}
+			\end{figure}
+			
+			\begin{hardnote}
+				È stato dimostrato che \textit{nessun} algoritmo basato su
+				confronti può ordinare in meno di $\Omega(n \log n)$ nel caso
+				peggiore. MergeSort raggiunge questo limite!
+			\end{hardnote}
+			
+			% --------------------------------
+			\subsubsection{Massimo SottoArray}
+			
+			\begin{definizione}[Massimo SottoArray]
+				\textbf{Input:} un array di interi $A[1:n]$.\\
+				\textbf{Output:} il sottoarray non vuoto $A[i:j]$ con somma massima:
+				\[
+				\max_{1 \le i \le j \le n} \sum_{k=i}^{j} A[k]
+				\]
+			\end{definizione}
+			
+			\begin{esempio}
+				Profitti 2001--2012: il massimo sottoarray è 2008--2010 con somma
+				$32 - 5 + 10 = 37$.
+			\end{esempio}
+			
+			\subsubsection*{Strategia divide et impera}
 		
+		Posto $mid = \lfloor(low+high)/2\rfloor$, la soluzione è in uno di tre casi:
 		\begin{enumerate}
-			\item Se $f(n) = O(n^{(\log_b a)-\varepsilon})$:
-			$\;T(n) = \Theta(n^{\log_b a})$
-			\hfill\textit{(foglie dominano)}
-			
-			\item Se $f(n) = \Theta(n^{\log_b a}\log^k n)$:
-			$\;T(n) = \Theta(n^{\log_b a}\log^{k+1} n)$
-			\hfill\textit{(bilanciato)}
-			
-			\item Se $f(n) = \Omega(n^{(\log_b a)+\varepsilon})$
-			e $af(n/b)\le cf(n)$:
-			$\;T(n) = \Theta(f(n))$
-			\hfill\textit{(radice domina)}
+			\item Interamente in $A[low:mid]$
+			\item Interamente in $A[mid+1:high]$
+			\item \textbf{A cavallo} di $mid$
 		\end{enumerate}
-	\end{teorema}
-	
-	\begin{esempio}
-		\textbf{Caso 1 —} $T(n) = 9T(n/3) + n$:
-		$n^{\log_3 9} = n^2$, $f(n)=n=O(n^{2-1})$ $\Rightarrow T(n)=\Theta(n^2)$.
-	\end{esempio}
-	
-	\begin{esempio}
-		\textbf{Caso 2 —} $T(n) = T(n/2) + 1$ (ricerca binaria):
-		$n^{\log_2 1}=1$, $f(n)=\Theta(1)$ $\Rightarrow T(n)=\Theta(\log n)$.
-	\end{esempio}
-	
-	\begin{esempio}
-		\textbf{Caso 3 —} $T(n) = 3T(n/4) + n^2$:
-		$n^{\log_4 3}\approx n^{0.79}$, $f(n)=n^2$, $3(n/4)^2 \le \tfrac{3}{16}n^2$
-		$\Rightarrow T(n)=\Theta(n^2)$.
-	\end{esempio}
-	
-	\begin{hardnote}
-		\textbf{Caso non applicabile:} $T(n) = 2T(n/2) + n\log n$.
 		
-		$n^{\log_2 2}=n$. $f(n)=n\log n$ è più grande di $n$ ma non
-		\textit{polinomialmente} più grande: non esiste $\varepsilon>0$
-		con $n\log n = \Omega(n^{1+\varepsilon})$. Occorre il metodo
-		di sostituzione.
-	\end{hardnote}
+		\begin{algorithm}[H]
+			\caption{FindMaxCrossingSubarray($A$, $low$, $mid$, $high$)}
+			\KwIn{Array $A$, indici $low \le mid < high$}
+			\KwOut{$(i^*, j^*, \text{somma})$}
+			$\mathit{leftSum} \gets -\infty$\; $\mathit{sum} \gets 0$\;
+			\For{$i \gets mid$ \textbf{downto} $low$}{
+				$\mathit{sum} \gets \mathit{sum} + A[i]$\;
+				\If{$\mathit{sum} > \mathit{leftSum}$}{
+					$\mathit{leftSum} \gets \mathit{sum}$\; $i^* \gets i$\;
+				}
+			}
+			$\mathit{rightSum} \gets -\infty$\; $\mathit{sum} \gets 0$\;
+			\For{$j \gets mid+1$ \textbf{to} $high$}{
+				$\mathit{sum} \gets \mathit{sum} + A[j]$\;
+				\If{$\mathit{sum} > \mathit{rightSum}$}{
+					$\mathit{rightSum} \gets \mathit{sum}$\; $j^* \gets j$\;
+				}
+			}
+			\Return{$(i^*,\; j^*,\; \mathit{leftSum}+\mathit{rightSum})$}\;
+		\end{algorithm}
+		
+		\begin{algorithm}[H]
+			\caption{FindMaximumSubarray($A$, $low$, $high$)}
+			\KwIn{Array $A[low:high]$}
+			\KwOut{$(i^*,j^*,\text{somma massima})$}
+			\If{$high = low$}{\Return{$(low,\,high,\,A[low])$}\tcp*{Caso base}}
+			$mid \gets \lfloor(low+high)/2\rfloor$\;
+			$(i_L, j_L, s_L) \gets \text{FindMaximumSubarray}(A, low, mid)$\;
+			$(i_R, j_R, s_R) \gets \text{FindMaximumSubarray}(A, mid+1, high)$\;
+			$(i_C, j_C, s_C) \gets \text{FindMaxCrossingSubarray}(A,low,mid,high)$\;
+			\Return{$\arg\max\{s_L, s_R, s_C\}$}\;
+		\end{algorithm}
+		
+		\[
+		T(n) = 2\,T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n)
+		\]
+		
+		% ----------------------------------------------------------------
+		\subsection{Equazioni di Ricorrenza}
+		
+		\begin{definizione}[Equazione di ricorrenza algoritmica]
+			\[
+			T(n) =
+			\begin{cases}
+				K             & n \le k \\
+				a\,T(n/b)+C(n)& \text{altrimenti}
+			\end{cases}
+			\]
+		\end{definizione}
+		
+			% --------------------------------
+			\subsubsection{Metodo di Sostituzione}
+			
+			\begin{softnote}
+				\textbf{(1) ipotizza} una soluzione; \textbf{(2) dimostra}
+				per induzione che è corretta.
+			\end{softnote}
+			
+			\begin{esempio}
+				Risolvere $T(n) = 2T\!\left(\lfloor n/2 \rfloor\right) + n$.
+				
+				\textbf{Ipotesi:} $T(n) \le cn\log n$. Passo induttivo:
+				\begin{align*}
+					T(n) &\le 2\bigl(c\lfloor n/2\rfloor \log\lfloor n/2\rfloor\bigr) + n \\
+					&\le cn\log(n/2) + n = cn\log n - cn + n \le cn\log n
+				\end{align*}
+				valido per $c \ge 1$. \checkmark
+			\end{esempio}
+			
+			\begin{hardnote}
+				\textbf{Errore comune:} se ipotizzo $T(n) = O(n)$ e ottengo
+				$T(n) \le cn + n = (c+1)n$, \textbf{non} ho dimostrato $T(n) \le cn$.
+				La soluzione $O(n)$ è quindi errata per questa ricorrenza.
+			\end{hardnote}
+			
+			% --------------------------------
+			\subsubsection{Metodo dell'Albero di Ricorsione}
+			
+			\begin{esempio}
+				Risolvere $T(n) = 3T(\lfloor n/4 \rfloor) + \Theta(n^2)$.
+				
+				Costo livello $i$: $3^i \cdot c(n/4^i)^2 = (3/16)^i\,cn^2$.
+				
+				Totale (serie geometrica con ragione $3/16 < 1$):
+				\[
+				\sum_{i=0}^{\log_4 n}(3/16)^i\,cn^2
+				< \frac{cn^2}{1-3/16} = \frac{16}{13}cn^2 = O(n^2)
+				\]
+			\end{esempio}
+			
+			% --------------------------------
+			\subsubsection{Metodo dell'Esperto}
+		
+		\begin{teorema}[Teorema dell'Esperto]
+			Date costanti $a>0$, $b>1$ e $f(n)$ asintoticamente positiva,
+			per $T(n) = aT(n/b) + f(n)$:
+			
+			\begin{enumerate}
+				\item Se $f(n) = O(n^{(\log_b a)-\varepsilon})$:
+				$\;T(n) = \Theta(n^{\log_b a})$
+				\hfill\textit{(foglie dominano)}
+				
+				\item Se $f(n) = \Theta(n^{\log_b a}\log^k n)$:
+				$\;T(n) = \Theta(n^{\log_b a}\log^{k+1} n)$
+				\hfill\textit{(bilanciato)}
+				
+				\item Se $f(n) = \Omega(n^{(\log_b a)+\varepsilon})$
+				e $af(n/b)\le cf(n)$:
+				$\;T(n) = \Theta(f(n))$
+				\hfill\textit{(radice domina)}
+			\end{enumerate}
+		\end{teorema}
+		
+		\begin{esempio}
+			\textbf{Caso 1 —} $T(n) = 9T(n/3) + n$:
+			$n^{\log_3 9} = n^2$, $f(n)=n=O(n^{2-1})$ $\Rightarrow T(n)=\Theta(n^2)$.
+		\end{esempio}
+		
+		\begin{esempio}
+			\textbf{Caso 2 —} $T(n) = T(n/2) + 1$ (ricerca binaria):
+			$n^{\log_2 1}=1$, $f(n)=\Theta(1)$ $\Rightarrow T(n)=\Theta(\log n)$.
+		\end{esempio}
+		
+		\begin{esempio}
+			\textbf{Caso 3 —} $T(n) = 3T(n/4) + n^2$:
+			$n^{\log_4 3}\approx n^{0.79}$, $f(n)=n^2$, $3(n/4)^2 \le \tfrac{3}{16}n^2$
+			$\Rightarrow T(n)=\Theta(n^2)$.
+		\end{esempio}
+		
+		\begin{hardnote}
+			\textbf{Errore comune nel metodo di sostituzione.}
+			Si consideri $T(n) = 2T(\lfloor n/2 \rfloor) + n$ e si ipotizzi
+			$T(n) = O(n)$, cioè $T(n) \le cn$.
+			Passo induttivo:
+			\[
+			T(n) \le 2c\lfloor n/2 \rfloor + n \le cn + n = (c+1)n.
+			\]
+			Questo \textbf{non} dimostra $T(n) \le cn$, perché la costante
+			è aumentata da $c$ a $c+1$. L'ipotesi $O(n)$ è quindi \textbf{errata}
+			per questa ricorrenza; la soluzione corretta è $T(n) = O(n \log n)$.
+		\end{hardnote}
+		
+		\begin{osservazione}
+			Il Teorema dell'Esperto \textbf{non si applica} quando $f(n)$ non è
+			polinomialmente separabile da $n^{\log_b a}$. Esempio tipico:
+			\[
+			T(n) = 2T(n/2) + n\log n.
+			\]
+			Qui $f(n) = n\log n$ e $n^{\log_2 2} = n$, ma
+			$n\log n / n = \log n$ non è $\Omega(n^\varepsilon)$ per nessun
+			$\varepsilon > 0$: non si rientra in nessuno dei tre casi.
+			La soluzione è $T(n) = \Theta(n \log^2 n)$, ottenibile con l'albero
+			di ricorsione o con il metodo di sostituzione.
+		\end{osservazione}
+		
+		\begin{hardnote}
+			\textbf{Caso non applicabile:} $T(n) = 2T(n/2) + n\log n$.
+			
+			$n^{\log_2 2}=n$. $f(n)=n\log n$ è più grande di $n$ ma non
+			\textit{polinomialmente} più grande: non esiste $\varepsilon>0$
+			con $n\log n = \Omega(n^{1+\varepsilon})$. Occorre il metodo
+			di sostituzione.
+		\end{hardnote}
+		
+		% ----------------------------------------------------------------
+		\subsection{Riepilogo: Problemi risolvibili con Divide et Impera}
 	
-	% ----------------------------------------------------------------
-	\subsection{Riepilogo: Problemi risolvibili con Divide et Impera}
-	
-	\begin{center}
-		\renewcommand{\arraystretch}{1.4}
-		\begin{tabular}{lll}
-			\toprule
-			\textbf{Problema} & \textbf{Costo naïve} & \textbf{Costo D\&I} \\
-			\midrule
-			Ricerca in array ordinato & $O(n)$          & $O(\log n)$      \\
-			Ordinamento per confronto & $O(n^2)$        & $\Theta(n\log n)$\\
-			Prodotto di interi $n$-bit & $O(n^2)$       & $O(n^{1.585})$   \\
-			Massimo SottoArray        & $\Theta(n^3)$   & $\Theta(n\log n)$\\
-			Ricerca coppia più vicina  & $O(n^2)$       & $O(n\log n)$     \\
-			Ricerca della mediana      & $\Theta(n\log n)$ & $\Theta(n)$   \\
-			\bottomrule
-		\end{tabular}
-	\end{center}
-	
+			\begin{center}
+				\renewcommand{\arraystretch}{1.4}
+				\begin{tabular}{lll}
+					\toprule
+					\textbf{Problema} & \textbf{Costo naïve} & \textbf{Costo D\&I} \\
+					\midrule
+					Ricerca in array ordinato & $O(n)$          & $O(\log n)$      \\
+					Ordinamento per confronto & $O(n^2)$        & $\Theta(n\log n)$\\
+					Prodotto di interi $n$-bit & $O(n^2)$       & $O(n^{1.585})$   \\
+					Massimo SottoArray        & $\Theta(n^3)$   & $\Theta(n\log n)$\\
+					Ricerca coppia più vicina  & $O(n^2)$       & $O(n\log n)$     \\
+					Ricerca della mediana      & $\Theta(n\log n)$ & $\Theta(n)$   \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
 	% ================================================================
+
+	% ================================================================
+	\section{Analisi Probabilistica e Algoritmi Randomizzati}
+		
+		\begin{softnote}
+			Finora abbiamo analizzato gli algoritmi nel caso peggiore.
+			Questa sezione introduce un'alternativa: l'analisi del
+			\textbf{caso medio}, e gli \textbf{algoritmi randomizzati}
+			che rendono l'analisi media valida per qualunque input.
+		\end{softnote}
+		
+		% ----------------------------------------------------------------
+		\subsection{Preliminari: variabili casuali indicatrici}
+		
+		\begin{nota}
+			Si assume che lo studente conosca il concetto di variabile casuale.
+			Chi non lo conosce può studiare l'Appendice C di [CLRS] come
+			riferimento sufficiente per questa sezione.
+		\end{nota}
+		
+		\begin{definizione}[Variabile casuale indicatrice]
+			Dato uno spazio campionario $S$ e un evento $A$, la
+			\textbf{variabile casuale indicatrice} $I\{A\}$ è:
+			\[
+			I\{A\} = \begin{cases} 1 & \text{se } A \text{ si verifica} \\
+				0 & \text{altrimenti} \end{cases}
+			\]
+		\end{definizione}
+		
+		\begin{lemma}
+			Dato uno spazio campionario $S$ e un evento $A$, posto
+			$X_A = I\{A\}$, si ha:
+			\[
+			E[X_A] = \Pr\{A\}.
+			\]
+		\end{lemma}
+		\begin{proof}
+			$E[X_A] = 1\cdot\Pr\{A\} + 0\cdot\Pr\{\bar{A}\} = \Pr\{A\}$.
+		\end{proof}
+		
+		\begin{nota}
+			\textbf{Perché sono utili?} Le v.c.\ indicatrici trasformano il
+			calcolo di medie complesse in somme di probabilità semplici,
+			grazie alla \textbf{linearità del valore atteso}:
+			$E\!\left[\sum_i X_i\right] = \sum_i E[X_i]$,
+			che vale anche quando le $X_i$ sono \textit{dipendenti}.
+		\end{nota}
+		
+		\begin{esempio}
+			\textbf{Numero atteso di teste in $n$ lanci di moneta.}
+			Sia $X_i = I\{\text{testa all'$i$-esimo lancio}\}$,
+			e $X = \sum_{i=1}^n X_i$.
+			\[
+			E[X] = \sum_{i=1}^n E[X_i] = \sum_{i=1}^n \frac{1}{2} = \frac{n}{2}.
+			\]
+			Notare che si evita il calcolo diretto della distribuzione binomiale.
+		\end{esempio}
+		
+		% ----------------------------------------------------------------
+		\subsection{Analisi probabilistica: il Problema delle Assunzioni}
+		
+		\begin{definizione}[Problema delle Assunzioni]
+			\textbf{Input:} $n$ candidati ordinabili per bravura;
+			costo di colloquio $c_c > 0$, costo di assunzione $c_a \gg c_c$.\\
+			\textbf{Output:} assumere il candidato migliore con il minimo costo.\\
+			\textbf{Strategia:} si assume il primo candidato; si sostituisce
+			il corrente ogni volta che si incontra uno migliore.
+		\end{definizione}
+		
+		Se $m$ è il numero di assunzioni effettuate, il costo totale è:
+		\[
+		n \cdot c_c + m \cdot c_a.
+		\]
+		Il costo $n\cdot c_c$ è fisso; quello che ci interessa è $m\cdot c_a$.
+		Nel caso peggiore $m = n$, nel caso migliore $m = 1$.
+		Vogliamo calcolare il \textbf{costo medio}, che dipende dalla
+		distribuzione dei candidati.
+		
+		\paragraph{Calcolo del costo medio.}
+		Si assuma che le $n!$ permutazioni dei candidati siano equiprobabili.
+		Sia $X_i = I\{\text{il candidato $i$-esimo viene assunto}\}$,
+		$X = \sum_{i=1}^n X_i$.
+		
+		Il candidato in posizione $i$ viene assunto se e solo se è il
+		migliore tra i primi $i$. Poiché ogni permutazione dei primi $i$
+		candidati è equiprobabile:
+		\[
+		\Pr\{X_i = 1\} = \frac{1}{i}.
+		\]
+		
+		Quindi:
+		\[
+		E[X] = \sum_{i=1}^{n} E[X_i] = \sum_{i=1}^{n} \frac{1}{i}
+		\le \ln n + 1.
+		\]
+		
+		\begin{teorema}[Costo medio del Problema delle Assunzioni]
+			\[
+			\text{Costo medio} \le c_a(\ln n + 1) = O(c_a \log n),
+			\]
+			contro il costo nel caso peggiore $O(c_a\, n)$.
+		\end{teorema}
+		
+		\begin{nota}
+			$\sum_{i=1}^n 1/i$ è la \textbf{serie armonica}. Vale l'approssimazione:
+			$\ln(n+1) \le \sum_{i=1}^n \frac{1}{i} \le \ln n + 1.$
+			Ad esempio, per $n=100$: $4.615 \le 5.177 \le 5.605$.
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Algoritmi randomizzati}
+		
+		\begin{softnote}
+			Assumere una distribuzione uniforme dell'input non è sempre realistico.
+			Gli algoritmi randomizzati risolvono questo problema imponendo
+			\textbf{essi stessi} la distribuzione, indipendentemente dall'input.
+		\end{softnote}
+		
+		\begin{center}
+			\begin{tabular}{p{5.5cm}p{5.5cm}}
+				\toprule
+				\textbf{Analisi probabilistica} & \textbf{Algoritmo randomizzato} \\
+				\midrule
+				Algoritmo deterministico & Algoritmo non deterministico \\
+				Stesso input $\to$ stesso risultato &
+				Stesso input $\to$ esecuzione diversa \\
+				Ipotesi sulla distribuzione dell'input &
+				Nessuna ipotesi necessaria \\
+				Caso peggiore dipende dall'input &
+				Il comportamento non dipende da un input specifico \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+		
+		\begin{osservazione}
+			Nel Problema delle Assunzioni, l'algoritmo randomizzato permuta
+			casualmente i candidati \textit{prima} di iniziare.
+			In questo modo il costo medio $O(c_a \log n)$ è garantito
+			\textbf{per qualunque input}, non solo per quelli ben distribuiti.
+		\end{osservazione}
+		
+		% ----------------------------------------------------------------
+		\subsection{Permutazione casuale: \texttt{RandomizeInPlace}}
+			\begin{algorithm}[H]
+				\caption{RandomizeInPlace$(A)$}
+				\KwIn{Array $A[1:n]$}
+				\KwOut{$A$ con una permutazione casuale uniforme}
+				$n \gets |A|$\;
+				\For{$i = 1$ \KwTo $n$}{
+					scambia $A[i]$ con $A[\textsc{Random}(i, n)]$\;
+				}
+				\Return $A$\;
+			\end{algorithm}
+			
+			\textbf{Complessità in tempo:} $O(n)$ — $n$ iterazioni, ciascuna con un
+			numero costante di operazioni e una chiamata a $\textsc{Random}(i,n)$,
+			assunta a costo costante.
+			
+			\textbf{Complessità in spazio:} $O(1)$ — nessun array ausiliario.
+			
+			\begin{lemma}
+				\texttt{RandomizeInPlace} genera una permutazione casuale uniforme
+				(ogni delle $n!$ permutazioni ha probabilità $1/n!$).
+			\end{lemma}
+			\begin{proof}
+				Si dimostra tramite invariante di ciclo.
+				
+				\textbf{Invariante:} prima della $i$-esima iterazione, per ogni
+				possibile $(i-1)$-permutazione, il sottoarray $A[1:i-1]$ la
+				contiene con probabilità $\frac{(n-i+1)!}{n!}$.
+				
+				\textbf{Base} ($i=1$): il sottoarray $A[1:0]$ è vuoto;
+				l'unica 0-permutazione (vuota) vi compare con probabilità
+				$1 = n!/n!$. \checkmark
+				
+				\textbf{Conservazione:} si assume che ogni $(i-1)$-permutazione
+				$\langle x_1,\ldots,x_{i-1}\rangle$ compaia in $A[1:i-1]$
+				con probabilità $(n-i+1)!/n!$.
+				La probabilità che l'algoritmo scelga $x_i$ come $i$-esimo
+				elemento è $1/(n-i+1)$. Quindi la probabilità di ottenere
+				$\langle x_1,\ldots,x_{i-1},x_i\rangle$ è:
+				\[
+				\frac{(n-i+1)!}{n!}\cdot\frac{1}{n-i+1}
+				= \frac{(n-i)!}{n!}.
+				\]
+				Questo è esattamente l'invariante per $i+1$. \checkmark
+				
+				\textbf{Conclusione:} alla fine ($i=n+1$) ogni $n$-permutazione
+				compare in $A[1:n]$ con probabilità
+				$\frac{(n-n)!}{n!} = \frac{1}{n!}$.
+			\end{proof}
+			\begin{hardnote}
+							
+				\textbf{Da ricordare all'esame:} la correttezza di
+				\texttt{RandomizeInPlace} si dimostra con un invariante di ciclo,
+				non semplicemente contando le permutazioni. Il punto chiave è che
+				a ogni passo la scelta uniforme in $A[i:n]$ garantisce che tutte
+				le possibili estensioni siano equiprobabili.
+			\end{hardnote}
+			
+		\subsection{QuickSort}
+			
+			\begin{softnote}
+				QuickSort è uno degli algoritmi di ordinamento più usati in pratica.
+				A differenza di MergeSort, ordina \textbf{sul posto} e, pur avendo
+				caso peggiore $\Theta(n^2)$, nel caso medio è $\Theta(n \log n)$
+				con costanti moltiplicative molto piccole.
+			\end{softnote}
+			
+			% ----------------------------------------------------------------
+			\subsection{Idea Generale}
+			
+			QuickSort è un algoritmo che:
+			\begin{itemize}
+				\item ordina \textbf{sul posto} come InsertionSort;
+				\item è basato sulla tecnica \textbf{divide et impera} come MergeSort;
+				\item ha complessità $\Theta(n^2)$ nel caso peggiore e $\Theta(n \log n)$
+				nel caso medio (qui si dimostra il caso medio con l'ulteriore
+				assunzione che i valori siano tutti distinti);
+				\item nel caso medio le costanti moltiplicative nascoste da $\Theta$ sono
+				abbastanza piccole $\Rightarrow$ molto efficiente in pratica, tra
+				i più usati per l'ordinamento interno.
+			\end{itemize}
+			
+			\begin{nota}
+				In Java viene usato, nella sua versione parallela, quando si devono
+				ordinare $\ge 44$ elementi.
+			\end{nota}
+			
+			\paragraph{Schema divide et impera.}
+			\begin{itemize}
+				\item \textbf{Divide:} partiziona l'array $A[p:r]$ in due
+				sotto-array $A[p:q-1]$ e $A[q+1:r]$ tali che ogni elemento
+				del primo sia $\le A[q]$ (il \emph{pivot}) e ogni elemento
+				del secondo sia $> A[q]$.
+				\item \textbf{Impera:} ordina i due sotto-array in modo ricorsivo
+				fino a quando la dimensione è 0 o 1 (quando $p \ge r$).
+				\item \textbf{Combina:} dato che i due sotto-array sono già ordinati
+				al ritorno della chiamata ricorsiva, non serve alcuna ulteriore
+				fase di combinazione.
+			\end{itemize}
+			
+			\begin{algorithm}[H]
+				\caption{QuickSort$(A, p, r)$}
+				\KwIn{Array $A$, indici $p$, $r$}
+				\KwOut{$A[p:r]$ ordinato in loco}
+				\If{$p < r$}{
+					$q \gets \text{Partition}(A, p, r)$\;
+					$\text{QuickSort}(A, p, q-1)$\;
+					$\text{QuickSort}(A, q+1, r)$\;
+				}
+			\end{algorithm}
+			
+			\begin{nota}
+				Per ordinare un intero array $A$ di $n$ elementi si invoca
+				\texttt{QuickSort}$(A, 1, n)$.
+			\end{nota}
+			
+			% ----------------------------------------------------------------
+			\subsection{Partition$(A, p, r)$}
+			
+			\begin{softnote}
+				\texttt{Partition} è la componente fondamentale di QuickSort.
+				Sceglie un valore \emph{pivot} (l'ultimo elemento $A[r]$),
+				riorganizza l'array e restituisce l'indice $q$ della posizione
+				finale del pivot.
+			\end{softnote}
+			
+			\begin{algorithm}[H]
+				\caption{Partition$(A, p, r)$}
+				\KwIn{Array $A$, indici $p$, $r$}
+				\KwOut{$q$ e $A$ modificato con $A[p:q-1] \le A[q] < A[q+1:r]$}
+				$x \gets A[r]$\tcp*{Pivot: scegliere l'ultimo valore è utile per il \texttt{for}}
+				$i \gets p - 1$\tcp*{Indice ultimo elemento sotto-array sinistro}
+				\For{$j \gets p$ \KwTo $r-1$}{
+					\If{$A[j] \le x$\tcp*{Se l'elemento deve andare nel sotto-array sx}}{
+						$i \gets i + 1$\tcp*{Posizione per l'elemento da spostare}
+						scambia $A[i]$ con $A[j]$\;
+					}
+				}
+				$q \gets i + 1$\tcp*{Posizione per il pivot}
+				scambia $A[q]$ con $A[r]$\;
+				\Return $q$\;
+			\end{algorithm}
+			
+			\subsubsection{Invariante di ciclo di Partition}
+			
+			Per dimostrare la correttezza di \texttt{Partition}$(A, p, r)$,
+			si considera la seguente invariante di ciclo:
+			
+			\begin{definizione}[Invariante di Partition]
+				All'inizio di ogni iterazione del ciclo \texttt{for}, per qualsiasi
+				indice $k$ dell'array vale almeno una delle seguenti proprietà:
+				\begin{enumerate}
+					\item Se $p \le k \le i$, allora $A[k] \le x$;
+					\item Se $i+1 \le k \le j-1$, allora $A[k] > x$;
+					\item Se $k = r$, allora $A[k] = x$ (il pivot).
+				\end{enumerate}
+			\end{definizione}
+			
+			\begin{nota}
+				Non si considerano i valori con indice $t.c.\ j \le k \le r-1$
+				perché sono valori non ancora considerati e quindi non ancora
+				posizionati correttamente.
+			\end{nota}
+			
+			\begin{proof}
+				\begin{enumerate}
+					\item \textbf{Inizializzazione} (prima della I iterazione, $i=p-1$,
+					$j=p$): non ci sono valori tra $p$ e $i+1 = p$ né tra $i+1=p$
+					e $j-1=p-1$. Le prime due proprietà dell'invariante sono
+					banalmente soddisfatte. L'istruzione $x \gets A[r]$ soddisfa
+					la III proprietà. \checkmark
+					
+					\item \textbf{Conservazione:} ci sono due possibilità.
+					\begin{itemize}
+						\item Se $A[j] > x$ (riga 4 non eseguita), allora non si fa
+						nulla e $j' = j+1$: la proprietà 2 dell'invariante è
+						soddisfatta all'inizio del prossimo giro perché $j' - 1 = j$.
+						\item Se invece $A[j] \le x$, allora $i' = i+1$, vengono
+						scambiati $A[i']$ e $A[j]$, poi $j' = j+1$. In seguito
+						allo scambio, $A[i'] \le x$ e la proprietà 1 è soddisfatta.
+						Anche $A[j'+1] > x$ perché era l'elemento $A[i]$ prima
+						dello scambio. Quindi anche la proprietà 2 è soddisfatta.
+					\end{itemize}
+					
+					\item \textbf{Conclusione:} alla fine del ciclo $j = r$. Ogni
+					posizione dell'array si trova in uno dei tre insiemi descritti
+					nell'invariante. L'istruzione alla riga 8 posiziona l'elemento
+					pivot nella giusta posizione: \texttt{Partition} fa esattamente
+					quello che ci si aspetta, riordinando l'array rispetto
+					all'elemento pivot.
+				\end{enumerate}
+			\end{proof}
+			
+			\paragraph{Complessità di Partition.}
+			Il tempo di computazione ha sempre lo stesso ordine di grandezza
+			per qualsiasi input di dimensione $n = r - p + 1$:
+			\[
+			T_{\text{Partition}}(n) = \Theta(n).
+			\]
+			
+			% ----------------------------------------------------------------
+			\subsection{Analisi di Complessità di QuickSort}
+			
+			\begin{softnote}
+				Il tempo di esecuzione di QuickSort dipende, a parità di $n$,
+				da quanto il partizionamento è bilanciato.
+			\end{softnote}
+			
+			\subsubsection{Caso peggiore}
+			
+			\paragraph{Analisi elementare.}
+			\texttt{Partition} restituisce sempre un sotto-array di dimensione
+			$n-1$ e uno di dimensione $0$. In questo caso:
+			\[
+			T(n) = T(n-1) + T(0) + \Theta(n) = T(n-1) + \Theta(n),
+			\]
+			che è la somma aritmetica dei costi di \texttt{Partition}:
+			\[
+			T(n) = \Theta(n^2). \quad \text{(caso peggiore)}
+			\]
+			
+			\begin{hardnote}
+				Questo caso si verifica anche quando l'array è \textbf{completamente
+					ordinato}! QuickSort è peggiore di InsertionSort in questo scenario.
+			\end{hardnote}
+			
+			\paragraph{Analisi formale.}
+			\texttt{Partition} restituisce sempre due sotto-array, uno di dimensione
+			$d$ e l'altro di dimensione $n-d-1$, dove $0 \le d \le n-1$:
+			\[
+			T(n) = \max_{0 \le d \le n-1}\bigl[T(d) + T(n-d-1)\bigr] + \Theta(n).
+			\]
+			Si usa il metodo di sostituzione ipotizzando $T(n) \le cn^2$:
+			\[
+			T(n) \le \max_{0 \le d \le n-1}\bigl[cd^2 + c(n-d-1)^2\bigr] + \Theta(n).
+			\]
+			La quantità $d^2 + (n-d-1)^2$ ha il suo massimo quando $d=0$ o
+			$d=n-1$:
+			\[
+			\max_{0 \le d \le n-1}\bigl[d^2 + (n-d-1)^2\bigr] = (n-1)^2
+			\le n^2 - 2n + 1.
+			\]
+			Quindi $T(n) \le c(n^2 - 2n + 1) + \Theta(n) \le cn^2$, confermando
+			$T(n) = O(n^2)$.
+			
+			\subsubsection{Caso migliore}
+			
+			\texttt{Partition} restituisce sempre due sotto-array con dimensione
+			$\lfloor n/2 \rfloor$ e $\lceil n/2 \rceil - 1$ rispettivamente.
+			In questo caso (omettendo troncamenti e arrotondamenti):
+			\[
+			T(n) = 2T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n).
+			\quad \text{(caso migliore)}
+			\]
+			
+			\subsubsection{Verso il caso medio}
+			
+			\paragraph{Caso con proporzionalità fissa.}
+			Si supponga che \texttt{Partition} restituisca sempre due sotto-array
+			con dimensione $\frac{9}{10}n$ e $\frac{1}{10}n$ rispettivamente
+			(caso sbilanciato):
+			\[
+			T(n) = T\!\left(\tfrac{9}{10}n\right) + T\!\left(\tfrac{1}{10}n\right)
+			+ \Theta(n).
+			\]
+			
+			\begin{softnote}
+				Sembrerebbe un caso simile al peggiore perché sbilanciato... ma
+				analizzando l'albero di ricorsione si vede che ogni livello ha
+				costo $\Theta(n)$ finché il ramo $T(\frac{1}{10}n)$ non
+				raggiunge la dimensione 1 (dopo $\log_{10} n$ livelli). Dopo tale
+				livello ogni livello costa ancora $\Theta(n)$. La ricorsione termina
+				alla profondità $\log_{10/9} n = \Theta(\log n)$, quindi il costo
+				totale è $\Theta(n \log n)$.
+			\end{softnote}
+			
+			\paragraph{Analisi verso il caso medio generale.}
+			In generale non si può supporre che tutte le chiamate ricorsive
+			siano sempre caso migliore, peggiore o con proporzionalità fissa.
+			Assumendo che gli input siano distribuiti in modo equiprobabile,
+			durante una computazione alcune ricorsioni divideranno bene,
+			altre no.
+			
+			Si definisce l'elemento pivot $A[q]$ trovato da \texttt{Partition}
+			\textbf{buono} se $A[q]$ risiede tra il 25° e il 75° percentile:
+			\[
+			A[q] \text{ buono} \;\Leftrightarrow\;
+			|A[p:q-1]|, |A[q+1:r]| \le \tfrac{3}{4}|A[p:r]|.
+			\]
+			Il 50\% degli elementi sono buoni. Sia $X_q = I\{A[q]
+			\text{ è un elemento buono}\}$:
+			\[
+			\Pr\{X_q = 1\} = E[X_q] = \frac{1}{2}.
+			\]
+			Dati due pivot $A[q]$ e $A[q']$ scelti casualmente uno dopo l'altro,
+			il valore atteso del numero di pivot buoni nella sequenza è:
+			\[
+			E[X_q + X_{q'}] = E[X_q] + E[X_{q'}] = \frac{1}{2} + \frac{1}{2} = 1.
+			\]
+			
+			Quindi, mediamente ogni 2 scelte casuali del pivot si ottiene
+			un valore buono. Due livelli consecutivi della ricorsione costano
+			complessivamente $\Theta(n)$. Dopo una partizione buona, la
+			dimensione del sotto-problema più grande è al più $\frac{3}{4}n$.
+			Raggruppando i livelli due a due, la ricorrenza si comporta come:
+			\[
+			T(n) = T\!\left(\tfrac{3}{4}n\right) + T\!\left(\tfrac{1}{4}n\right)
+			+ \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n).
+			\]
+			
+			% ----------------------------------------------------------------
+			\subsection{QuickSort Randomizzato}
+			
+			\begin{softnote}
+				Assumere che l'input abbia gli elementi distribuiti in modo casuale
+				uniforme è troppo limitante. È preferibile mescolare l'input usando
+				un generatore di numeri casuali, oppure scegliere il pivot
+				casualmente prima di invocare \texttt{Partition}.
+			\end{softnote}
+			
+			\begin{algorithm}[H]
+				\caption{RandQuickSort$(A, p, r)$}
+				\KwIn{Array $A$, indici $p$, $r$}
+				\KwOut{$A[p:r]$ ordinato in loco}
+				\If{$p < r$}{
+					$q \gets \text{RandPartition}(A, p, r)$\;
+					$\text{RandQuickSort}(A, p, q-1)$\;
+					$\text{RandQuickSort}(A, q+1, r)$\;
+				}
+			\end{algorithm}
+			
+			\begin{algorithm}[H]
+				\caption{RandPartition$(A, p, r)$}
+				\KwIn{Array $A$, indici $p$, $r$}
+				\KwOut{$q$ e $A$ modificato}
+				$i \gets \textsc{Random}(p, r)$\;
+				scambia $A[r]$ con $A[i]$\;
+				\Return $\text{Partition}(A, p, r)$\;
+			\end{algorithm}
+			
+			% ----------------------------------------------------------------
+		\subsection{Analisi del Caso Medio di QuickSort}
+			
+			\begin{softnote}
+				\texttt{RandQuickSort} garantisce una scelta uniforme del pivot ad ogni
+				chiamata ricorsiva. Di seguito si presenta l'analisi formale
+				della complessità nel caso medio seguendo [CLRS cap. 7].
+			\end{softnote}
+			
+			Il costo reale dell'algoritmo è proporzionale al numero totale di
+			confronti (istruzione 4) eseguiti dalla procedura \texttt{Partition}.
+			Si deve quindi determinare il numero totale di confronti fatti da
+			\texttt{Partition} durante tutta una computazione di QuickSort.
+			
+			Dato $A$, si rinominano tutti gli elementi come $z_1, z_2, \ldots, z_n$
+			dove $z_i$ è l'$i$-esimo elemento più piccolo di $A$.
+			QuickSort confronta in \texttt{Partition} una coppia $z_i, z_j$
+			\textbf{al più una volta} in tutta la sua esecuzione. Se uno dei
+			due diventa pivot, può essere confrontato con l'altro; un elemento
+			pivot non viene poi più confrontato con elementi appartenenti a
+			chiamate ricorsive successive.
+			
+			Si definisce la variabile casuale indicatrice:
+			\[
+			X_{ij} = I\{z_i \text{ confrontato con } z_j\}.
+			\]
+			
+			Il numero totale di confronti è:
+			\[
+			X = \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} X_{ij}.
+			\]
+			
+			Il numero totale atteso di confronti:
+			\[
+			E[X] = \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} \Pr\{z_i
+			\text{ confrontato con } z_j\}.
+			\]
+			
+			\paragraph{Calcolo di $\Pr\{z_i \text{ confrontato con } z_j\}$.}
+			Si consideri l'insieme $Z_{ij} = \{z_i, z_{i+1}, \ldots, z_j\}$.
+			\begin{itemize}
+				\item Se \texttt{Partition} sceglie un elemento $x$ tale che
+				$z_i < x < z_j$, allora $z_i$ e $z_j$ andranno su due
+				sotto-array distinti e \textbf{non} verranno mai confrontati.
+				\item Se $x = z_i$ oppure $x = z_j$, allora $z_i$ e $z_j$ verranno
+				confrontati \textbf{una volta}.
+			\end{itemize}
+			Gli elementi di $Z_{ij}$ sono equi-probabili. La probabilità di
+			scegliere un elemento particolare è quindi $\frac{1}{j-i+1}$
+			(quando gli elementi sono distinti):
+			\[
+			\Pr\{z_i \text{ confrontato con } z_j\}
+			= \Pr\{z_i \text{ è il primo pivot di } Z_{ij}\}
+			+ \Pr\{z_j \text{ è il primo pivot di } Z_{ij}\}
+			= \frac{2}{j-i+1}.
+			\]
+			
+			\paragraph{Calcolo finale.}
+			\begin{align*}
+				E[X]
+				&= \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} \frac{2}{j-i+1} \\
+				&= \sum_{i=1}^{n-1}\sum_{k=1}^{n-i} \frac{2}{k+1}
+				\quad\text{(cambio variabile } k = j-i\text{)}\\
+				&\le \sum_{i=1}^{n-1}\sum_{k=1}^{n} \frac{2}{k}
+				= \sum_{i=1}^{n-1} O(\log n)
+				= O(n \log n).
+			\end{align*}
+			
+			\begin{teorema}[Complessità media di QuickSort]
+				\[
+				E[T(n)] = O(n \log n). \quad \text{(caso medio)}
+				\]
+			\end{teorema}
+			
+			\begin{center}
+				\begin{tabular}{lll}
+					\toprule
+					\textbf{Caso} & \textbf{Input} & \textbf{Complessità} \\
+					\midrule
+					Peggiore & Array ordinato (o inversamente ordinato) & $\Theta(n^2)$ \\
+					Migliore & Pivot sempre mediano & $\Theta(n \log n)$ \\
+					Medio    & Input equiprobabili / pivot casuale       & $\Theta(n \log n)$ \\
+					\bottomrule
+				\end{tabular}
+			\end{center}
+			
+			\begin{hardnote}
+				\textbf{Da ricordare all'esame:} il caso peggiore di QuickSort è
+				$\Theta(n^2)$ e si verifica su array \emph{già ordinati} con il pivot
+				fisso all'ultimo elemento. La versione randomizzata
+				\texttt{RandQuickSort} rende tale caso molto improbabile e garantisce
+				$O(n \log n)$ in media per qualsiasi input.
+			\end{hardnote}
+			
+		% ================================================================
+	\section{Statistiche d'Ordine e Selezione}
+		
+		\begin{softnote}
+			Questo problema mostra un altro esempio di divide et impera con
+			buona qualità nel caso medio: trovare il $k$-esimo elemento
+			più piccolo di un array senza doverlo ordinare completamente.
+		\end{softnote}
+		
+		% ----------------------------------------------------------------
+		\subsection{Definizioni}
+		
+		\begin{definizione}[Statistica d'ordine]
+			Dato un insieme di $n$ elementi, la \textbf{$i$-esima statistica
+				d'ordine} è l'$i$-esimo elemento più piccolo.
+		\end{definizione}
+		
+		\begin{esempio}
+			Dato l'insieme $\{3, 5, 9, 4, 6, 1\}$ di $n=6$ elementi:
+			\begin{itemize}
+				\item I statistica d'ordine $= 1$ (elemento minimo)
+				\item VI statistica d'ordine $= 9$ (elemento massimo)
+				\item IV statistica d'ordine $= 5$
+			\end{itemize}
+		\end{esempio}
+		
+		\begin{definizione}[Mediana]
+			Rappresenta un valore $v$ tale che almeno il 50\% degli elementi
+			$\le v$ e almeno il 50\% $\ge v$.
+			\begin{itemize}
+				\item Se $n$ è dispari, la mediana è la $\lfloor n/2 \rfloor + 1$
+				statistica d'ordine (unica).
+				\item Se $n$ è pari, le mediane possono essere due:
+				la statistica d'ordine $\lfloor n/2 \rfloor$
+				(\textbf{mediana inferiore}) e quella $\lceil n/2 \rceil$
+				(\textbf{mediana superiore}).
+			\end{itemize}
+			Per convenzione, scrivendo \emph{mediana} si intende sempre la
+			\textbf{mediana inferiore}: la statistica d'ordine
+			$\lfloor (n+1)/2 \rfloor$.
+		\end{definizione}
+		
+		\begin{esempio}
+			Dato $\{3, 5, 9, 4, 6, 1\}$ con $n=6$:
+			mediana inferiore $=$ III statistica d'ordine $= 4$;
+			mediana superiore $=$ IV statistica d'ordine $= 5$.
+		\end{esempio}
+		
+		% ----------------------------------------------------------------
+		\subsection{Problema della Selezione}
+		
+		\begin{definizione}[Problema Selezione]
+			\textbf{Input:} un insieme $A$ di $n$ numeri distinti e un intero
+			$1 \le i \le n$.\\
+			\textbf{Output:} determinare l'$i$-esimo elemento più piccolo di $A$.
+		\end{definizione}
+		
+		La selezione si può risolvere in tempo $\Theta(n \log n)$ ordinando
+		gli elementi, ma non ha senso dover ordinare spostare gli elementi
+		quando si vuole conoscere solo la $i$-esima statistica d'ordine.
+		In questa sezione vediamo come è possibile risolvere il problema
+		Selezione in tempo atteso $\Theta(n)$.
+		
+		\begin{nota}
+			[CLRS] assume che i numeri siano distinti per comodità. Si può
+			dimostrare in seguito che i risultati sono validi anche quando i
+			numeri non sono distinti.
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Minimo, Massimo e MinMax}
+		
+		\paragraph{Minimo (o massimo).}
+		Trovare il minimo o il massimo è facile: bastano $n-1$ confronti,
+		ed è ottimale perché ogni elemento tranne il minimo deve confrontarsi
+		con almeno un altro elemento per stabilire che non è il minimo.
+		
+		\begin{algorithm}[H]
+			\caption{Minimum$(A)$}
+			\KwIn{Array $A[1:n]$}
+			\KwOut{Valore minimo}
+			$m \gets A[1]$\;
+			\For{$i \gets 2$ \KwTo $n$}{
+				\If{$m > A[i]$}{$m \gets A[i]$\;}
+			}
+			\Return $m$\;
+		\end{algorithm}
+		
+		$T_{\text{Minimum}}(n) = \Theta(n)$. L'algoritmo \textsc{Maximum}$(A)$
+		è analogo (basta cambiare $>$ con $<$).
+		
+		\paragraph{Minimo e massimo contemporaneamente.}
+		Fondendo \textsc{Minimum} e \textsc{Maximum} si risolvono entrambi con
+		$2(n-1)$ confronti. Si può fare meglio: \textbf{$\lceil 3n/2 \rceil - 2$
+			confronti}, confrontando gli elementi \emph{a coppie} anziché singolarmente.
+		
+		\begin{algorithm}[H]
+			\caption{MinMax$(A)$}
+			\KwIn{Array $A[1:n]$}
+			\KwOut{Valori minimo $m$ e massimo $M$}
+			\If{$n$ è dispari}{
+				$m \gets A[1]$; $M \gets A[1]$; $i \gets 2$\;
+			}{
+				\If{$A[1] < A[2]$}{$m \gets A[1]$; $M \gets A[2]$\;}
+				\Else{$M \gets A[1]$; $m \gets A[2]$\;}
+				$i \gets 3$\;
+			}
+			\While{$i \le n-1$}{
+				\tcp{Usa $A[i]$ e $A[i+1]$ per aggiornare $m$ e $M$}
+				\If{$A[i] < A[i+1]$}{
+					\If{$A[i] < m$}{$m \gets A[i]$\;}
+					\If{$A[i+1] > M$}{$M \gets A[i+1]$\;}
+				}\Else{
+					\If{$A[i+1] < m$}{$m \gets A[i+1]$\;}
+					\If{$A[i] > M$}{$M \gets A[i]$\;}
+				}
+				$i \gets i + 2$\;
+			}
+			\Return $m, M$\;
+		\end{algorithm}
+		
+		\begin{nota}
+			Ogni coppia di elementi richiede 3 confronti (1 tra loro + 1 con il
+			minimo corrente + 1 con il massimo corrente). Con $\lfloor n/2 \rfloor$
+			coppie si ottengono $\lceil 3n/2 \rceil - 2$ confronti totali.
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Idea Divide et Impera per la Selezione}
+		
+		L'idea divide et impera per risolvere il problema Selezione$(A, i)$
+		è la seguente. Dato un numero casuale $v$ di $A$, si suddivide $A$
+		in 3 sottoinsiemi:
+		\[
+		A_L = \{x \in A \mid x < v\}, \quad
+		A_v = \{x \in A \mid x = v\}, \quad
+		A_R = \{x \in A \mid x > v\}.
+		\]
+		
+		La ricerca dell'$i$-esimo elemento più piccolo può essere ristretta:
+		\[
+		\text{Selezione}(A, i) =
+		\begin{cases}
+			\text{Selezione}(A_L, i)              & \text{se } i \le |A_L| \\
+			v                                      & \text{se } |A_L| < i \le |A_L| + |A_v| \\
+			\text{Selezione}(A_R,\; i - |A_L| - |A_v|) & \text{altrimenti}
+		\end{cases}
+		\]
+		
+		Le tre liste si determinano con un numero di confronti $\Theta(n)$.
+		Dato $A$, la dimensione del sotto-problema è
+		$\max(|A_L|, |A_R|)$.
+		
+		\begin{esempio}
+			Funzionamento divide et impera per Selezione$(A, \lfloor n/2 \rfloor)$
+			(problema della mediana) con $A = \{3,5,9,4,6,1\}$, $n=6$, $i=3$:
+			\begin{enumerate}
+				\item Valore casuale $v = 3$: $A_L = \{1\}$, $A_v = \{3\}$,
+				$A_R = \{5,9,4,6\}$. Vale $|A_L| = 1 < i = 3 \le |A_L|+|A_v| = 2$?
+				No. Si deve risolvere Selezione$(A_R, 3 - 1 - 1) =
+				\text{Selezione}(\{5,9,4,6\}, 1)$.
+				\item Valore casuale $v = 4$: $A_L = \{\}$, $A_v = \{4\}$,
+				$A_R = \{5,9,6\}$. Vale $|A_L| = 0 < i = 1 \le |A_L|+|A_v| = 1$?
+				Sì. La mediana è soluzione $= 4$.
+			\end{enumerate}
+		\end{esempio}
+		
+		% ----------------------------------------------------------------
+		\subsection{RandSelect}
+		
+		Questa implementazione riusa \texttt{RandPartition}$(A, p, r)$
+		vista per QuickSort. Versione di [CLRS] che assume tutti valori distinti.
+		
+		\begin{algorithm}[H]
+			\caption{RandSelect$(A, p, r, i)$}
+			\KwIn{Array $A$, indici $p$, $r$, rango $i$}
+			\KwOut{$i$-esimo elemento più piccolo di $A[p:r]$}
+			\If{$p = r$}{\Return $A[p]$\;}
+			$q \gets \text{RandPartition}(A, p, r)$\;
+			$k \gets q - p + 1$\tcp*{Rango del pivot nel sotto-array corrente}
+			\If{$i = k$}{\Return $A[q]$\tcp*{Il pivot è la risposta}}
+			\If{$i < k$}{
+				\Return $\text{RandSelect}(A, p, q-1, i)$\;
+			}\Else{
+				\Return $\text{RandSelect}(A, q+1, r, i-k)$\;
+			}
+		\end{algorithm}
+		
+		\begin{nota}
+			\texttt{RandSelect} ha il vantaggio di non richiedere memoria
+			ausiliaria, ma ha lo svantaggio che altera l'ordine originale
+			dell'array di input.
+		\end{nota}
+		
+		% ----------------------------------------------------------------
+		\subsection{Analisi della Complessità di RandSelect}
+		
+		\subsubsection{Caso peggiore}
+		Il pivot è sempre l'elemento massimo $\Rightarrow$ la dimensione
+		scende di 1 a ogni passo:
+		\[
+		T(n) = T(n-1) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n^2).
+		\]
+		
+		\subsubsection{Caso medio}
+		
+		Si definisce $A[q]$ \textbf{buono} se risiede tra il 25° e il 75°
+		percentile, i.e., $|A_L|, |A_R| \le \frac{3}{4}|A|$. Il 50\%
+		degli elementi sono buoni.
+		
+		Sia $X_v = I\{v \text{ è un elemento buono}\}$:
+		\[
+		\Pr\{X_v = 1\} = E[X_v] = \frac{1}{2}.
+		\]
+		
+		Dati due pivot scelti casualmente uno dopo l'altro,
+		il valore atteso di pivot buoni è $E[X_v + X_{v'}] = 1$.
+		Quindi mediamente ogni 2 scelte casuali di $v$ si ottiene un valore buono.
+		
+		Sia $s(n)$ il costo di una chiamata a \texttt{RandPartition} e
+		$w(n)$ il costo totale delle chiamate a \texttt{RandPartition}
+		fino a ottenere un valore buono per $A[q]$; allora $E[w(n)] = \Theta(n)$.
+		
+		La complessità media soddisfa:
+		\[
+		E[T(n)] = E\!\left[T\!\left(\tfrac{3}{4}n\right)\right] + \Theta(n).
+		\]
+		Per sostituzione si ottiene $E[T(n)] = \Theta(n)$. Inoltre
+		$E[T(n)] = \Omega(n)$ perché almeno una partizione completa
+		va sempre eseguita.
+		
+		\begin{teorema}[Complessità media di RandSelect]
+			\[
+			E[T(n)] = \Theta(n).
+			\]
+		\end{teorema}
+		
+		\begin{hardnote}
+			\textbf{Da ricordare all'esame:} \texttt{RandSelect} risolve il
+			problema della selezione (e quindi della mediana) in tempo atteso
+			$\Theta(n)$, molto meglio del $\Theta(n \log n)$ ottenuto ordinando
+			l'array.
+			Il caso peggiore rimane $\Theta(n^2)$, ma si verifica con probabilità
+			trascurabile grazie alla scelta casuale del pivot.
+		\end{hardnote}
+		
+		\begin{center}
+			\begin{tabular}{lll}
+				\toprule
+				\textbf{Approccio} & \textbf{Complessità} & \textbf{Note} \\
+				\midrule
+				Ordinamento + accesso & $\Theta(n \log n)$ & Troppo costoso \\
+				\texttt{RandSelect} caso peggiore & $\Theta(n^2)$ & Molto improbabile \\
+				\texttt{RandSelect} caso medio    & $\Theta(n)$   & Garantito in attesa \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+				
 	\section{Può tornare utile}
 	
 	\begin{softnote}
