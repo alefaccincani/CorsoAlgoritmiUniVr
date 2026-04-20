@@ -1,0 +1,200 @@
+% --- ENCODING ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+
+% --- FONT E MICRO-TIPOGRAFIA ---
+\usepackage{lmodern}
+\usepackage{microtype}
+\tolerance=1000
+\emergencystretch=2em
+
+% --- MATEMATICA ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+% --- GRAFI E GRAFICA ---
+\usepackage{tikz}
+\usetikzlibrary{graphs, trees, positioning, arrows.meta, shapes, calc, backgrounds}
+
+% --- ALGORITMI ---
+\usepackage[ruled, vlined, linesnumbered, onelanguage]{algorithm2e}
+
+% --- FIGURE E TABELLE ---
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+% \usepackage{tikz}  <-- rimosso: duplicato
+\usepackage{pgfplots}
+\usepackage{multirow}
+\pgfplotsset{compat=1.18}
+
+% --- LAYOUT E UTILITÀ ---
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{emptypage}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{enumitem}
+
+% --- AMBIENTI COLORATI ---
+% tcolorbox dopo amsthm per evitare conflitti
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems, skins, breakable}
+
+% --- HYPERREF SEMPRE PER ULTIMO ---
+\usepackage[hidelinks, plainpages=false, pdfpagelabels]{hyperref}
+
+% FIX r.258 — math in titoli PDF (token not allowed in PDF string)
+% \texorpdfstring{$...$}{testo} va usato nei titoli sezione.
+% Questa riga disabilita i comandi math più comuni nelle stringhe PDF:
+\hypersetup{
+	pdfencoding=auto,
+}
+
+% --- PROFONDITÀ INDICE ---
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}
+
+% --- COLORI ---
+\definecolor{primary}{RGB}{0, 25, 127}
+\definecolor{codegreen}{RGB}{0, 120, 0}
+\definecolor{codegray}{RGB}{120, 120, 120}
+\definecolor{codered}{RGB}{160, 0, 0}
+\definecolor{codebg}{RGB}{248, 248, 248}
+
+% --- GEOMETRIA ---
+\geometry{
+	a4paper,
+	top=3cm, bottom=3cm,
+	left=2.5cm, right=2.5cm,
+	headheight=24.02pt
+}
+
+% --- INTERLINEA ---
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+
+% --- STILE TITOLI ---
+\titleformat{\section}
+{\Large\bfseries\color{primary}}
+{\thesection.}{0.5em}{}
+[\color{primary}\titlerule]
+
+\titleformat{\subsection}
+{\large\bfseries\color{primary}}
+{\thesubsection}{0.5em}{}
+
+\titleformat{\subsubsection}
+{\normalsize\bfseries\color{primary}}
+{\thesubsubsection}{0.5em}{}
+
+\titlespacing{\section}{0pt}{2ex}{1ex}
+\titlespacing{\subsection}{0pt}{1.5ex}{0.5ex}
+\titlespacing{\subsubsection}{0pt}{1ex}{0.3ex}
+
+% --- INTESTAZIONI ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{primary}\rightmark}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\makeatletter
+\renewcommand{\headrule}{%
+	\hbox to\headwidth{\color{primary}\leaders\hrule height\headrulewidth\hfill}}
+\makeatother
+
+% --- STILE INDICE ---
+\renewcommand{\cftsecfont}{\bfseries\color{primary}}
+\renewcommand{\cftsecpagefont}{\bfseries\color{primary}}
+\renewcommand{\cftsubsecfont}{\color{primary}}
+\renewcommand{\cftsubsecpagefont}{\color{primary}}
+\renewcommand{\cftsubsubsecfont}{\color{primary}}
+\renewcommand{\cftsubsubsecpagefont}{\color{primary}}
+
+% --- TEOREMI ---
+\newtheorem{teorema}{Teorema}[section]
+\newtheorem{lemma}[teorema]{Lemma}
+\newtheorem{corollario}[teorema]{Corollario}
+\theoremstyle{definition}
+\newtheorem{definizione}{Definizione}[section]
+\newtheorem{nozione}{Nozione}[section]
+\theoremstyle{remark}
+\newtheorem{osservazione}{Osservazione}
+\newtheorem{esempio}{Esempio}[section]
+
+% --- AMBIENTI TCOLORBOX ---
+\newenvironment{nota}{%
+	\begin{tcolorbox}[
+		colback=codebg,
+		colframe=primary,
+		fonttitle=\bfseries,
+		title=Nota,
+		left=6pt, right=6pt, top=4pt, bottom=4pt,
+		breakable
+		]
+	}{%
+	\end{tcolorbox}
+}
+
+\newtcolorbox{softnote}{
+	colback=cyan!5,
+	colframe=cyan!40!black,
+	fonttitle=\bfseries,
+	breakable
+}
+
+\newtcolorbox{hardnote}{
+	colback=red!15,
+	colframe=red!70!black,
+	fonttitle=\bfseries,
+	coltitle=white,
+	boxrule=1pt,
+	breakable
+}
+
+% --- KW PERSONALIZZATI PER algorithm2e ---
+\SetKw{KwAnd}{and}
+\SetKw{KwOr}{or}
+% FIX r.347: con [onelanguage], \KwRet è già definito internamente.
+% Usare \renewcommand invece di \newcommand per evitare "already defined":
+\providecommand{\KwRet}[1]{\Return{#1}}
+
+% --- FONT SHAPE FIX ---
+% FIX r.570, r.281, r.425: T1/lmr/bx/sc e T1/lmr/m/scit non esistono
+% in Latin Modern. La sintassi corretta per \DeclareFontShape è DOPO
+% \begin{document}, oppure va usato il pacchetto mfirstuc. La soluzione
+	% più sicura con lmodern è usare il pacchetto substitute direttamente:
+	\usepackage{fix-cm}
+	
+	% --- LISTINGS ---
+	\lstset{
+		language=Java,
+		basicstyle=\ttfamily\small\color{black},
+		keywordstyle=\color{primary}\bfseries,
+		commentstyle=\color{codegreen}\itshape,
+		stringstyle=\color{codered},
+		numberstyle=\tiny\color{codegray},
+		numbers=left,
+		frame=single,
+		rulecolor=\color{primary},
+		backgroundcolor=\color{codebg},
+		breaklines=true,
+		breakatwhitespace=false,
+		captionpos=b,
+		showstringspaces=false,
+		tabsize=4
+	}
+	
+	% --- CAPTION ---
+	\captionsetup{font=small, labelfont={bf, color=primary}, labelsep=period}

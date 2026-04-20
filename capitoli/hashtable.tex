@@ -1,0 +1,459 @@
+% === INSERIRE DOPO l'ultima \section{} già presente nel documento ===
+
+% ============================================================
+\section{Hashing e Tabelle Hash}
+% ============================================================
+
+\begin{softnote}
+	Le tabelle hash sono strutture dati efficienti per implementare dizionari
+	che supportano le sole operazioni \textsc{Insert}, \textsc{Search} e
+	\textsc{Delete}. Analogamente a un array indicizzato da interi, una tabella
+	hash indicizza gli elementi tramite la \emph{chiave} dell'elemento stesso.
+	Nel caso medio, sotto ipotesi ragionevoli, il tempo di ricerca è $O(1)$,
+	anche se nel caso peggiore è $O(n)$.
+\end{softnote}
+
+% ------------------------------------------------------------
+\subsection{Tavole a indirizzamento diretto}
+% ------------------------------------------------------------
+
+\begin{definizione}[Tavola a indirizzamento diretto]
+	Sia $U$ l'insieme di tutti i possibili valori delle chiavi. Se $|U|$ non è
+	troppo grande e nessun elemento ha chiave uguale a un altro, è possibile
+	convertire ogni chiave in un intero e usare un array $T$ di lunghezza $|U|$
+	per memorizzare i riferimenti agli elementi. La funzione di indicizzazione è:
+	\[
+	I(k) = \sum_{i=0}^{n-1} \bigl(k[i] - \texttt{'A'}\bigr) \cdot 26^i
+	\]
+	(nell'esempio con chiavi alfanumeriche di 2 caratteri in
+	$[\texttt{A},\ldots,\texttt{Z}]$, $|U| = 26^2 = 676$).
+\end{definizione}
+
+\begin{hardnote}
+	L'indirizzamento diretto è praticabile solo quando $|U|$ è piccolo. Se
+	$n \ll |U|$ (poche chiavi usate su un universo enorme) si spreca molta
+	memoria: si deve allocare un array di dimensione $|U|$ anche se si
+	memorizzano solo $n$ elementi.
+\end{hardnote}
+
+% ------------------------------------------------------------
+\subsection{Tabelle hash}
+% ------------------------------------------------------------
+
+Quando $|U|$ è troppo grande, si usa una tabella di dimensione $m \approx n$
+(con $m \ll |U|$) e una \textbf{funzione hash}
+\[
+h : U \to \{0, \ldots, m-1\}
+\]
+che mappa la chiave $k$ nell'indice $h(k)$ (\emph{valore hash} di $k$).
+Poiché $m \ll |U|$, $h$ non può essere iniettiva: possono quindi verificarsi
+\textbf{collisioni}.
+
+\begin{definizione}[Funzione hash perfetta]
+	Una funzione hash $h$ è \emph{perfetta} per un insieme di chiavi $S$ se
+	non produce collisioni sulle sole chiavi di $S$, ovvero se $h$ è iniettiva
+	su $S$.
+\end{definizione}
+
+% ------------------------------------------------------------
+\subsection{Funzioni hash: scelta e qualità}
+% ------------------------------------------------------------
+
+\begin{softnote}
+	Una funzione hash ideale determina ogni valore $h(k)$ in modo casuale e
+	indipendente nell'insieme $\{0,\ldots,m-1\}$, restituendo sempre lo stesso
+	valore per la stessa chiave (\emph{funzione di hash uniforme e indipendente}
+	o \emph{oracolo casuale}). Tale funzione è solo teorica; in pratica si usano
+	funzioni che la approssimano.
+\end{softnote}
+
+\subsubsection{Conversione verso gli interi}
+
+Quando le chiavi non sono interi, si converte prima la chiave in un intero:
+
+\begin{itemize}
+	\item \textbf{Caratteri Unicode (Java)}: base $65536$ (16 bit per
+	\texttt{char}):
+	\[
+	k' = \sum_{i} c_i \cdot 65536^i
+	\]
+	\item \textbf{Caratteri Latin-1}: base $256$.
+	\item \textbf{Subset ristretto}: base ulteriormente ridotta riassegnando
+	gli ordinali a partire da $0$.
+\end{itemize}
+
+\begin{nota}
+	Per stringhe di anche soli 2 caratteri, la somma $k'$ supera il limite di
+	un \texttt{int} Java (32 bit). Il risultato viene troncato a $w = 32$ bit,
+	equivalente a calcolare $k' \bmod 2^{32}$. La conversione perde biettività
+	(possibili collisioni), ma questo è accettabile: anche $h$ stessa non è
+	iniettiva. L'obiettivo è semplicemente \emph{mescolare} i caratteri in un
+	intero prima di applicare $h$.
+\end{nota}
+
+% ------------------------------------------------------------
+\subsection{Hashing statico}
+% ------------------------------------------------------------
+
+\subsubsection{Metodo della divisione}
+
+\begin{definizione}[Metodo della divisione]
+	\[
+	h(k) = k \bmod m
+	\]
+	Richiede una sola operazione. La scelta di $m$ è critica: si preferisce un
+	\textbf{numero primo non vicino a potenze di 2}, oppure un numero con
+	fattori primi $> 20$ (Lum, 1971).
+\end{definizione}
+
+\begin{hardnote}
+	Se $m = 2^p$, allora $h(k)$ dipende solo dagli $p$ bit meno significativi
+	di $k$, ignorando completamente la parte alta della chiave. Ad esempio, con
+	$m = 2^{12} = 4096$:
+	\[
+	h(40960) = h(45056) = h(49152) = h(53248) = 0
+	\]
+	poiché questi valori hanno tutti i 12 bit meno significativi pari a zero.
+\end{hardnote}
+
+\subsubsection{Metodo della moltiplicazione}
+
+\begin{definizione}[Metodo della moltiplicazione]
+	Sia $0 < A < 1$ una costante. Il valore hash è:
+	\[
+	h(k) = \bigl\lfloor m \cdot \bigl((k \cdot A) \bmod 1\bigr) \bigr\rfloor
+	\]
+	dove $(k \cdot A) \bmod 1$ è la parte frazionaria di $k \cdot A$. Il valore
+	$m$ non è critico; si usa tipicamente $m = 2^p$.
+\end{definizione}
+
+\begin{nota}
+	Donald Knuth suggerisce $A \approx \dfrac{\sqrt{5}-1}{2} \approx 0.6180$
+	(sezione aurea).
+\end{nota}
+
+\subsubsection{Metodo moltiplica-e-scorri}
+
+Il metodo della moltiplicazione può essere reso più efficiente fissando
+$m = 2^l$ con $0 < l \le w$ ($w$ = numero di bit della parola macchina).
+Si pone $a = A \cdot 2^w$ (intero dispari), e si calcola:
+\[
+h_a(k) = \bigl((k \cdot a) \bmod 2^w\bigr) \mathbin{>>>} (w - l)
+\]
+dove \texttt{>>>} è lo scorrimento logico a destra (inserisce zeri a sinistra,
+a differenza di \texttt{>>} che mantiene il bit di segno). Si estraggono così
+gli $l$ bit più significativi di $r_0 = (k \cdot a) \bmod 2^w$.
+
+\begin{esempio}[Moltiplica-e-scorri con $w=8$, $m=16$]
+	Dati $w = 8$, $m = 2^4 = 16$ (dunque $l = 4$), $k = 202$
+	($\mathtt{11001010}_2$), $a = 173$ ($\mathtt{10101101}_2$):
+	\[
+	k \cdot a = 202 \cdot 173 = 34946, \quad
+	r_0 = 34946 \bmod 256 = 130 = \mathtt{10000010}_2
+	\]
+	\[
+	h_a(k) = \mathtt{10000010}_2 \mathbin{>>>} 4 = \mathtt{00001000}_2 = 8
+	\]
+	La chiave viene quindi assegnata alla cella $8 \in \{0,\ldots,15\}$.
+\end{esempio}
+
+% ------------------------------------------------------------
+\subsection{Hashing randomizzato}
+% ------------------------------------------------------------
+
+\begin{softnote}
+	Con una funzione hash statica, un avversario può costruire $n$ chiavi che
+	collidono tutte nella stessa cella, portando a $n-1$ collisioni (caso
+	peggiore sistematico). L'hashing randomizzato risolve questo problema
+	scegliendo casualmente la funzione hash \emph{all'inizio di ogni esecuzione}
+	da una famiglia opportuna: nessun input può essere sistematicamente il caso
+	peggiore.
+\end{softnote}
+
+\begin{definizione}[Hashing universale]
+	Sia $\mathcal{H}$ una famiglia finita di funzioni hash con dominio $U$ e
+	codominio $\{0,1,\ldots,m-1\}$. $\mathcal{H}$ è \emph{universale} se per
+	ogni coppia di chiavi distinte $k_i, k_j \in U$:
+	\[
+	\Pr_{h \in \mathcal{H}}\bigl\{h(k_i) = h(k_j)\bigr\} \le \frac{1}{m}
+	\]
+	Equivalentemente, il numero di funzioni $h \in \mathcal{H}$ che fanno
+	collidere $k_i$ e $k_j$ è al più $|\mathcal{H}|/m$.
+\end{definizione}
+
+\begin{definizione}[Classificazione delle famiglie]
+	Sia $\mathcal{H}$ una famiglia finita di funzioni hash
+	($U \to \{0,\ldots,m-1\}$) e $h \in \mathcal{H}$ scelta casualmente:
+	\begin{itemize}
+		\item $\mathcal{H}$ è \textbf{uniforme} se $\forall k \in U$ e
+		$\forall q \in \{0,\ldots,m-1\}$: $\Pr\{h(k)=q\} = 1/m$.
+		\item $\mathcal{H}$ è $\varepsilon$\textbf{-universale} se
+		$\forall k_i \ne k_j$:
+		$\Pr\{h(k_i)=h(k_j)\} \le \varepsilon$.
+		\item $\mathcal{H}$ è \textbf{universale} se è
+		$\varepsilon$-universale con $\varepsilon = 1/m$.
+	\end{itemize}
+	Una famiglia uniforme e indipendente è anche universale (ma non viceversa).
+\end{definizione}
+
+\paragraph{Famiglia basata sulla teoria dei numeri.}
+Sia $p$ un numero primo tale che ogni chiave $k \in U$ sia associabile a un
+intero in $[0,\ldots,p-1]$, con $p > m$. Siano
+$\mathbb{Z}_p = \{0,\ldots,p-1\}$ e $\mathbb{Z}_p^* = \{1,\ldots,p-1\}$.
+Per ogni $a \in \mathbb{Z}_p^*$ e $b \in \mathbb{Z}_p$ si definisce:
+\[
+h_{ab}(k) = \bigl((ak + b) \bmod p\bigr) \bmod m
+\]
+La famiglia $\mathcal{H}_{pm} = \{h_{ab} \mid a \in \mathbb{Z}_p^*,\,
+b \in \mathbb{Z}_p\}$ è universale, con $|\mathcal{H}_{pm}| = p(p-1)$ e
+$m$ arbitrario.
+
+\paragraph{Famiglia $2/m$-universale basata su moltiplica-e-scorri.}
+La famiglia:
+\[
+\mathcal{H} = \bigl\{h_a(\cdot) \;\big|\; 1 \le a < 2^w,\;
+a \text{ dispari}\bigr\}
+\]
+è $2/m$-universale (con $m = 2^l$). La velocità di calcolo di $h_a(k)$
+(una moltiplicazione e uno scorrimento) compensa la probabilità di collisione
+$2/m$ invece di $1/m$.
+
+\begin{hardnote}
+	Nella versione italiana di [CLRS] sono presenti due errori nella definizione
+	di questa famiglia: verificare sempre la definizione originale (edizione
+	inglese).
+\end{hardnote}
+
+% ------------------------------------------------------------
+\subsection{Gestione delle collisioni}
+% ------------------------------------------------------------
+
+\subsubsection{Risoluzione mediante concatenamento}
+
+\begin{softnote}
+	Nel concatenamento (\emph{chaining}), ogni cella $T[j]$ della tabella è la
+	testa di una lista concatenata. Tutti gli elementi con lo stesso valore hash
+	finiscono nella stessa lista.
+\end{softnote}
+
+Le operazioni sono:
+\begin{itemize}
+	\item \textsc{Insert}$(o)$: inserisce $o$ in testa alla lista
+	$T[h(o.\mathit{key})]$ --- $\Theta(1)$.
+	\item \textsc{Search}$(k)$: scorre la lista $T[h(k)]$ cercando la chiave
+	$k$.
+	\item \textsc{Delete}$(o)$: rimuove $o$ dalla lista
+	$T[h(o.\mathit{key})]$; poiché $o$ contiene i puntatori
+	\texttt{prev}/\texttt{next}, l'operazione è $\Theta(1)$.
+\end{itemize}
+
+\begin{definizione}[Fattore di carico]
+	Il \emph{fattore di carico} (load factor) è:
+	\[
+	\alpha = \frac{n}{m}
+	\]
+	dove $n$ è il numero di elementi memorizzati e $m$ la dimensione della
+	tabella. Nel concatenamento $\alpha > 1$ è accettabile (preferibilmente
+	$\alpha \approx 1$).
+\end{definizione}
+
+\begin{teorema}[Costo medio --- ricerca senza successo]
+	In una tabella hash con concatenamento, sotto l'ipotesi di hashing uniforme
+	e indipendente, una ricerca senza successo richiede in media tempo
+	$\Theta(1 + \alpha)$.
+\end{teorema}
+
+\begin{proof}
+	Ogni lista delle $m$ celle ha lunghezza media $\alpha$. La ricerca di una
+	chiave non presente richiede $\Theta(1)$ per calcolare il valore hash e
+	$\Theta(\alpha)$ per scorrere la lista.
+\end{proof}
+
+\begin{teorema}[Costo medio --- ricerca con successo]
+	Sotto le stesse ipotesi, una ricerca con successo richiede in media tempo
+	$\Theta(1 + \alpha)$.
+\end{teorema}
+
+\begin{proof}
+	Sia $x_i$ l'$i$-esimo elemento inserito. Per ogni coppia $(i,j)$ con $j > i$
+	e ogni cella $q$, sia $X_{ijq}$ la variabile indicatrice dell'evento
+	\{\,si cerca $x_i$, $h(k_i)=q$ e $h(k_j)=q$\,\}.
+	Sotto hashing uniforme e indipendente:
+	\[
+	\Pr\{X_{ijq}=1\} = \frac{1}{n} \cdot \frac{1}{m^2}
+	\quad\Rightarrow\quad E[X_{ijq}] = \frac{1}{nm^2}
+	\]
+	Il numero atteso di elementi che precedono l'elemento cercato nella lista
+	vale:
+	\[
+	E[1 + Z]
+	= 1 + \sum_{j=1}^{n}\sum_{q=0}^{m-1}\sum_{i=1}^{j-1} \frac{1}{nm^2}
+	= 1 + \frac{\alpha}{2} - \frac{\alpha}{2n}
+	\]
+	Aggiungendo il costo $\Theta(1)$ per il calcolo dell'hash, il costo totale
+	è $\Theta\!\left(2 + \dfrac{\alpha}{2} - \dfrac{\alpha}{2n}\right)
+	= \Theta(1 + \alpha)$.
+\end{proof}
+
+\begin{table}[ht]
+	\centering
+	\caption{Prestazioni della tabella hash con concatenamento}
+	\begin{tabular}{lcc}
+		\toprule
+		\textbf{Operazione} & \textbf{Caso peggiore} & \textbf{Caso medio}  \\
+		\midrule
+		\textsc{Insert}     & $\Theta(1)$             & $\Theta(1)$           \\
+		\textsc{Search}     & $\Theta(n)$             & $\Theta(1 + \alpha)$  \\
+		\textsc{Delete}     & $\Theta(1)$             & $\Theta(1)$           \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{nota}
+	Se $n = O(m)$ (il numero di elementi è proporzionale al numero di celle),
+	allora $\alpha = n/m = O(1)$ e nel caso medio tutte le operazioni costano
+	$O(1)$.
+\end{nota}
+
+% ------------------------------------------------------------
+\subsubsection{Risoluzione mediante indirizzamento aperto}
+% ------------------------------------------------------------
+
+\begin{softnote}
+	Nell'indirizzamento aperto (\emph{open addressing}), tutti gli elementi sono
+	memorizzati nella tabella stessa (niente liste esterne). In caso di
+	collisione si cerca un'altra cella libera tramite una sequenza di
+	\emph{ispezioni} (\emph{probing}). La funzione hash viene estesa come:
+	\[
+	h : U \times \{0,1,\ldots,m-1\} \to \{0,1,\ldots,m-1\}
+	\]
+	La funzione hash non estesa è denotata $h_0(\cdot)$. Poiché tutti gli slot
+	sono nella tabella, il fattore di carico deve soddisfare $\alpha < 1$.
+\end{softnote}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Insert}$(T, o)$}
+	\KwIn{Tabella hash $T$; oggetto $o$ da inserire (non già presente).}
+	\KwOut{Oggetto inserito, oppure errore ``Overflow''.}
+	$i \leftarrow 0$\;
+	\While{$i \neq m$}{
+		$j \leftarrow h(o.\mathit{key},\, i)$\;
+		\If{$T[j] = \mathtt{NULL}$ \KwOr $T[j] = \mathtt{DELETE}$}{
+			$T[j] \leftarrow o$\;
+			\KwRet{``Inserito''}\;
+		}
+		$i \leftarrow i + 1$\;
+	}
+	\KwRet{``Overflow''}\;
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Search}$(T, k)$}
+	\KwIn{Tabella hash $T$; chiave $k$ da cercare.}
+	\KwOut{Indice di $k$ in $T$ se presente, \texttt{NULL} altrimenti.}
+	$i \leftarrow 0$\;
+	\While{$i \neq m$}{
+		$j \leftarrow h(k,\, i)$\;
+		\lIf{$T[j] = \mathtt{NULL}$}{\KwRet{\texttt{NULL}}}
+		\lIf{$T[j] \neq \mathtt{DELETE}$ \KwAnd $T[j].\mathit{key} = k$}{\KwRet{$j$}}
+		$i \leftarrow i + 1$\;
+	}
+	\KwRet{\texttt{NULL}}\;
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Delete}$(T, i)$}
+	\KwIn{Tabella hash $T$; indice $i$ della cella da cancellare.}
+	$T[i] \leftarrow \mathtt{DELETE}$ \tcp*{marcatore tombstone}
+\end{algorithm}
+
+\begin{hardnote}
+	Il marcatore \texttt{DELETE} (\emph{tombstone}) è necessario per non
+	interrompere le sequenze di ispezione. Se si sostituisse con \texttt{NULL},
+	la \textsc{Search} si fermerebbe su quella cella producendo falsi negativi.
+	\textsc{Search} non si ferma su \texttt{DELETE} e continua l'ispezione;
+	\textsc{Insert} può riutilizzare una cella \texttt{DELETE}. Con molte
+	cancellazioni le ispezioni peggiorano: si risolve con un \textbf{rehash}
+	periodico (ricostruzione della tabella con i soli elementi presenti).
+\end{hardnote}
+
+\paragraph{Analisi (ipotesi).}
+L'analisi classica [CLRS] assume \emph{hashing con permutazioni indipendenti e
+	uniformi}: per ogni chiave $k$, la sequenza
+$\langle h(k,0), \ldots, h(k,m-1)\rangle$ è una permutazione casuale uniforme
+di $\{0,\ldots,m-1\}$, e le sequenze per chiavi diverse sono indipendenti.
+Si assume inoltre assenza di cancellazioni (i marcatori \texttt{DELETE}
+degradano le prestazioni).
+
+\begin{table}[ht]
+	\centering
+	\caption{Numero medio di ispezioni con indirizzamento aperto}
+	\begin{tabular}{lc}
+		\toprule
+		\textbf{Operazione}    & \textbf{Caso medio}                      \\
+		\midrule
+		Ricerca con successo   & $\frac{1}{\alpha}\ln\frac{1}{1-\alpha}$  \\[6pt]
+		Ricerca con insuccesso & $\frac{1}{1-\alpha}$                     \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{esempio}[Ispezioni in funzione di $\alpha$]
+	Con $\alpha = 1/2$ (tabella riempita al 50\%):
+	ricerca con insuccesso $\to 1/(1-1/2) = 2$ ispezioni;
+	ricerca con successo $\to 2\ln 2 \approx 1.387$ ispezioni.
+	
+	Con $\alpha = 0.75$ (tabella riempita al 75\%):
+	ricerca con insuccesso $\to 4$ ispezioni;
+	ricerca con successo $\to \frac{4}{3}\ln 4 \approx 1.848$ ispezioni.
+\end{esempio}
+
+% ............................................................
+\subsubsection{Ispezione lineare}
+% ............................................................
+
+\begin{definizione}[Ispezione lineare]
+	\[
+	h(k, i) = \bigl(h_0(k) + i\bigr) \bmod m, \qquad i = 0, 1, \ldots, m-1
+	\]
+	In caso di collisione si scansionano le celle una ad una a partire da
+	quella adiacente alla posizione originale.
+\end{definizione}
+
+\begin{hardnote}
+	L'ispezione lineare soffre del \textbf{problema del clustering primario}:
+	le sequenze di celle adiacenti occupate (\emph{cluster}) tendono a crescere
+	rapidamente, vanificando la distribuzione uniforme. Il metodo genera al più
+	$m$ permutazioni distinte invece di $m!$, quindi non soddisfa l'ipotesi di
+	hashing con permutazioni indipendenti. È comunque utile su architetture con
+	memoria gerarchica (cache/RAM/disco) grazie alla località spaziale degli
+	accessi.
+\end{hardnote}
+
+% ............................................................
+\subsubsection{Doppio hashing}
+% ............................................................
+
+\begin{definizione}[Doppio hashing]
+	\[
+	h(k, i) = \bigl(h_0(k) + i \cdot p(k)\bigr) \bmod m,
+	\qquad i = 0, 1, \ldots, m-1
+	\]
+	dove $p(k)$ è una seconda funzione hash (\emph{funzione probe}). Affinché
+	la sequenza copra tutte le $m$ celle è sufficiente che
+	$\gcd\bigl(p(k), m\bigr) = 1$.
+\end{definizione}
+
+\begin{nota}
+	Due costruzioni che garantiscono la copertura completa:
+	\begin{itemize}
+		\item $m$ primo e $0 < p(k) < m$: ad esempio $m = 701$,
+		$p(k) = 1 + (k \bmod 500)$.
+		\item $m = 2^c$ e $p(k)$ dispari: ad esempio $m = 512$,
+		$p(k) = 1 + 2\,(k \bmod (m/2))$.
+	\end{itemize}
+	Il doppio hashing non soffre del clustering primario ed è in generale
+	migliore dell'ispezione lineare e quadratica. Pur non soddisfacendo
+	l'ipotesi di hashing con permutazioni indipendenti, le permutazioni
+	prodotte ne hanno molte caratteristiche.
+\end{nota}

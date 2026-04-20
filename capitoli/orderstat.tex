@@ -1,0 +1,259 @@
+\section{Statistiche d'Ordine e Selezione}
+
+\begin{softnote}
+	Questo problema mostra un altro esempio di divide et impera con
+	buona qualità nel caso medio: trovare il $k$-esimo elemento
+	più piccolo di un array senza doverlo ordinare completamente.
+\end{softnote}
+
+% ----------------------------------------------------------------
+\subsection{Definizioni}
+
+\begin{definizione}[Statistica d'ordine]
+	Dato un insieme di $n$ elementi, la \textbf{$i$-esima statistica
+		d'ordine} è l'$i$-esimo elemento più piccolo.
+\end{definizione}
+
+\begin{esempio}
+	Dato l'insieme $\{3, 5, 9, 4, 6, 1\}$ di $n=6$ elementi:
+	\begin{itemize}
+		\item I statistica d'ordine $= 1$ (elemento minimo)
+		\item VI statistica d'ordine $= 9$ (elemento massimo)
+		\item IV statistica d'ordine $= 5$
+	\end{itemize}
+\end{esempio}
+
+\begin{definizione}[Mediana]
+	Rappresenta un valore $v$ tale che almeno il 50\% degli elementi
+	$\le v$ e almeno il 50\% $\ge v$.
+	\begin{itemize}
+		\item Se $n$ è dispari, la mediana è la $\lfloor n/2 \rfloor + 1$
+		statistica d'ordine (unica).
+		\item Se $n$ è pari, le mediane possono essere due:
+		la statistica d'ordine $\lfloor n/2 \rfloor$
+		(\textbf{mediana inferiore}) e quella $\lceil n/2 \rceil$
+		(\textbf{mediana superiore}).
+	\end{itemize}
+	Per convenzione, scrivendo \emph{mediana} si intende sempre la
+	\textbf{mediana inferiore}: la statistica d'ordine
+	$\lfloor (n+1)/2 \rfloor$.
+\end{definizione}
+
+\begin{esempio}
+	Dato $\{3, 5, 9, 4, 6, 1\}$ con $n=6$:
+	mediana inferiore $=$ III statistica d'ordine $= 4$;
+	mediana superiore $=$ IV statistica d'ordine $= 5$.
+\end{esempio}
+
+% ----------------------------------------------------------------
+\subsection{Problema della Selezione}
+
+\begin{definizione}[Problema Selezione]
+	\textbf{Input:} un insieme $A$ di $n$ numeri distinti e un intero
+	$1 \le i \le n$.\\
+	\textbf{Output:} determinare l'$i$-esimo elemento più piccolo di $A$.
+\end{definizione}
+
+La selezione si può risolvere in tempo $\Theta(n \log n)$ ordinando
+gli elementi, ma non ha senso dover ordinare spostare gli elementi
+quando si vuole conoscere solo la $i$-esima statistica d'ordine.
+In questa sezione vediamo come è possibile risolvere il problema
+Selezione in tempo atteso $\Theta(n)$.
+
+\begin{nota}
+	[CLRS] assume che i numeri siano distinti per comodità. Si può
+	dimostrare in seguito che i risultati sono validi anche quando i
+	numeri non sono distinti.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Minimo, Massimo e MinMax}
+
+\paragraph{Minimo (o massimo).}
+Trovare il minimo o il massimo è facile: bastano $n-1$ confronti,
+ed è ottimale perché ogni elemento tranne il minimo deve confrontarsi
+con almeno un altro elemento per stabilire che non è il minimo.
+
+\begin{algorithm}[H]
+	\caption{Minimum$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{Valore minimo}
+	$m \gets A[1]$\;
+	\For{$i \gets 2$ \KwTo $n$}{
+		\If{$m > A[i]$}{$m \gets A[i]$\;}
+	}
+	\Return $m$\;
+\end{algorithm}
+
+$T_{\text{Minimum}}(n) = \Theta(n)$. L'algoritmo \textsc{Maximum}$(A)$
+è analogo (basta cambiare $>$ con $<$).
+
+\paragraph{Minimo e massimo contemporaneamente.}
+Fondendo \textsc{Minimum} e \textsc{Maximum} si risolvono entrambi con
+$2(n-1)$ confronti. Si può fare meglio: \textbf{$\lceil 3n/2 \rceil - 2$
+	confronti}, confrontando gli elementi \emph{a coppie} anziché singolarmente.
+
+\begin{algorithm}[H]
+	\caption{MinMax$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{Valori minimo $m$ e massimo $M$}
+	\If{$n$ è dispari}{
+		$m \gets A[1]$; $M \gets A[1]$; $i \gets 2$\;
+	}{
+		\If{$A[1] < A[2]$}{$m \gets A[1]$; $M \gets A[2]$\;}
+		\Else{$M \gets A[1]$; $m \gets A[2]$\;}
+		$i \gets 3$\;
+	}
+	\While{$i \le n-1$}{
+		\tcp{Usa $A[i]$ e $A[i+1]$ per aggiornare $m$ e $M$}
+		\If{$A[i] < A[i+1]$}{
+			\If{$A[i] < m$}{$m \gets A[i]$\;}
+			\If{$A[i+1] > M$}{$M \gets A[i+1]$\;}
+		}\Else{
+			\If{$A[i+1] < m$}{$m \gets A[i+1]$\;}
+			\If{$A[i] > M$}{$M \gets A[i]$\;}
+		}
+		$i \gets i + 2$\;
+	}
+	\Return $m, M$\;
+\end{algorithm}
+
+\begin{nota}
+	Ogni coppia di elementi richiede 3 confronti (1 tra loro + 1 con il
+	minimo corrente + 1 con il massimo corrente). Con $\lfloor n/2 \rfloor$
+	coppie si ottengono $\lceil 3n/2 \rceil - 2$ confronti totali.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Idea Divide et Impera per la Selezione}
+
+L'idea divide et impera per risolvere il problema Selezione$(A, i)$
+è la seguente. Dato un numero casuale $v$ di $A$, si suddivide $A$
+in 3 sottoinsiemi:
+\[
+A_L = \{x \in A \mid x < v\}, \quad
+A_v = \{x \in A \mid x = v\}, \quad
+A_R = \{x \in A \mid x > v\}.
+\]
+
+La ricerca dell'$i$-esimo elemento più piccolo può essere ristretta:
+\[
+\text{Selezione}(A, i) =
+\begin{cases}
+	\text{Selezione}(A_L, i)              & \text{se } i \le |A_L| \\
+	v                                      & \text{se } |A_L| < i \le |A_L| + |A_v| \\
+	\text{Selezione}(A_R,\; i - |A_L| - |A_v|) & \text{altrimenti}
+\end{cases}
+\]
+
+Le tre liste si determinano con un numero di confronti $\Theta(n)$.
+Dato $A$, la dimensione del sotto-problema è
+$\max(|A_L|, |A_R|)$.
+
+\begin{esempio}
+	Funzionamento divide et impera per Selezione$(A, \lfloor n/2 \rfloor)$
+	(problema della mediana) con $A = \{3,5,9,4,6,1\}$, $n=6$, $i=3$:
+	\begin{enumerate}
+		\item Valore casuale $v = 3$: $A_L = \{1\}$, $A_v = \{3\}$,
+		$A_R = \{5,9,4,6\}$. Vale $|A_L| = 1 < i = 3 \le |A_L|+|A_v| = 2$?
+		No. Si deve risolvere Selezione$(A_R, 3 - 1 - 1) =
+		\text{Selezione}(\{5,9,4,6\}, 1)$.
+		\item Valore casuale $v = 4$: $A_L = \{\}$, $A_v = \{4\}$,
+		$A_R = \{5,9,6\}$. Vale $|A_L| = 0 < i = 1 \le |A_L|+|A_v| = 1$?
+		Sì. La mediana è soluzione $= 4$.
+	\end{enumerate}
+\end{esempio}
+
+% ----------------------------------------------------------------
+\subsection{RandSelect}
+
+Questa implementazione riusa \texttt{RandPartition}$(A, p, r)$
+vista per QuickSort. Versione di [CLRS] che assume tutti valori distinti.
+
+\begin{algorithm}[H]
+	\caption{RandSelect$(A, p, r, i)$}
+	\KwIn{Array $A$, indici $p$, $r$, rango $i$}
+	\KwOut{$i$-esimo elemento più piccolo di $A[p:r]$}
+	\If{$p = r$}{\Return $A[p]$\;}
+	$q \gets \text{RandPartition}(A, p, r)$\;
+	$k \gets q - p + 1$\tcp*{Rango del pivot nel sotto-array corrente}
+	\If{$i = k$}{\Return $A[q]$\tcp*{Il pivot è la risposta}}
+	\If{$i < k$}{
+		\Return $\text{RandSelect}(A, p, q-1, i)$\;
+	}\Else{
+		\Return $\text{RandSelect}(A, q+1, r, i-k)$\;
+	}
+\end{algorithm}
+
+\begin{nota}
+	\texttt{RandSelect} ha il vantaggio di non richiedere memoria
+	ausiliaria, ma ha lo svantaggio che altera l'ordine originale
+	dell'array di input.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Analisi della Complessità di RandSelect}
+
+\subsubsection{Caso peggiore}
+Il pivot è sempre l'elemento massimo $\Rightarrow$ la dimensione
+scende di 1 a ogni passo:
+\[
+T(n) = T(n-1) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n^2).
+\]
+
+\subsubsection{Caso medio}
+
+Si definisce $A[q]$ \textbf{buono} se risiede tra il 25° e il 75°
+percentile, i.e., $|A_L|, |A_R| \le \frac{3}{4}|A|$. Il 50\%
+degli elementi sono buoni.
+
+Sia $X_v = I\{v \text{ è un elemento buono}\}$:
+\[
+\Pr\{X_v = 1\} = E[X_v] = \frac{1}{2}.
+\]
+
+Dati due pivot scelti casualmente uno dopo l'altro,
+il valore atteso di pivot buoni è $E[X_v + X_{v'}] = 1$.
+Quindi mediamente ogni 2 scelte casuali di $v$ si ottiene un valore buono.
+
+Sia $s(n)$ il costo di una chiamata a \texttt{RandPartition} e
+$w(n)$ il costo totale delle chiamate a \texttt{RandPartition}
+fino a ottenere un valore buono per $A[q]$; allora $E[w(n)] = \Theta(n)$.
+
+La complessità media soddisfa:
+\[
+E[T(n)] = E\!\left[T\!\left(\tfrac{3}{4}n\right)\right] + \Theta(n).
+\]
+Per sostituzione si ottiene $E[T(n)] = \Theta(n)$. Inoltre
+$E[T(n)] = \Omega(n)$ perché almeno una partizione completa
+va sempre eseguita.
+
+\begin{teorema}[Complessità media di RandSelect]
+	\[
+	E[T(n)] = \Theta(n).
+	\]
+\end{teorema}
+
+\begin{hardnote}
+	\textbf{Da ricordare all'esame:} \texttt{RandSelect} risolve il
+	problema della selezione (e quindi della mediana) in tempo atteso
+	$\Theta(n)$, molto meglio del $\Theta(n \log n)$ ottenuto ordinando
+	l'array.
+	Il caso peggiore rimane $\Theta(n^2)$, ma si verifica con probabilità
+	trascurabile grazie alla scelta casuale del pivot.
+\end{hardnote}
+
+\begin{center}
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Approccio} & \textbf{Complessità} & \textbf{Note} \\
+		\midrule
+		Ordinamento + accesso & $\Theta(n \log n)$ & Troppo costoso \\
+		\texttt{RandSelect} caso peggiore & $\Theta(n^2)$ & Molto improbabile \\
+		\texttt{RandSelect} caso medio    & $\Theta(n)$   & Garantito in attesa \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\break
+

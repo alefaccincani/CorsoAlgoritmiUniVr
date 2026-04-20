@@ -1,0 +1,439 @@
+\section{Ordinamento in Tempo Lineare}
+% ============================================================
+
+\begin{softnote}
+	Fino ad ora abbiamo considerato algoritmi di ordinamento \emph{basati sul confronto}
+	(InsertionSort, MergeSort, HeapSort, QuickSort).
+	In questa sezione si dimostrerà che \textbf{tutti} questi algoritmi hanno complessità
+	$\Omega(n \lg n)$ nel caso peggiore. Si presenteranno poi due algoritmi che
+	\emph{non} si basano sul confronto: \textsc{CountingSort} e \textsc{BucketSort},
+	che raggiungono la complessità lineare $\Theta(n)$ sotto opportune ipotesi sull'input.
+\end{softnote}
+
+% ------------------------------------------------------------
+\subsection{Limiti Inferiori per l'Ordinamento}
+% ------------------------------------------------------------
+
+\subsubsection{Alberi di Decisione}
+
+\begin{softnote}
+	Gli algoritmi di ordinamento per confronto eseguono test del tipo $x < y$,
+	$x == y$, $x > y$. Ogni algoritmo di questo tipo può essere rappresentato
+	tramite un \textbf{albero di decisione}: un modello che cattura tutti i
+	possibili percorsi di confronto per un dato input.
+\end{softnote}
+
+\begin{definizione}[Albero di decisione per algoritmi di ordinamento]
+	Un \emph{albero di decisione} è un albero binario \emph{pieno} che rappresenta
+	i confronti fra gli elementi di un input di dimensione $n$ di un algoritmo di ordinamento.
+	Ogni nodo interno considera una coppia di elementi $(a, b)$:
+	\begin{itemize}
+		\item il figlio \textbf{sinistro} rappresenta il caso $a \leq b$;
+		\item il figlio \textbf{destro} rappresenta il caso $a > b$.
+	\end{itemize}
+	In un albero binario pieno ogni nodo interno ha esattamente 0 o 2 figli.
+\end{definizione}
+
+\begin{nota}
+	Ogni algoritmo di ordinamento per confronto deve essere in grado di produrre
+	ogni permutazione di $n$ elementi distinti. Con $n$ elementi distinti esistono
+	$n!$ permutazioni possibili, ognuna delle quali deve essere rappresentata come
+	foglia dell'albero di decisione.
+\end{nota}
+
+\begin{esempio}[Albero di decisione per InsertionSort su 3 elementi]
+	Con input $A = [6, 8, 5]$, \textsc{InsertionSort} esegue i confronti
+	seguendo un percorso specifico nell'albero. L'albero per $n = 3$ ha
+	$3! = 6$ foglie (una per ogni permutazione) e altezza almeno
+	$\lceil \lg 6 \rceil = 3$.
+	
+	\begin{center}
+		\begin{tikzpicture}[
+			level distance=1.6cm,
+			level 1/.style={sibling distance=6cm},
+			level 2/.style={sibling distance=3cm},
+			level 3/.style={sibling distance=1.8cm},
+			every node/.style={draw, rounded corners, font=\small,
+				minimum width=1.4cm, minimum height=0.6cm,
+				fill=codebg, draw=primary},
+			leaf/.style={draw, fill=cyan!10, draw=cyan!60!black,
+				font=\footnotesize, minimum width=1.2cm, minimum height=0.5cm}
+			]
+			\node {$a_1{\leq}a_2$?}
+			child[left] {
+				node {$a_2{\leq}a_3$?}
+				child[left]  { node[leaf] {$1,2,3$} }
+				child[right] {
+					node {$a_1{\leq}a_3$?}
+					child[left]  { node[leaf] {$1,3,2$} }
+					child[right] { node[leaf] {$3,1,2$} }
+				}
+			}
+			child[right] {
+				node {$a_1{\leq}a_3$?}
+				child[left] {
+					node {$a_2{\leq}a_3$?}
+					child[left]  { node[leaf] {$2,1,3$} }
+					child[right] { node[leaf] {$2,3,1$} }
+				}
+				child[right] { node[leaf] {$3,2,1$} }
+			};
+		\end{tikzpicture}
+	\end{center}
+	
+	Il percorso evidenziato per $[6,8,5]$: prima $6 \leq 8$ (sinistra),
+	poi $8 > 5$ (destra), poi $6 > 5$ (destra) $\Rightarrow$ permutazione $[5,6,8]$.
+\end{esempio}
+
+\subsubsection{Limite Inferiore per il Caso Peggiore}
+
+\begin{teorema}[Limite inferiore $\Omega(n \lg n)$]
+	Qualsiasi algoritmo di ordinamento basato sul confronto richiede nel caso peggiore
+	$\Omega(n \lg n)$ confronti.
+\end{teorema}
+
+\begin{proof}
+	Si fissi un algoritmo di ordinamento per confronto e il suo albero di decisione
+	per un dato $n$.
+	\begin{itemize}
+		\item La lunghezza del cammino più lungo dalla radice a una foglia è l'altezza
+		$h$ dell'albero, e corrisponde al numero di confronti nel caso peggiore.
+		\item L'albero deve avere almeno $n!$ foglie (una per ogni permutazione):
+		$n! \leq l$.
+		\item Un albero binario di altezza $h$ ha al più $2^h$ foglie:
+		$l \leq 2^h$.
+		\item Combinando: $n! \leq 2^h$, quindi $h \geq \lg(n!)$.
+		\item Per l'approssimazione di Stirling ($n! \approx \sqrt{2\pi n}(n/e)^n$):
+		\[ h \geq \lg(n!) = \Omega(n \lg n) \]
+	\end{itemize}
+\end{proof}
+
+\begin{hardnote}
+	Il limite $\Omega(n \lg n)$ vale per \textbf{tutti} gli algoritmi basati sul
+	confronto: InsertionSort, MergeSort, HeapSort, QuickSort, ecc.
+	Gli algoritmi \textsc{CountingSort} e \textsc{BucketSort} aggirano questo limite
+	perché \textbf{non} usano confronti diretti tra elementi, ma sfruttano
+	proprietà numeriche dell'input.
+\end{hardnote}
+
+% ------------------------------------------------------------
+\subsection{Counting Sort}
+% ------------------------------------------------------------
+
+\subsubsection{Idea Generale}
+
+\begin{softnote}
+	\textsc{CountingSort} è un algoritmo di ordinamento non basato sul confronto.
+	L'input deve essere un array di interi nell'intervallo $[0 : k]$ per un intero
+	fisso $k$. L'idea è: dato un elemento $x$ dell'input, \textbf{conta} quanti
+	elementi minori di $x$ ci sono, e usa tale numero per collocare $x$ nella
+	posizione finale corretta nell'array di output.
+	Per contare, si usa un array ausiliario $C[0:k]$: ogni volta che si incontra
+	il valore $x$ nell'input, si incrementa $C[x]$ di 1.
+	La complessità è $\Theta(k+n)$; se $k = O(n)$, diventa $\Theta(n)$.
+\end{softnote}
+
+\subsubsection{Algoritmo}
+
+\begin{algorithm}[H]
+	\caption{\textsc{CountingSort}$(A, k)$}
+	\KwIn{$A[1:n]$ array di interi in $[0,k]$, $k$ valore massimo}
+	\KwOut{$B[1:n]$, array ordinato}
+	$B[1:n] \leftarrow$ nuovo array\;
+	$C[0:k] \leftarrow$ nuovo array inizializzato a $0$\;
+	\For{$j = 1$ \KwTo $A.\mathit{length}$}{
+		$C[A[j]]$\texttt{++} \tcp*{$C[i]$ = \# volte che $i$ compare in $A$}
+	}
+	\For{$i = 1$ \KwTo $k$}{
+		$C[i] = C[i] + C[i-1]$ \tcp*{$C[i]$ = \# elementi $\leq i$ in $A$}
+	}
+	\For{$j = A.\mathit{length}$ \KwTo $1$}{
+		$B[C[A[j]]] = A[j]$\;
+		$C[A[j]]$\texttt{--} \tcp*{se ci sono più copie di $A[j]$, la prossima va in posizione precedente}
+	}
+	\Return{$B$}
+\end{algorithm}
+
+\subsubsection{Esempio Visivo}
+
+\begin{esempio}[Esecuzione di CountingSort, $n=8$, $k=5$]
+	Sia $A = [2, 5, 3, 0, 2, 3, 0, 3]$.
+	
+	\paragraph{Array iniziale $A$.}
+	
+	\begin{center}
+		\begin{tabular}{ccccccccc}
+			\toprule
+			\textbf{indice} & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+			\midrule
+			$A$             & 2 & 5 & 3 & 0 & 2 & 3 & 0 & 3 \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\paragraph{Passo 1 — Conteggio occorrenze (primo ciclo \textbf{for}).}
+	Per ogni $j$, si incrementa $C[A[j]]$:
+	
+	\begin{center}
+		\begin{tabular}{ccccccc}
+			\toprule
+			\textbf{indice} $i$          & 0 & 1 & 2 & 3 & 4 & 5 \\
+			\midrule
+			$C[i]$ (occorrenze)          & 2 & 0 & 2 & 3 & 0 & 1 \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	Il valore $0$ compare 2 volte, $2$ compare 2 volte, $3$ compare 3 volte, $5$ una volta.
+	
+	\paragraph{Passo 2 — Prefissi cumulativi (secondo ciclo \textbf{for}).}
+	$C[i] \mathrel{+}= C[i-1]$ per $i = 1, \ldots, 5$:
+	
+	\begin{center}
+		\begin{tabular}{ccccccc}
+			\toprule
+			\textbf{indice} $i$           & 0 & 1 & 2 & 3 & 4 & 5 \\
+			\midrule
+			$C[i]$ (elementi $\leq i$)    & 2 & 2 & 4 & 7 & 7 & 8 \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	Lettura: ci sono 4 elementi con valore $\leq 2$, quindi l'ultimo $2$ andrà in posizione 4.
+	Ci sono 7 elementi con valore $\leq 3$, quindi l'ultimo $3$ andrà in posizione 7.
+	
+	\paragraph{Passo 3 — Costruzione di $B$ (terzo ciclo \textbf{for}, da $j=8$ a $j=1$).}
+	
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{tabular}{lccccccccc}
+			\toprule
+			\textbf{Step} & $B[1]$ & $B[2]$ & $B[3]$ & $B[4]$ & $B[5]$ & $B[6]$ & $B[7]$ & $B[8]$ & \textbf{Operazione} \\
+			\midrule
+			Inizio  & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \_ & \\
+			$j=8$: $A[8]=3$ & \_ & \_ & \_ & \_ & \_ & \_ & 3 & \_ & $B[C[3]]{=}B[7]{=}3$;\ $C[3]{\to}6$ \\
+			$j=7$: $A[7]=0$ & \_ & 0 & \_ & \_ & \_ & \_ & 3 & \_ & $B[C[0]]{=}B[2]{=}0$;\ $C[0]{\to}1$ \\
+			$j=6$: $A[6]=3$ & \_ & 0 & \_ & \_ & \_ & 3 & 3 & \_ & $B[C[3]]{=}B[6]{=}3$;\ $C[3]{\to}5$ \\
+			$j=5$: $A[5]=2$ & \_ & 0 & \_ & 2 & \_ & 3 & 3 & \_ & $B[C[2]]{=}B[4]{=}2$;\ $C[2]{\to}3$ \\
+			$j=4$: $A[4]=0$ & 0 & 0 & \_ & 2 & \_ & 3 & 3 & \_ & $B[C[0]]{=}B[1]{=}0$;\ $C[0]{\to}0$ \\
+			$j=3$: $A[3]=3$ & 0 & 0 & \_ & 2 & 3 & 3 & 3 & \_ & $B[C[3]]{=}B[5]{=}3$;\ $C[3]{\to}4$ \\
+			$j=2$: $A[2]=5$ & 0 & 0 & \_ & 2 & 3 & 3 & 3 & 5 & $B[C[5]]{=}B[8]{=}5$;\ $C[5]{\to}7$ \\
+			$j=1$: $A[1]=2$ & 0 & 0 & 2 & 2 & 3 & 3 & 3 & 5 & $B[C[2]]{=}B[3]{=}2$;\ $C[2]{\to}2$ \\
+			\midrule
+			\textbf{Finale} & \textbf{0} & \textbf{0} & \textbf{2} & \textbf{2} & \textbf{3} & \textbf{3} & \textbf{3} & \textbf{5} & \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	Il risultato $B = [0, 0, 2, 2, 3, 3, 3, 5]$ è correttamente ordinato.
+	I due valori $3$ (originariamente in posizione 3 e 6) e i due valori $2$
+	(in posizione 1 e 5) mantengono l'ordine relativo: \textbf{stabilità garantita}.
+\end{esempio}
+
+\subsubsection{Complessità}
+
+\begin{itemize}
+	\item Ciclo \textbf{for} righe 3--4: $\Theta(n)$
+	\item Ciclo \textbf{for} righe 5--6: $\Theta(k)$
+	\item Ciclo \textbf{for} righe 7--9: $\Theta(n)$
+\end{itemize}
+\[
+T(n) = \Theta(k + n)
+\]
+Se $k = O(n)$, allora $T(n) = \Theta(n)$.
+
+\begin{hardnote}
+	Il tempo è inferiore al limite $\Omega(n \lg n)$ perché \textsc{CountingSort}
+	\textbf{non} si basa sul confronto. Il prerequisito fondamentale è che i valori
+	in input siano interi in un intervallo $[0, k]$ noto a priori.
+\end{hardnote}
+
+\subsubsection{Stabilità}
+
+\begin{nota}
+	\textsc{CountingSort} è un algoritmo \textbf{stabile}: gli elementi con lo stesso
+	valore mantengono la loro posizione relativa. Questo è garantito dal terzo ciclo,
+	che scorre $A$ da \emph{destra a sinistra}: il primo elemento con valore $v$
+	incontrato (partendo da destra) occupa la posizione più alta disponibile,
+	il successivo quella immediatamente precedente, e così via.
+	La stabilità è fondamentale quando \textsc{CountingSort} è usato come subroutine
+	di \textsc{RadixSort}.
+\end{nota}
+
+% ------------------------------------------------------------
+\subsection{Bucket Sort}
+% ------------------------------------------------------------
+
+\subsubsection{Idea Generale}
+
+\begin{softnote}
+	\textsc{BucketSort} ordina valori decimali positivi assumendo che siano
+	\emph{uniformemente distribuiti} in $[0,1)$. L'idea è:
+	\begin{enumerate}
+		\item Dividere $[0,1)$ in $n$ sotto-intervalli di uguale dimensione
+		(\emph{bucket}).
+		\item Distribuire gli $n$ elementi nei bucket.
+		\item Grazie all'ipotesi di distribuzione uniforme, ogni bucket
+		contiene in media $\approx 1$ elemento.
+		\item Ordinare ogni bucket con \textsc{InsertionSort} (efficiente
+		su input piccoli).
+		\item Concatenare i bucket ordinati da $B[0]$ a $B[n-1]$.
+	\end{enumerate}
+\end{softnote}
+
+\subsubsection{Algoritmo}
+
+\begin{algorithm}[H]
+	\caption{\textsc{BucketSort}$(A)$}
+	\KwIn{$A[1:n]$, valori in $[0,1)$, distribuzione uniforme}
+	\KwOut{$C[1:n]$, array ordinato}
+	$n = A.\mathit{length}$\;
+	$B[0:n-1] \leftarrow$ nuovo array di liste vuote\;
+	$C[1:n] \leftarrow$ nuovo array vuoto\;
+	\For{$i = 1$ \KwTo $n$}{
+		$B[\lfloor n \cdot A[i] \rfloor].\mathit{add}(A[i])$
+		\tcp*{inserisce $A[i]$ nel bucket corrispondente}
+	}
+	\For{$i = 0$ \KwTo $n-1$}{
+		\textsc{InsertionSort}$(B[i])$\;
+		Aggiungi a $C$ tutti i valori ordinati di $B[i]$\;
+	}
+	\Return{$C$}
+\end{algorithm}
+
+\subsubsection{Esempio Visivo}
+
+\begin{esempio}[Esecuzione di BucketSort, $n=10$]
+	Sia:
+	\[
+	A = [0.78,\ 0.17,\ 0.39,\ 0.26,\ 0.72,\ 0.94,\ 0.21,\ 0.12,\ 0.23,\ 0.68]
+	\]
+	
+	\paragraph{Passo 1 — Distribuzione nei bucket.}
+	La regola $\lfloor 10 \cdot A[i] \rfloor$ assegna ogni elemento al bucket
+	corrispondente alla sua prima cifra decimale:
+	
+	\begin{center}
+		\begin{tabular}{clll}
+			\toprule
+			\textbf{Bucket $i$} & \textbf{Intervallo} & \textbf{Elementi inseriti} & \textbf{Dopo \textsc{InsertionSort}} \\
+			\midrule
+			$B[0]$ & $[0.0,\ 0.1)$ & --- & --- \\
+			$B[1]$ & $[0.1,\ 0.2)$ & $0.17,\ 0.12$ & $0.12,\ 0.17$ \\
+			$B[2]$ & $[0.2,\ 0.3)$ & $0.26,\ 0.21,\ 0.23$ & $0.21,\ 0.23,\ 0.26$ \\
+			$B[3]$ & $[0.3,\ 0.4)$ & $0.39$ & $0.39$ \\
+			$B[4]$ & $[0.4,\ 0.5)$ & --- & --- \\
+			$B[5]$ & $[0.5,\ 0.6)$ & --- & --- \\
+			$B[6]$ & $[0.6,\ 0.7)$ & $0.68$ & $0.68$ \\
+			$B[7]$ & $[0.7,\ 0.8)$ & $0.78,\ 0.72$ & $0.72,\ 0.78$ \\
+			$B[8]$ & $[0.8,\ 0.9)$ & --- & --- \\
+			$B[9]$ & $[0.9,\ 1.0)$ & $0.94$ & $0.94$ \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	\paragraph{Passo 2 — Concatenazione.}
+	\[
+	C = [0.12,\ 0.17,\ 0.21,\ 0.23,\ 0.26,\ 0.39,\ 0.68,\ 0.72,\ 0.78,\ 0.94]
+	\]
+	
+	\begin{nota}
+		Il bucket $B[2]$ contiene 3 elementi, mentre la maggior parte ne contiene
+		0 o 1. Con distribuzione uniforme, questo è atteso: mediamente ogni bucket
+		ha $n/n = 1$ elemento. Il costo medio di \textsc{InsertionSort} su ogni
+		bucket è $O(1)$, da cui la complessità totale $\Theta(n)$.
+	\end{nota}
+\end{esempio}
+
+\subsubsection{Correttezza}
+
+\begin{proof}
+	Si considerino due elementi $A[i]$ e $A[j]$ con $A[i] \leq A[j]$.
+	Moltiplicando per $n > 0$:
+	\[
+	\lfloor n \cdot A[i] \rfloor \leq \lfloor n \cdot A[j] \rfloor
+	\]
+	Quindi $A[i]$ viene messo nello stesso bucket di $A[j]$ o in uno precedente.
+	\begin{itemize}
+		\item \textbf{Stesso bucket}: \textsc{InsertionSort} li ordina correttamente.
+		\item \textbf{Bucket diversi}: la concatenazione in ordine crescente degli
+		indici li posiziona nell'ordine corretto nell'output.
+	\end{itemize}
+\end{proof}
+
+\subsubsection{Complessità: Analisi del Caso Medio}
+
+Sia $n_i$ la variabile casuale che rappresenta il numero di elementi nel bucket $i$.
+\textsc{InsertionSort} sul bucket $i$ ha complessità $O(n_i^2)$, quindi:
+\[
+T(n) = \Theta(n) + \sum_{i=0}^{n-1} O(n_i^2)
+\]
+
+\paragraph{Calcolo di $E[n_i^2]$.}
+Assumendo i valori distribuiti uniformemente in $[0,1)$, si definisce $X_{ij}$
+come la variabile casuale indicatrice $\mathbf{I}\{A[j]\ \text{entra nel bucket}\ i\}$,
+con $\Pr\{X_{ij}=1\} = E[X_{ij}] = 1/n$. Il numero di elementi nel bucket $i$ è
+$n_i = \sum_{j=1}^{n} X_{ij}$, quindi:
+\[
+E[n_i^2]
+= \sum_{j=1}^{n} E[X_{ij}^2]
++ \sum_{j=1}^{n}\sum_{\substack{k=1\\k\neq j}}^{n} E[X_{ij}\,X_{ik}]
+\]
+
+\begin{itemize}
+	\item \textbf{Primo termine}: $E[X_{ij}^2] = 1^2 \cdot \tfrac{1}{n} + 0^2 \cdot (1-\tfrac{1}{n}) = \tfrac{1}{n}$
+	\item \textbf{Secondo termine}: $X_{ij}$ e $X_{ik}$ indipendenti (per $k \neq j$):
+	$E[X_{ij}X_{ik}] = \tfrac{1}{n} \cdot \tfrac{1}{n} = \tfrac{1}{n^2}$
+\end{itemize}
+
+Sostituendo:
+\[
+E[n_i^2]
+= n \cdot \frac{1}{n} + n(n-1) \cdot \frac{1}{n^2}
+= 1 + \frac{n-1}{n}
+= 2 - \frac{1}{n}
+\]
+Il contributo medio di ciascun bucket è $O\!\left(2 - \tfrac{1}{n}\right) = O(1)$.
+
+\paragraph{Complessità media totale.}
+\[
+E[T(n)]
+= \Theta(n) + \sum_{i=0}^{n-1} O\!\left(E[n_i^2]\right)
+= \Theta(n) + n \cdot O(1)
+= \Theta(n)
+\]
+
+\begin{hardnote}
+	Se l'input \emph{non} ha distribuzione uniforme, ma la sommatoria
+	$\sum_{i=0}^{n-1} n_i^2$ è comunque lineare in $n$,
+	\textsc{BucketSort} mantiene complessità $\Theta(n)$.
+	Questa condizione è soddisfatta, ad esempio, quando i valori
+	sono distribuiti uniformemente su un qualsiasi intervallo $[a, b]$
+	(basta riscalare).
+\end{hardnote}
+
+% ------------------------------------------------------------
+\subsection{Confronto tra gli Algoritmi}
+% ------------------------------------------------------------
+
+\begin{center}
+	\renewcommand{\arraystretch}{1.4}
+	\begin{tabular}{lccc}
+		\toprule
+		\textbf{Algoritmo} & \textbf{Caso peggiore} & \textbf{Caso medio} & \textbf{Ipotesi sull'input} \\
+		\midrule
+		\textsc{InsertionSort} & $\Theta(n^2)$       & $\Theta(n^2)$     & nessuna \\
+		\textsc{MergeSort}     & $\Theta(n \lg n)$   & $\Theta(n \lg n)$ & nessuna \\
+		\textsc{HeapSort}      & $\Theta(n \lg n)$   & $\Theta(n \lg n)$ & nessuna \\
+		\textsc{QuickSort}     & $\Theta(n^2)$       & $\Theta(n \lg n)$ & nessuna \\
+		\midrule
+		\textsc{CountingSort}  & $\Theta(k + n)$     & $\Theta(k + n)$   & interi in $[0, k]$ \\
+		\textsc{BucketSort}    & $\Theta(n^2)$       & $\Theta(n)$       & decimali in $[0,1)$, distr.\ uniforme \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{nota}
+	Il limite $\Omega(n \lg n)$ è un \textbf{lower bound per gli algoritmi basati
+		sul confronto}: non si può fare meglio con quel modello. \textsc{CountingSort}
+	e \textsc{BucketSort} lo violano sfruttando informazioni aggiuntive sull'input
+	(tipo e distribuzione dei valori), non disponibili nel modello generale del confronto.
+\end{nota}		

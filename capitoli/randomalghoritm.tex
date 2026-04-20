@@ -1,0 +1,575 @@
+\section{Analisi Probabilistica e Algoritmi Randomizzati}
+
+\begin{softnote}
+	Finora abbiamo analizzato gli algoritmi nel caso peggiore.
+	Questa sezione introduce un'alternativa: l'analisi del
+	\textbf{caso medio}, e gli \textbf{algoritmi randomizzati}
+	che rendono l'analisi media valida per qualunque input.
+\end{softnote}
+
+% ----------------------------------------------------------------
+\subsection{Preliminari: variabili casuali indicatrici}
+
+\begin{nota}
+	Si assume che lo studente conosca il concetto di variabile casuale.
+	Chi non lo conosce può studiare l'Appendice C di [CLRS] come
+	riferimento sufficiente per questa sezione.
+\end{nota}
+
+\begin{definizione}[Variabile casuale indicatrice]
+	Dato uno spazio campionario $S$ e un evento $A$, la
+	\textbf{variabile casuale indicatrice} $I\{A\}$ è:
+	\[
+	I\{A\} = \begin{cases} 1 & \text{se } A \text{ si verifica} \\
+		0 & \text{altrimenti} \end{cases}
+	\]
+\end{definizione}
+
+\begin{lemma}
+	Dato uno spazio campionario $S$ e un evento $A$, posto
+	$X_A = I\{A\}$, si ha:
+	\[
+	E[X_A] = \Pr\{A\}.
+	\]
+\end{lemma}
+\begin{proof}
+	$E[X_A] = 1\cdot\Pr\{A\} + 0\cdot\Pr\{\bar{A}\} = \Pr\{A\}$.
+\end{proof}
+
+\begin{nota}
+	\textbf{Perché sono utili?} Le v.c.\ indicatrici trasformano il
+	calcolo di medie complesse in somme di probabilità semplici,
+	grazie alla \textbf{linearità del valore atteso}:
+	$E\!\left[\sum_i X_i\right] = \sum_i E[X_i]$,
+	che vale anche quando le $X_i$ sono \textit{dipendenti}.
+\end{nota}
+
+\begin{esempio}
+	\textbf{Numero atteso di teste in $n$ lanci di moneta.}
+	Sia $X_i = I\{\text{testa all'$i$-esimo lancio}\}$,
+	e $X = \sum_{i=1}^n X_i$.
+	\[
+	E[X] = \sum_{i=1}^n E[X_i] = \sum_{i=1}^n \frac{1}{2} = \frac{n}{2}.
+	\]
+	Notare che si evita il calcolo diretto della distribuzione binomiale.
+\end{esempio}
+
+% ----------------------------------------------------------------
+\subsection{Analisi probabilistica: il Problema delle Assunzioni}
+
+\begin{definizione}[Problema delle Assunzioni]
+	\textbf{Input:} $n$ candidati ordinabili per bravura;
+	costo di colloquio $c_c > 0$, costo di assunzione $c_a \gg c_c$.\\
+	\textbf{Output:} assumere il candidato migliore con il minimo costo.\\
+	\textbf{Strategia:} si assume il primo candidato; si sostituisce
+	il corrente ogni volta che si incontra uno migliore.
+\end{definizione}
+
+Se $m$ è il numero di assunzioni effettuate, il costo totale è:
+\[
+n \cdot c_c + m \cdot c_a.
+\]
+Il costo $n\cdot c_c$ è fisso; quello che ci interessa è $m\cdot c_a$.
+Nel caso peggiore $m = n$, nel caso migliore $m = 1$.
+Vogliamo calcolare il \textbf{costo medio}, che dipende dalla
+distribuzione dei candidati.
+
+\paragraph{Calcolo del costo medio.}
+Si assuma che le $n!$ permutazioni dei candidati siano equiprobabili.
+Sia $X_i = I\{\text{il candidato $i$-esimo viene assunto}\}$,
+$X = \sum_{i=1}^n X_i$.
+
+Il candidato in posizione $i$ viene assunto se e solo se è il
+migliore tra i primi $i$. Poiché ogni permutazione dei primi $i$
+candidati è equiprobabile:
+\[
+\Pr\{X_i = 1\} = \frac{1}{i}.
+\]
+
+Quindi:
+\[
+E[X] = \sum_{i=1}^{n} E[X_i] = \sum_{i=1}^{n} \frac{1}{i}
+\le \ln n + 1.
+\]
+
+\begin{teorema}[Costo medio del Problema delle Assunzioni]
+	\[
+	\text{Costo medio} \le c_a(\ln n + 1) = O(c_a \log n),
+	\]
+	contro il costo nel caso peggiore $O(c_a\, n)$.
+\end{teorema}
+
+\begin{nota}
+	$\sum_{i=1}^n 1/i$ è la \textbf{serie armonica}. Vale l'approssimazione:
+	$\ln(n+1) \le \sum_{i=1}^n \frac{1}{i} \le \ln n + 1.$
+	Ad esempio, per $n=100$: $4.615 \le 5.177 \le 5.605$.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Algoritmi randomizzati}
+
+\begin{softnote}
+	Assumere una distribuzione uniforme dell'input non è sempre realistico.
+	Gli algoritmi randomizzati risolvono questo problema imponendo
+	\textbf{essi stessi} la distribuzione, indipendentemente dall'input.
+\end{softnote}
+
+\begin{center}
+	\begin{tabular}{p{5.5cm}p{5.5cm}}
+		\toprule
+		\textbf{Analisi probabilistica} & \textbf{Algoritmo randomizzato} \\
+		\midrule
+		Algoritmo deterministico & Algoritmo non deterministico \\
+		Stesso input $\to$ stesso risultato &
+		Stesso input $\to$ esecuzione diversa \\
+		Ipotesi sulla distribuzione dell'input &
+		Nessuna ipotesi necessaria \\
+		Caso peggiore dipende dall'input &
+		Il comportamento non dipende da un input specifico \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{osservazione}
+	Nel Problema delle Assunzioni, l'algoritmo randomizzato permuta
+	casualmente i candidati \textit{prima} di iniziare.
+	In questo modo il costo medio $O(c_a \log n)$ è garantito
+	\textbf{per qualunque input}, non solo per quelli ben distribuiti.
+\end{osservazione}
+
+% ----------------------------------------------------------------
+\subsection{Permutazione casuale: \texttt{RandomizeInPlace}}
+\begin{algorithm}[H]
+	\caption{RandomizeInPlace$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{$A$ con una permutazione casuale uniforme}
+	$n \gets |A|$\;
+	\For{$i = 1$ \KwTo $n$}{
+		scambia $A[i]$ con $A[\textsc{Random}(i, n)]$\;
+	}
+	\Return $A$\;
+\end{algorithm}
+
+\textbf{Complessità in tempo:} $O(n)$ — $n$ iterazioni, ciascuna con un
+numero costante di operazioni e una chiamata a $\textsc{Random}(i,n)$,
+assunta a costo costante.
+
+\textbf{Complessità in spazio:} $O(1)$ — nessun array ausiliario.
+
+\begin{lemma}
+	\texttt{RandomizeInPlace} genera una permutazione casuale uniforme
+	(ogni delle $n!$ permutazioni ha probabilità $1/n!$).
+\end{lemma}
+\begin{proof}
+	Si dimostra tramite invariante di ciclo.
+	
+	\textbf{Invariante:} prima della $i$-esima iterazione, per ogni
+	possibile $(i-1)$-permutazione, il sottoarray $A[1:i-1]$ la
+	contiene con probabilità $\frac{(n-i+1)!}{n!}$.
+	
+	\textbf{Base} ($i=1$): il sottoarray $A[1:0]$ è vuoto;
+	l'unica 0-permutazione (vuota) vi compare con probabilità
+	$1 = n!/n!$. \checkmark
+	
+	\textbf{Conservazione:} si assume che ogni $(i-1)$-permutazione
+	$\langle x_1,\ldots,x_{i-1}\rangle$ compaia in $A[1:i-1]$
+	con probabilità $(n-i+1)!/n!$.
+	La probabilità che l'algoritmo scelga $x_i$ come $i$-esimo
+	elemento è $1/(n-i+1)$. Quindi la probabilità di ottenere
+	$\langle x_1,\ldots,x_{i-1},x_i\rangle$ è:
+	\[
+	\frac{(n-i+1)!}{n!}\cdot\frac{1}{n-i+1}
+	= \frac{(n-i)!}{n!}.
+	\]
+	Questo è esattamente l'invariante per $i+1$. \checkmark
+	
+	\textbf{Conclusione:} alla fine ($i=n+1$) ogni $n$-permutazione
+	compare in $A[1:n]$ con probabilità
+	$\frac{(n-n)!}{n!} = \frac{1}{n!}$.
+\end{proof}
+\begin{hardnote}
+	
+	\textbf{Da ricordare all'esame:} la correttezza di
+	\texttt{RandomizeInPlace} si dimostra con un invariante di ciclo,
+	non semplicemente contando le permutazioni. Il punto chiave è che
+	a ogni passo la scelta uniforme in $A[i:n]$ garantisce che tutte
+	le possibili estensioni siano equiprobabili.
+\end{hardnote}
+
+\subsection{QuickSort}
+
+\begin{softnote}
+	QuickSort è uno degli algoritmi di ordinamento più usati in pratica.
+	A differenza di MergeSort, ordina \textbf{sul posto} e, pur avendo
+	caso peggiore $\Theta(n^2)$, nel caso medio è $\Theta(n \log n)$
+	con costanti moltiplicative molto piccole.
+\end{softnote}
+
+% ----------------------------------------------------------------
+\subsection{Idea Generale}
+
+QuickSort è un algoritmo che:
+\begin{itemize}
+	\item ordina \textbf{sul posto} come InsertionSort;
+	\item è basato sulla tecnica \textbf{divide et impera} come MergeSort;
+	\item ha complessità $\Theta(n^2)$ nel caso peggiore e $\Theta(n \log n)$
+	nel caso medio (qui si dimostra il caso medio con l'ulteriore
+	assunzione che i valori siano tutti distinti);
+	\item nel caso medio le costanti moltiplicative nascoste da $\Theta$ sono
+	abbastanza piccole $\Rightarrow$ molto efficiente in pratica, tra
+	i più usati per l'ordinamento interno.
+\end{itemize}
+
+\begin{nota}
+	In Java viene usato, nella sua versione parallela, quando si devono
+	ordinare $\ge 44$ elementi.
+\end{nota}
+
+\paragraph{Schema divide et impera.}
+\begin{itemize}
+	\item \textbf{Divide:} partiziona l'array $A[p:r]$ in due
+	sotto-array $A[p:q-1]$ e $A[q+1:r]$ tali che ogni elemento
+	del primo sia $\le A[q]$ (il \emph{pivot}) e ogni elemento
+	del secondo sia $> A[q]$.
+	\item \textbf{Impera:} ordina i due sotto-array in modo ricorsivo
+	fino a quando la dimensione è 0 o 1 (quando $p \ge r$).
+	\item \textbf{Combina:} dato che i due sotto-array sono già ordinati
+	al ritorno della chiamata ricorsiva, non serve alcuna ulteriore
+	fase di combinazione.
+\end{itemize}
+
+\begin{algorithm}[H]
+	\caption{QuickSort$(A, p, r)$}
+	\KwIn{Array $A$, indici $p$, $r$}
+	\KwOut{$A[p:r]$ ordinato in loco}
+	\If{$p < r$}{
+		$q \gets \text{Partition}(A, p, r)$\;
+		$\text{QuickSort}(A, p, q-1)$\;
+		$\text{QuickSort}(A, q+1, r)$\;
+	}
+\end{algorithm}
+
+\begin{nota}
+	Per ordinare un intero array $A$ di $n$ elementi si invoca
+	\texttt{QuickSort}$(A, 1, n)$.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Partition$(A, p, r)$}
+
+\begin{softnote}
+	\texttt{Partition} è la componente fondamentale di QuickSort.
+	Sceglie un valore \emph{pivot} (l'ultimo elemento $A[r]$),
+	riorganizza l'array e restituisce l'indice $q$ della posizione
+	finale del pivot.
+\end{softnote}
+
+\begin{algorithm}[H]
+	\caption{Partition$(A, p, r)$}
+	\KwIn{Array $A$, indici $p$, $r$}
+	\KwOut{$q$ e $A$ modificato con $A[p:q-1] \le A[q] < A[q+1:r]$}
+	$x \gets A[r]$\tcp*{Pivot: scegliere l'ultimo valore è utile per il \texttt{for}}
+	$i \gets p - 1$\tcp*{Indice ultimo elemento sotto-array sinistro}
+	\For{$j \gets p$ \KwTo $r-1$}{
+		\If{$A[j] \le x$\tcp*{Se l'elemento deve andare nel sotto-array sx}}{
+			$i \gets i + 1$\tcp*{Posizione per l'elemento da spostare}
+			scambia $A[i]$ con $A[j]$\;
+		}
+	}
+	$q \gets i + 1$\tcp*{Posizione per il pivot}
+	scambia $A[q]$ con $A[r]$\;
+	\Return $q$\;
+\end{algorithm}
+
+\subsubsection{Invariante di ciclo di Partition}
+
+Per dimostrare la correttezza di \texttt{Partition}$(A, p, r)$,
+si considera la seguente invariante di ciclo:
+
+\begin{definizione}[Invariante di Partition]
+	All'inizio di ogni iterazione del ciclo \texttt{for}, per qualsiasi
+	indice $k$ dell'array vale almeno una delle seguenti proprietà:
+	\begin{enumerate}
+		\item Se $p \le k \le i$, allora $A[k] \le x$;
+		\item Se $i+1 \le k \le j-1$, allora $A[k] > x$;
+		\item Se $k = r$, allora $A[k] = x$ (il pivot).
+	\end{enumerate}
+\end{definizione}
+
+\begin{nota}
+	Non si considerano i valori con indice $t.c.\ j \le k \le r-1$
+	perché sono valori non ancora considerati e quindi non ancora
+	posizionati correttamente.
+\end{nota}
+
+\begin{proof}
+	\begin{enumerate}
+		\item \textbf{Inizializzazione} (prima della I iterazione, $i=p-1$,
+		$j=p$): non ci sono valori tra $p$ e $i+1 = p$ né tra $i+1=p$
+		e $j-1=p-1$. Le prime due proprietà dell'invariante sono
+		banalmente soddisfatte. L'istruzione $x \gets A[r]$ soddisfa
+		la III proprietà. \checkmark
+		
+		\item \textbf{Conservazione:} ci sono due possibilità.
+		\begin{itemize}
+			\item Se $A[j] > x$ (riga 4 non eseguita), allora non si fa
+			nulla e $j' = j+1$: la proprietà 2 dell'invariante è
+			soddisfatta all'inizio del prossimo giro perché $j' - 1 = j$.
+			\item Se invece $A[j] \le x$, allora $i' = i+1$, vengono
+			scambiati $A[i']$ e $A[j]$, poi $j' = j+1$. In seguito
+			allo scambio, $A[i'] \le x$ e la proprietà 1 è soddisfatta.
+			Anche $A[j'+1] > x$ perché era l'elemento $A[i]$ prima
+			dello scambio. Quindi anche la proprietà 2 è soddisfatta.
+		\end{itemize}
+		
+		\item \textbf{Conclusione:} alla fine del ciclo $j = r$. Ogni
+		posizione dell'array si trova in uno dei tre insiemi descritti
+		nell'invariante. L'istruzione alla riga 8 posiziona l'elemento
+		pivot nella giusta posizione: \texttt{Partition} fa esattamente
+		quello che ci si aspetta, riordinando l'array rispetto
+		all'elemento pivot.
+	\end{enumerate}
+\end{proof}
+
+\paragraph{Complessità di Partition.}
+Il tempo di computazione ha sempre lo stesso ordine di grandezza
+per qualsiasi input di dimensione $n = r - p + 1$:
+\[
+T_{\text{Partition}}(n) = \Theta(n).
+\]
+
+% ----------------------------------------------------------------
+\subsection{Analisi di Complessità di QuickSort}
+
+\begin{softnote}
+	Il tempo di esecuzione di QuickSort dipende, a parità di $n$,
+	da quanto il partizionamento è bilanciato.
+\end{softnote}
+
+\subsubsection{Caso peggiore}
+
+\paragraph{Analisi elementare.}
+\texttt{Partition} restituisce sempre un sotto-array di dimensione
+$n-1$ e uno di dimensione $0$. In questo caso:
+\[
+T(n) = T(n-1) + T(0) + \Theta(n) = T(n-1) + \Theta(n),
+\]
+che è la somma aritmetica dei costi di \texttt{Partition}:
+\[
+T(n) = \Theta(n^2). \quad \text{(caso peggiore)}
+\]
+
+\begin{hardnote}
+	Questo caso si verifica anche quando l'array è \textbf{completamente
+		ordinato}! QuickSort è peggiore di InsertionSort in questo scenario.
+\end{hardnote}
+
+\paragraph{Analisi formale.}
+\texttt{Partition} restituisce sempre due sotto-array, uno di dimensione
+$d$ e l'altro di dimensione $n-d-1$, dove $0 \le d \le n-1$:
+\[
+T(n) = \max_{0 \le d \le n-1}\bigl[T(d) + T(n-d-1)\bigr] + \Theta(n).
+\]
+Si usa il metodo di sostituzione ipotizzando $T(n) \le cn^2$:
+\[
+T(n) \le \max_{0 \le d \le n-1}\bigl[cd^2 + c(n-d-1)^2\bigr] + \Theta(n).
+\]
+La quantità $d^2 + (n-d-1)^2$ ha il suo massimo quando $d=0$ o
+$d=n-1$:
+\[
+\max_{0 \le d \le n-1}\bigl[d^2 + (n-d-1)^2\bigr] = (n-1)^2
+\le n^2 - 2n + 1.
+\]
+Quindi $T(n) \le c(n^2 - 2n + 1) + \Theta(n) \le cn^2$, confermando
+$T(n) = O(n^2)$.
+
+\subsubsection{Caso migliore}
+
+\texttt{Partition} restituisce sempre due sotto-array con dimensione
+$\lfloor n/2 \rfloor$ e $\lceil n/2 \rceil - 1$ rispettivamente.
+In questo caso (omettendo troncamenti e arrotondamenti):
+\[
+T(n) = 2T(n/2) + \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n).
+\quad \text{(caso migliore)}
+\]
+
+\subsubsection{Verso il caso medio}
+
+\paragraph{Caso con proporzionalità fissa.}
+Si supponga che \texttt{Partition} restituisca sempre due sotto-array
+con dimensione $\frac{9}{10}n$ e $\frac{1}{10}n$ rispettivamente
+(caso sbilanciato):
+\[
+T(n) = T\!\left(\tfrac{9}{10}n\right) + T\!\left(\tfrac{1}{10}n\right)
++ \Theta(n).
+\]
+
+\begin{softnote}
+	Sembrerebbe un caso simile al peggiore perché sbilanciato... ma
+	analizzando l'albero di ricorsione si vede che ogni livello ha
+	costo $\Theta(n)$ finché il ramo $T(\frac{1}{10}n)$ non
+	raggiunge la dimensione 1 (dopo $\log_{10} n$ livelli). Dopo tale
+	livello ogni livello costa ancora $\Theta(n)$. La ricorsione termina
+	alla profondità $\log_{10/9} n = \Theta(\log n)$, quindi il costo
+	totale è $\Theta(n \log n)$.
+\end{softnote}
+
+\paragraph{Analisi verso il caso medio generale.}
+In generale non si può supporre che tutte le chiamate ricorsive
+siano sempre caso migliore, peggiore o con proporzionalità fissa.
+Assumendo che gli input siano distribuiti in modo equiprobabile,
+durante una computazione alcune ricorsioni divideranno bene,
+altre no.
+
+Si definisce l'elemento pivot $A[q]$ trovato da \texttt{Partition}
+\textbf{buono} se $A[q]$ risiede tra il 25° e il 75° percentile:
+\[
+A[q] \text{ buono} \;\Leftrightarrow\;
+|A[p:q-1]|, |A[q+1:r]| \le \tfrac{3}{4}|A[p:r]|.
+\]
+Il 50\% degli elementi sono buoni. Sia $X_q = I\{A[q]
+\text{ è un elemento buono}\}$:
+\[
+\Pr\{X_q = 1\} = E[X_q] = \frac{1}{2}.
+\]
+Dati due pivot $A[q]$ e $A[q']$ scelti casualmente uno dopo l'altro,
+il valore atteso del numero di pivot buoni nella sequenza è:
+\[
+E[X_q + X_{q'}] = E[X_q] + E[X_{q'}] = \frac{1}{2} + \frac{1}{2} = 1.
+\]
+
+Quindi, mediamente ogni 2 scelte casuali del pivot si ottiene
+un valore buono. Due livelli consecutivi della ricorsione costano
+complessivamente $\Theta(n)$. Dopo una partizione buona, la
+dimensione del sotto-problema più grande è al più $\frac{3}{4}n$.
+Raggruppando i livelli due a due, la ricorrenza si comporta come:
+\[
+T(n) = T\!\left(\tfrac{3}{4}n\right) + T\!\left(\tfrac{1}{4}n\right)
++ \Theta(n) \;\Rightarrow\; T(n) = \Theta(n \log n).
+\]
+
+% ----------------------------------------------------------------
+\subsection{QuickSort Randomizzato}
+
+\begin{softnote}
+	Assumere che l'input abbia gli elementi distribuiti in modo casuale
+	uniforme è troppo limitante. È preferibile mescolare l'input usando
+	un generatore di numeri casuali, oppure scegliere il pivot
+	casualmente prima di invocare \texttt{Partition}.
+\end{softnote}
+
+\begin{algorithm}[H]
+	\caption{RandQuickSort$(A, p, r)$}
+	\KwIn{Array $A$, indici $p$, $r$}
+	\KwOut{$A[p:r]$ ordinato in loco}
+	\If{$p < r$}{
+		$q \gets \text{RandPartition}(A, p, r)$\;
+		$\text{RandQuickSort}(A, p, q-1)$\;
+		$\text{RandQuickSort}(A, q+1, r)$\;
+	}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{RandPartition$(A, p, r)$}
+	\KwIn{Array $A$, indici $p$, $r$}
+	\KwOut{$q$ e $A$ modificato}
+	$i \gets \textsc{Random}(p, r)$\;
+	scambia $A[r]$ con $A[i]$\;
+	\Return $\text{Partition}(A, p, r)$\;
+\end{algorithm}
+
+% ----------------------------------------------------------------
+\subsection{Analisi del Caso Medio di QuickSort}
+
+\begin{softnote}
+	\texttt{RandQuickSort} garantisce una scelta uniforme del pivot ad ogni
+	chiamata ricorsiva. Di seguito si presenta l'analisi formale
+	della complessità nel caso medio seguendo [CLRS cap. 7].
+\end{softnote}
+
+Il costo reale dell'algoritmo è proporzionale al numero totale di
+confronti (istruzione 4) eseguiti dalla procedura \texttt{Partition}.
+Si deve quindi determinare il numero totale di confronti fatti da
+\texttt{Partition} durante tutta una computazione di QuickSort.
+
+Dato $A$, si rinominano tutti gli elementi come $z_1, z_2, \ldots, z_n$
+dove $z_i$ è l'$i$-esimo elemento più piccolo di $A$.
+QuickSort confronta in \texttt{Partition} una coppia $z_i, z_j$
+\textbf{al più una volta} in tutta la sua esecuzione. Se uno dei
+due diventa pivot, può essere confrontato con l'altro; un elemento
+pivot non viene poi più confrontato con elementi appartenenti a
+chiamate ricorsive successive.
+
+Si definisce la variabile casuale indicatrice:
+\[
+X_{ij} = I\{z_i \text{ confrontato con } z_j\}.
+\]
+
+Il numero totale di confronti è:
+\[
+X = \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} X_{ij}.
+\]
+
+Il numero totale atteso di confronti:
+\[
+E[X] = \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} \Pr\{z_i
+\text{ confrontato con } z_j\}.
+\]
+
+\paragraph{Calcolo di $\Pr\{z_i \text{ confrontato con } z_j\}$.}
+Si consideri l'insieme $Z_{ij} = \{z_i, z_{i+1}, \ldots, z_j\}$.
+\begin{itemize}
+	\item Se \texttt{Partition} sceglie un elemento $x$ tale che
+	$z_i < x < z_j$, allora $z_i$ e $z_j$ andranno su due
+	sotto-array distinti e \textbf{non} verranno mai confrontati.
+	\item Se $x = z_i$ oppure $x = z_j$, allora $z_i$ e $z_j$ verranno
+	confrontati \textbf{una volta}.
+\end{itemize}
+Gli elementi di $Z_{ij}$ sono equi-probabili. La probabilità di
+scegliere un elemento particolare è quindi $\frac{1}{j-i+1}$
+(quando gli elementi sono distinti):
+\[
+\Pr\{z_i \text{ confrontato con } z_j\}
+= \Pr\{z_i \text{ è il primo pivot di } Z_{ij}\}
++ \Pr\{z_j \text{ è il primo pivot di } Z_{ij}\}
+= \frac{2}{j-i+1}.
+\]
+
+\paragraph{Calcolo finale.}
+\begin{align*}
+	E[X]
+	&= \sum_{i=1}^{n-1}\sum_{j=i+1}^{n} \frac{2}{j-i+1} \\
+	&= \sum_{i=1}^{n-1}\sum_{k=1}^{n-i} \frac{2}{k+1}
+	\quad\text{(cambio variabile } k = j-i\text{)}\\
+	&\le \sum_{i=1}^{n-1}\sum_{k=1}^{n} \frac{2}{k}
+	= \sum_{i=1}^{n-1} O(\log n)
+	= O(n \log n).
+\end{align*}
+
+\begin{teorema}[Complessità media di QuickSort]
+	\[
+	E[T(n)] = O(n \log n). \quad \text{(caso medio)}
+	\]
+\end{teorema}
+
+\begin{center}
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Caso} & \textbf{Input} & \textbf{Complessità} \\
+		\midrule
+		Peggiore & Array ordinato (o inversamente ordinato) & $\Theta(n^2)$ \\
+		Migliore & Pivot sempre mediano & $\Theta(n \log n)$ \\
+		Medio    & Input equiprobabili / pivot casuale       & $\Theta(n \log n)$ \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{hardnote}
+	\textbf{Da ricordare all'esame:} il caso peggiore di QuickSort è
+	$\Theta(n^2)$ e si verifica su array \emph{già ordinati} con il pivot
+	fisso all'ultimo elemento. La versione randomizzata
+	\texttt{RandQuickSort} rende tale caso molto improbabile e garantisce
+	$O(n \log n)$ in media per qualsiasi input.
+\end{hardnote}
+
+% ================================================================

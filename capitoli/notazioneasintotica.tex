@@ -1,0 +1,505 @@
+\section{Notazione Asintotica}
+
+\begin{softnote}
+	Questa sezione introduce gli strumenti matematici per confrontare
+	la \textbf{velocità di crescita} degli algoritmi. Non ci interessa
+	il tempo esatto in secondi (dipende dall'hardware), ma \textit{come}
+	cresce il tempo all'aumentare della dimensione dell'input~$n$.
+\end{softnote}
+
+% ----------------------------------------------------------------
+\subsection{Introduzione}
+
+Quando si analizza il tempo di computazione di un algoritmo, per input
+sufficientemente grandi, è rilevante soltanto il \textbf{tasso di crescita}.
+Studiare il tasso di crescita significa studiare
+l'\textbf{efficienza asintotica} degli algoritmi.
+
+\begin{nota}
+	\textbf{Perché ``asintotica''?} Ignoriamo le costanti e i termini
+	di ordine inferiore, che contano poco per input grandi.
+	
+	\textbf{Esempio:}
+	\begin{itemize}
+		\item $T(n) = 3n^2 + 100n + 5$ \quad funzione precisa
+		\item $T(n) \in \Theta(n^2)$ \quad classe asintotica
+	\end{itemize}
+	Per $n = 10000$, il termine $3n^2 = 3\cdot10^8$ domina
+	completamente $100n = 10^6$. La costante e i termini minori
+	diventano irrilevanti.
+\end{nota}
+
+Anziché dare una funzione precisa per il tempo di esecuzione,
+si preferisce dare una \textbf{classe di funzioni}: la notazione asintotica.
+
+% ----------------------------------------------------------------
+\subsection{Notazione \texorpdfstring{$O$}{O} — Limite superiore}
+
+\begin{softnote}
+	$O$-grande risponde a: \textit{``al massimo quanto cresce questo
+		algoritmo?''}. È la notazione più usata perché fornisce una
+	\textbf{garanzia sul caso peggiore}.
+\end{softnote}
+
+\begin{definizione}[$O$-grande]
+	Data una funzione $g(n)$:
+	\[
+	O(g(n)) = \bigl\{\,f(n) \mid \exists\,c>0,\;n_0>0 :
+	0 \le f(n) \le c\,g(n) \;\forall\,n \ge n_0\bigr\}
+	\]
+	Si scrive $f(n) = O(g(n))$ (abuso di notazione per
+	$f(n) \in O(g(n))$).
+\end{definizione}
+
+\begin{nota}
+	\textbf{In parole semplici:} $f$ cresce \textit{al più} come $g$,
+	a meno di una costante moltiplicativa, per $n$ abbastanza grande.
+	
+	\textbf{Analogia:} $O$ è come il prezzo massimo di un menù fisso.
+	Se so che costa $O(20\text{€})$, non pagherò mai di più (a meno
+	di una costante).
+\end{nota}
+
+\begin{esempio}
+	Dimostriamo che $\tfrac{1}{2}n^2 + 3n \in O(n^2)$.
+	
+	Dobbiamo trovare $c > 0$, $n_0 > 0$ tali che
+	$\tfrac{1}{2}n^2 + 3n \le c\,n^2$ per ogni $n \ge n_0$.
+	
+	Dividendo per $n^2$: $\;\tfrac{1}{2} + 3/n \le c$.
+	
+	Per $n \ge 7$: $\;\tfrac{1}{2}+3/7 < 1$. Quindi $c=1$, $n_0=7$. \checkmark
+\end{esempio}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			xlabel={$n$},
+			ylabel={valore},
+			xmin=0, xmax=12,
+			ymin=0, ymax=80,
+			grid=major,
+			width=11cm, height=7cm,
+			legend style={at={(0.05,0.95)}, anchor=north west,
+				fill=white, draw=black, font=\small},
+			tick label style={font=\small},
+			label style={font=\normalsize, color=primary},
+			line width=1.2pt,
+			]
+			\addplot[blue, very thick, domain=0:12, samples=200]
+			{0.5*x^2 + 3*x};
+			\addlegendentry{$f(n)=\frac{1}{2}n^2+3n$}
+			
+			\addplot[red!70!black, dashed, very thick, domain=0:12, samples=200]
+			{x^2};
+			\addlegendentry{$c\,g(n)=n^2$}
+			
+			\addplot[gray, dotted, thick] coordinates {(7,0) (7,49)};
+			\node[above right, font=\small, color=gray] at (axis cs:7,0)
+			{$n_0=7$};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Da $n_0=7$ la curva rossa ($n^2$) domina quella blu
+		($\tfrac{1}{2}n^2+3n$), confermando
+		$\tfrac{1}{2}n^2+3n = O(n^2)$.}
+\end{figure}
+
+\begin{hardnote}
+	$O$ viene usata quasi sempre per i tempi di esecuzione perché è
+	\textbf{facile da determinare}: basta trovare \textit{un} valore
+	di $c$ e $n_0$ che funzionino — non è necessario trovare i valori
+	ottimali.
+\end{hardnote}
+
+% ----------------------------------------------------------------
+\subsection{Notazione \texorpdfstring{$\Omega$}{Omega} — Limite inferiore}
+
+\begin{softnote}
+	$\Omega$ risponde a: \textit{``almeno quanto cresce questo
+		algoritmo?''}. Fornisce un \textbf{lower bound} sulla complessità.
+\end{softnote}
+
+\begin{definizione}[$\Omega$-grande]
+	Data una funzione $g(n)$:
+	\[
+	\Omega(g(n)) = \bigl\{\,f(n) \mid \exists\,c>0,\;n_0>0 :
+	0 \le c\,g(n) \le f(n) \;\forall\,n \ge n_0\bigr\}
+	\]
+\end{definizione}
+
+\begin{nota}
+	\textbf{In parole semplici:} $f$ cresce \textit{almeno} come $g$.
+	
+	\textbf{Attenzione:} quando si caratterizza un tempo di esecuzione
+	con $\Omega$ significativo (diverso da $\Omega(n)$), si deve
+	specificare il tipo di analisi (caso peggiore o migliore), perché
+	non esiste una prassi consolidata.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Notazione \texorpdfstring{$\Theta$}{Theta} — Limite stretto}
+
+\begin{softnote}
+	$\Theta$ è la notazione più \textbf{precisa}: la funzione è
+	``incastrata'' tra due costanti di $g(n)$. Si usa quando si
+	conosce sia il limite superiore che inferiore.
+\end{softnote}
+
+\begin{definizione}[$\Theta$]
+	Data una funzione $g(n)$:
+	\[
+	\Theta(g(n)) = \bigl\{\,f(n) \mid \exists\,c_1>0,\,c_2>0,
+	\,n_0>0 : 0 \le c_1\,g(n) \le f(n) \le c_2\,g(n)
+	\;\forall\,n \ge n_0\bigr\}
+	\]
+\end{definizione}
+
+\begin{teorema}
+	Date $f(n)$, $g(n)$:
+	\[
+	f(n) \in \Theta(g(n)) \iff f(n) \in \Omega(g(n))
+	\;\text{ e }\; f(n) \in O(g(n))
+	\]
+\end{teorema}
+
+\begin{esempio}
+	Dimostriamo che $\tfrac{1}{2}n^2 - 3n \in \Theta(n^2)$.
+	
+	Si devono trovare $c_1, c_2, n_0$ tali che
+	$c_1 n^2 \le \tfrac{1}{2}n^2 - 3n \le c_2 n^2$.
+	
+	Dividendo per $n^2$: $c_1 \le \tfrac{1}{2} - 3/n \le c_2$.
+	
+	Per $n \ge 7$: scegliendo $c_1 = \tfrac{1}{14}$ e $c_2 = \tfrac{1}{2}$,
+	la disuguaglianza è soddisfatta. \checkmark
+\end{esempio}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			xlabel={$n$},
+			ylabel={valore},
+			xmin=0, xmax=15,
+			ymin=-5, ymax=80,
+			grid=major,
+			width=11cm, height=7cm,
+			legend style={at={(0.05,0.95)}, anchor=north west,
+				fill=white, draw=black, font=\small},
+			tick label style={font=\small},
+			label style={font=\normalsize, color=primary},
+			line width=1.2pt,
+			]
+			\addplot[blue, very thick, domain=0:15, samples=200]
+			{0.5*x^2 - 3*x};
+			\addlegendentry{$f(n)=\frac{1}{2}n^2-3n$}
+			
+			\addplot[red!70!black, dashed, thick, domain=0:15, samples=200]
+			{0.5*x^2};
+			\addlegendentry{$c_2\,n^2 = \frac{1}{2}n^2$}
+			
+			\addplot[green!60!black, dashed, thick, domain=0:15, samples=200]
+			{(1/14)*x^2};
+			\addlegendentry{$c_1\,n^2 = \frac{1}{14}n^2$}
+			
+			\addplot[gray, dotted, thick] coordinates {(7,-5) (7,35)};
+			\node[above right, font=\small, color=gray] at (axis cs:7,-5)
+			{$n_0=7$};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Per $n \ge 7$, $f(n)$ è compresa tra le due curve tratteggiate:
+		$\tfrac{1}{14}n^2 \le \tfrac{1}{2}n^2-3n \le \tfrac{1}{2}n^2$,
+		confermando $\Theta(n^2)$.}
+\end{figure}
+
+\begin{nota}
+	\textbf{Esempio pratico —} InsertionSort:
+	\begin{itemize}
+		\item caso migliore (array già ordinato): $\Omega(n)$
+		\item caso peggiore (array inverso): $O(n^2)$
+		\item se consideriamo \textit{solo} il caso peggiore: $\Theta(n^2)$
+	\end{itemize}
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Uso nelle equazioni e disequazioni}
+
+\begin{softnote}
+	La notazione asintotica può comparire dentro espressioni algebriche.
+	La convenzione è che il \textbf{lato destro} sia sempre meno preciso del sinistro:
+	$\Theta(n)$ a destra significa ``una qualche funzione in $\Theta(n)$''.
+\end{softnote}
+
+\begin{osservazione}
+	Si scrive $2n^2 + \Theta(n) = \Theta(n^2)$ con la seguente lettura: per ogni
+	funzione $f(n)\in\Theta(n)$, la funzione $2n^2+f(n)$ appartiene a $\Theta(n^2)$.
+	Il lato sinistro è più preciso del destro: $\Theta(n)$ a destra indica
+	\textit{``una qualche funzione in quella classe''}, non un'identità tra insiemi.
+\end{osservazione}
+
+\begin{nota}
+	\textbf{Regola pratica:} quando la notazione appare a sinistra dell'uguale,
+	indica un membro anonimo della classe; a destra indica la classe complessiva.
+	Usare $=$ è un abuso di notazione comodo ma non simmetrico:
+	$\Theta(n) = \Theta(n^2)$ sarebbe privo di senso.
+\end{nota}
+
+% ----------------------------------------------------------------
+\subsection{Proprietà di confronto tra funzioni}
+
+\begin{softnote}
+	Le relazioni asintotiche si comportano in modo analogo ai confronti tra
+	numeri reali ($\le$, $\ge$, $=$), ma \textbf{non tutte le proprietà valgono}.
+\end{softnote}
+
+Siano $f$, $g$, $h$ funzioni asintoticamente positive.
+
+\begin{teorema}[Proprietà]
+	\begin{enumerate}
+		\item \textbf{Transitività:}
+		$f = O(g)$ e $g = O(h) \;\Rightarrow\; f = O(h)$
+		(vale anche per $\Omega$, $\Theta$, $o$, $\omega$).
+		\item \textbf{Riflessività:}
+		$f = \Theta(f)$, $\;f = O(f)$, $\;f = \Omega(f)$.
+		\item \textbf{Simmetria:}
+		$f = \Theta(g) \;\Leftrightarrow\; g = \Theta(f)$.
+		\item \textbf{Proprietà trasposta:}
+		$f = O(g) \;\Leftrightarrow\; g = \Omega(f)$; \quad
+		$f = o(g) \;\Leftrightarrow\; g = \omega(f)$.
+	\end{enumerate}
+\end{teorema}
+
+\begin{nota}
+	La \textbf{proprietà trasposta} è la più utile: dimostrare un limite superiore
+	su $g$ equivale a dimostrare un limite inferiore su $f$, e viceversa.
+\end{nota}
+
+\begin{osservazione}[Funzioni non confrontabili]
+	Non tutte le coppie di funzioni sono confrontabili asintoticamente.
+	Ad esempio, $f(n)=n$ e $g(n)=n^{1+\sin n}$ non soddisfano né
+	$f=O(g)$ né $f=\Omega(g)$, perché l'esponente $1+\sin n$
+	oscilla tra $0$ e $2$ senza stabilizzarsi.
+\end{osservazione}
+
+% ----------------------------------------------------------------
+\subsection{Limiti asintotici delle funzioni elementari}
+
+\begin{softnote}
+	I tre teoremi seguenti forniscono la \textbf{gerarchia fondamentale}
+	tra classi di funzioni: polinomi, logaritmi e esponenziali.
+	Sono usati continuamente nell'analisi degli algoritmi.
+\end{softnote}
+
+\begin{teorema}[Polinomi]
+	Sia $f(n) = a_d n^d + a_{d-1}n^{d-1} + \cdots + a_0$ un polinomio
+	di grado $d$ con $a_d > 0$. Allora $f(n) = \Theta(n^d)$.
+\end{teorema}
+\begin{proof}
+	Basta mostrare $f(n) = O(n^d)$ e $f(n) = \Omega(n^d)$.
+	Per il limite superiore: $f(n) \le (|a_d|+\cdots+|a_0|)\,n^d$
+	per ogni $n \ge 1$. Per il limite inferiore: $f(n) \ge \frac{a_d}{2}\,n^d$
+	per $n$ sufficientemente grande, poiché i termini minori crescono
+	più lentamente di $a_d n^d$.
+\end{proof}
+
+\begin{teorema}[Logaritmi e polinomi]
+	Per ogni costante $a > 0$, $m \ge 0$ e $k \ge 0$:
+	\[
+	(\log n^m)^k = (m \log n)^k = \Theta\!\bigl((\log n)^k\bigr) = O(n^a).
+	\]
+	In particolare, $\log n = O(n)$.
+\end{teorema}
+\begin{proof}
+	Si dimostra $\log n = O(n^a)$ per ogni $a>0$ usando i limiti:
+	$\lim_{n\to\infty} \frac{\log n}{n^a} = 0$ (per L'Hôpital o per
+	la definizione di esponenziale).
+\end{proof}
+
+\begin{teorema}[Esponenziali e polinomi]
+	Per ogni costante $a > 1$ e $k \ge 0$:
+	\[
+	n^k = O(a^n).
+	\]
+\end{teorema}
+\begin{proof}
+	$\lim_{n\to\infty} n^k / a^n = 0$ per ogni $a>1$ e $k$ fissato,
+	poiché gli esponenziali crescono più velocemente di qualunque polinomio.
+\end{proof}
+
+\begin{corollario}
+	Per ogni $a > 1$:
+	\[
+	(\log n)^k = O(n^a), \qquad
+	n^k = O(a^n), \qquad
+	a^n = O(n!).
+	\]
+\end{corollario}
+
+\begin{hardnote}
+	\textbf{Gerarchia da ricordare} (dal più lento al più veloce):
+	\[
+	O(1) \;\subset\; O(\log n) \;\subset\; O(n) \;\subset\;
+	O(n\log n) \;\subset\; O(n^2) \;\subset\; O(n^k) \;\subset\;
+	O(a^n) \;\subset\; O(n!)
+	\]
+	Queste inclusioni derivano direttamente dai tre teoremi sopra.
+\end{hardnote}
+% ----------------------------------------------------------------
+\subsection{Equazioni e disequazioni asintotiche}
+
+Le notazioni asintotiche servono per \textbf{eliminare dettagli non
+	importanti}. Si trovano spesso a destra di un ``$=$'' che sostituisce
+$\in$:
+
+\[
+2n^2 + \Theta(n) = \Theta(n^2)
+\]
+
+\begin{nota}
+	\textbf{Regola fondamentale:} il lato destro di un'equazione
+	asintotica è sempre \textit{meno preciso} del lato sinistro.
+	Si può leggere come: ``il lato sinistro appartiene all'insieme
+	descritto dal lato destro''.
+\end{nota}
+
+\begin{esempio}
+	Verificare le seguenti:
+	\begin{itemize}
+		\item $2n^2 + 3n + 1 = 2n^2 + \Theta(n) = \Theta(n^2)$ \quad \checkmark
+		\item $n^2 + 4n + 1 = n^2 + \Theta(n)$? \quad \checkmark
+		\item $n^2 + \Theta(n) = O(n^2)$? \quad \checkmark
+	\end{itemize}
+\end{esempio}
+
+% ----------------------------------------------------------------
+\subsection{Proprietà delle notazioni asintotiche}
+
+Siano $f(n)$ e $g(n)$ asintoticamente positive ($f(n), g(n) > 0$
+per $n$ sufficientemente grande).
+
+\begin{center}
+	\renewcommand{\arraystretch}{1.3}
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Proprietà} & \textbf{$\Theta$} & \textbf{$O$ / $\Omega$} \\
+		\midrule
+		Transitiva & $f\!=\!\Theta(g),\,g\!=\!\Theta(h) \Rightarrow f\!=\!\Theta(h)$
+		& vale anche per $O$ e $\Omega$ \\
+		Riflessiva & $f = \Theta(f)$ & $f=O(f)$, $f=\Omega(f)$ \\
+		Simmetrica & $f=\Theta(g) \Leftrightarrow g=\Theta(f)$ & — \\
+		Trasposta  & — & $f=O(g) \Leftrightarrow g=\Omega(f)$ \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{hardnote}
+	\textbf{Non tutte le funzioni sono confrontabili!}
+	
+	Ad esempio $n$ e $n^{1+\sin n}$: poiché $\sin n$ oscilla tra
+	$-1$ e $+1$, l'esponente oscilla tra $0$ e $2$. Non si può
+	affermare né $n = O(n^{1+\sin n})$ né il contrario.
+\end{hardnote}
+
+% ----------------------------------------------------------------
+\subsection{Limiti asintotici delle funzioni elementari}
+
+\begin{softnote}
+	Questa sezione stabilisce la \textbf{gerarchia di crescita} tra
+	le funzioni più comuni. Da memorizzare: più si è a destra nella
+	gerarchia, più velocemente cresce la funzione.
+\end{softnote}
+
+\[
+1 \;\prec\; \log n \;\prec\; n^a \;\prec\; n^b
+\;\prec\; c^n \;\prec\; n!
+\qquad (0 < a < b,\; c > 1)
+\]
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			xlabel={$n$},
+			ylabel={$f(n)$},
+			xmin=1, xmax=20,
+			ymin=0, ymax=120,
+			grid=major,
+			width=12cm, height=8cm,
+			legend style={at={(0.05,0.95)}, anchor=north west,
+				fill=white, draw=black, font=\small},
+			tick label style={font=\small},
+			label style={font=\normalsize, color=primary},
+			line width=1.2pt,
+			]
+			\addplot[black, thick, domain=1:20, samples=200]
+			{1};
+			\addlegendentry{$1$}
+			
+			\addplot[green!60!black, thick, domain=1:20, samples=200]
+			{ln(x)/ln(2)};
+			\addlegendentry{$\log_2 n$}
+			
+			\addplot[blue, thick, domain=1:20, samples=200]
+			{x};
+			\addlegendentry{$n$}
+			
+			\addplot[orange, thick, domain=1:20, samples=200]
+			{x*ln(x)/ln(2)};
+			\addlegendentry{$n\log n$}
+			
+			\addplot[red!80!black, thick, domain=1:11, samples=200]
+			{x^2};
+			\addlegendentry{$n^2$}
+			
+			\addplot[violet, thick, domain=1:7, samples=200]
+			{2^x};
+			\addlegendentry{$2^n$}
+		\end{axis}
+	\end{tikzpicture}
+	\caption{Confronto delle principali classi di complessità.}
+\end{figure}
+
+\begin{teorema}[Polinomi]
+	Sia $f(n) = a_0 + a_1 n + \cdots + a_d n^d$ con $a_d > 0$.
+	Allora $f(n) \in \Theta(n^d)$.
+\end{teorema}
+
+\begin{nota}
+	\textbf{Conseguenza pratica:} per determinare la classe $\Theta$
+	di un polinomio basta guardare il \textbf{termine di grado massimo}.
+	
+	Es.: $5n^3 - 200n^2 + 100n - 9 \in \Theta(n^3)$.
+\end{nota}
+
+\begin{teorema}[Logaritmi e polinomi]
+	Per ogni $k,m,a > 0$: $\;\log^m n^k = O(n^a)$.
+	
+	Qualsiasi funzione polilogaritmica è dominata da qualsiasi
+	polinomio positivo in $n$.
+\end{teorema}
+
+\begin{esempio}
+	$\log^{107} n = O(n^{0{,}00001})$
+\end{esempio}
+
+\begin{teorema}[Esponenziali e polinomi]
+	Per ogni $a>1$, $k>0$: $\;n^k = O(a^n)$.
+	
+	Qualsiasi funzione esponenziale con base $>1$ cresce più
+	rapidamente di qualsiasi polinomio.
+\end{teorema}
+
+\begin{esempio}
+	$n^{1000} = O(1{,}01^n)$
+\end{esempio}
+
+\begin{hardnote}
+	\textbf{Gerarchia da memorizzare:}
+	\[
+	\log n \ll n \ll n\log n \ll n^2 \ll n^3
+	\ll 2^n \ll n!
+	\]
+\end{hardnote}
+
+% ================================================================

@@ -1,0 +1,742 @@
+\section{Può tornare utile}
+
+\begin{softnote}
+	Questa sezione contiene materiale di riferimento (appendici) e domande d'esame.
+\end{softnote}
+
+\subsection{Appendice A (Sommatorie)}
+
+\subsubsection{Formule fondamentali}
+
+\begin{align*}
+	\sum_{i=1}^{n} 1 &= n \\
+	\sum_{i=1}^{n} i &= \frac{n(n+1)}{2} = \Theta(n^2) \\
+	\sum_{i=1}^{n} i^2 &= \frac{n(n+1)(2n+1)}{6} = \Theta(n^3) \\
+	\sum_{i=1}^{n} i^k &= \Theta(n^{k+1}) \quad \text{per } k \geq 0 \\
+	\sum_{i=0}^{n} x^i &= \frac{x^{n+1}-1}{x-1} \quad \text{per } x \neq 1 \\
+	\sum_{i=0}^{\infty} x^i &= \frac{1}{1-x} \quad \text{per } |x| < 1
+\end{align*}
+
+\subsubsection{Serie geometrica}
+
+\begin{nota}
+	La serie geometrica è fondamentale nell'analisi degli algoritmi ricorsivi.
+	
+	\textbf{Formula generale:}
+	\[
+	\sum_{i=0}^{n} ar^i = a \cdot \frac{r^{n+1}-1}{r-1}
+	\]
+	
+	\textbf{Caso particolare importante} ($r = 2$):
+	\[
+	\sum_{i=0}^{n} 2^i = 2^{n+1} - 1
+	\]
+	
+	\textbf{Serie infinita convergente} ($|r| < 1$):
+	\[
+	\sum_{i=0}^{\infty} ar^i = \frac{a}{1-r}
+	\]
+\end{nota}
+
+\subsubsection{Serie armonica}
+
+\[
+H_n = \sum_{i=1}^{n} \frac{1}{i} = 1 + \frac{1}{2} + \frac{1}{3} + \cdots + \frac{1}{n} = \Theta(\log n)
+\]
+
+\begin{nota}
+	La serie armonica cresce \textbf{logaritmicamente}. Utile per analizzare:
+	\begin{itemize}
+		\item Quicksort (numero medio di confronti)
+		\item Hashing (lunghezza catene)
+		\item Alberi bilanciati (altezza media)
+	\end{itemize}
+	
+	\textbf{Approssimazione:} $H_n \approx \ln n + \gamma$ dove $\gamma \approx 0.5772$ (costante di Eulero-Mascheroni)
+\end{nota}
+
+\subsubsection{Tecniche di manipolazione}
+
+\textbf{1. Separazione dei termini:}
+\[
+\sum_{i=1}^{n} (a_i + b_i) = \sum_{i=1}^{n} a_i + \sum_{i=1}^{n} b_i
+\]
+
+\textbf{2. Estrazione di costanti:}
+\[
+\sum_{i=1}^{n} c \cdot a_i = c \sum_{i=1}^{n} a_i
+\]
+
+\textbf{3. Telescoping (sommatoria telescopica):}
+\[
+\sum_{i=1}^{n} (a_i - a_{i-1}) = a_n - a_0
+\]
+
+\begin{esempio}[Telescoping applicato]
+	\[
+	\sum_{i=1}^{n} \frac{1}{i(i+1)} = \sum_{i=1}^{n} \left(\frac{1}{i} - \frac{1}{i+1}\right) = 1 - \frac{1}{n+1} = \frac{n}{n+1}
+	\]
+\end{esempio}
+
+\textbf{4. Cambio di variabile:}
+
+Se $j = n - i$, allora:
+\[
+\sum_{i=0}^{n} f(i) = \sum_{j=n}^{0} f(n-j) = \sum_{j=0}^{n} f(n-j)
+\]
+
+\subsubsection{Approssimazione con integrali}
+
+Per $f$ crescente:
+\[
+\int_{1}^{n} f(x)\,dx \leq \sum_{i=1}^{n} f(i) \leq f(n) + \int_{1}^{n} f(x)\,dx
+\]
+
+\begin{esempio}[Somma di potenze]
+	\begin{align*}
+		\sum_{i=1}^{n} i^k &\approx \int_{1}^{n} x^k\,dx = \frac{n^{k+1}}{k+1} \\
+		&\Rightarrow \sum_{i=1}^{n} i^k = \Theta(n^{k+1})
+	\end{align*}
+\end{esempio}
+
+\subsection{Appendice B (Insiemi, relazioni, funzioni, grafi, alberi)}
+
+\subsubsection{Insiemi}
+
+\begin{definizione}[Insieme]
+	Collezione non ordinata di elementi distinti. Notazione: $A = \{1, 2, 3\}$
+\end{definizione}
+
+\textbf{Operazioni fondamentali:}
+\begin{itemize}
+	\item \textbf{Unione:} $A \cup B = \{x : x \in A \text{ oppure } x \in B\}$
+	\item \textbf{Intersezione:} $A \cap B = \{x : x \in A \text{ e } x \in B\}$
+	\item \textbf{Differenza:} $A \setminus B = \{x : x \in A \text{ e } x \notin B\}$
+	\item \textbf{Complemento:} $\overline{A} = \{x : x \notin A\}$ (rispetto a un universo)
+\end{itemize}
+
+\begin{nota}
+	\textbf{Cardinalità:} $|A|$ = numero di elementi in $A$
+	
+	\textbf{Insieme delle parti:} $\mathcal{P}(A) = $ insieme di tutti i sottoinsiemi di $A$
+	
+	Se $|A| = n$ allora $|\mathcal{P}(A)| = 2^n$
+\end{nota}
+
+\subsubsection{Relazioni}
+
+\begin{definizione}[Relazione]
+	Una relazione $R$ da $A$ a $B$ è un sottoinsieme di $A \times B$ (prodotto cartesiano).
+	
+	Scriviamo $aRb$ se $(a,b) \in R$.
+\end{definizione}
+
+\textbf{Proprietà di relazioni su $A$ (relazione binaria):}
+\begin{itemize}
+	\item \textbf{Riflessiva:} $\forall a \in A: aRa$
+	\item \textbf{Simmetrica:} $\forall a,b \in A: aRb \Rightarrow bRa$
+	\item \textbf{Transitiva:} $\forall a,b,c \in A: (aRb \land bRc) \Rightarrow aRc$
+	\item \textbf{Antisimmetrica:} $\forall a,b \in A: (aRb \land bRa) \Rightarrow a = b$
+\end{itemize}
+
+\begin{definizione}[Relazione di equivalenza]
+	Una relazione è di \textbf{equivalenza} se è riflessiva, simmetrica e transitiva.
+	
+	Esempio: uguaglianza ($=$), congruenza modulo $n$
+\end{definizione}
+
+\begin{definizione}[Ordine parziale]
+	Una relazione è di \textbf{ordine parziale} se è riflessiva, antisimmetrica e transitiva.
+	
+	Esempio: $\leq$ sui numeri reali, $\subseteq$ sugli insiemi
+\end{definizione}
+
+\subsubsection{Funzioni}
+
+\begin{definizione}[Funzione]
+	Una funzione $f: A \to B$ assegna a ogni elemento di $A$ esattamente un elemento di $B$.
+	
+	\begin{itemize}
+		\item $A$ = \textbf{dominio}
+		\item $B$ = \textbf{codominio}
+		\item $f(A) = \{f(a) : a \in A\}$ = \textbf{immagine}
+	\end{itemize}
+\end{definizione}
+
+\textbf{Tipi di funzioni:}
+\begin{itemize}
+	\item \textbf{Iniettiva} (uno-a-uno): $f(a_1) = f(a_2) \Rightarrow a_1 = a_2$
+	\item \textbf{Suriettiva} (sopra): $\forall b \in B, \exists a \in A: f(a) = b$
+	\item \textbf{Biettiva} (biunivoca): iniettiva e suriettiva
+\end{itemize}
+
+\begin{nota}
+	Una funzione biettiva ha \textbf{funzione inversa} $f^{-1}: B \to A$ tale che:
+	\[
+	f^{-1}(f(a)) = a \quad \text{e} \quad f(f^{-1}(b)) = b
+	\]
+\end{nota}
+
+\subsubsection{Grafi}
+
+\begin{definizione}[Grafo]
+	Un grafo $G = (V, E)$ consiste di:
+	\begin{itemize}
+		\item $V$ = insieme di \textbf{vertici} (o nodi)
+		\item $E \subseteq V \times V$ = insieme di \textbf{archi}
+	\end{itemize}
+\end{definizione}
+
+\textbf{Tipi di grafi:}
+\begin{itemize}
+	\item \textbf{Grafo non orientato:} $(u,v) \in E \Leftrightarrow (v,u) \in E$
+	\item \textbf{Grafo orientato} (digrafo): gli archi hanno una direzione
+	\item \textbf{Grafo pesato:} ogni arco ha un peso $w: E \to \mathbb{R}$
+\end{itemize}
+
+\textbf{Terminologia:}
+\begin{itemize}
+	\item \textbf{Grado} di $v$: numero di archi incidenti
+	\begin{itemize}
+		\item Grafo orientato: \textit{grado entrante} + \textit{grado uscente}
+	\end{itemize}
+	\item \textbf{Cammino:} sequenza di vertici $v_1, v_2, \ldots, v_k$ con $(v_i, v_{i+1}) \in E$
+	\item \textbf{Ciclo:} cammino con $v_1 = v_k$
+	\item \textbf{Connesso:} esiste un cammino tra ogni coppia di vertici
+\end{itemize}
+
+\textbf{Rappresentazioni:}
+\begin{enumerate}
+	\item \textbf{Matrice di adiacenza} ($n \times n$):
+	\[
+	A[i][j] = \begin{cases}
+		1 & \text{se } (i,j) \in E \\
+		0 & \text{altrimenti}
+	\end{cases}
+	\]
+	Spazio: $\Theta(n^2)$, accesso arco: $O(1)$
+	
+	\item \textbf{Liste di adiacenza:}
+	Array di $n$ liste, $\text{Adj}[u]$ contiene i vicini di $u$
+	
+	Spazio: $\Theta(n + m)$, iterare vicini: $O(\deg(u))$
+\end{enumerate}
+
+\subsubsection{Alberi}
+
+\begin{definizione}[Albero]
+	Un albero è un grafo \textbf{connesso} e \textbf{aciclico}.
+	
+	Equivalentemente:
+	\begin{itemize}
+		\item Grafo connesso con $n$ nodi e $n-1$ archi
+		\item Esiste un unico cammino tra ogni coppia di nodi
+	\end{itemize}
+\end{definizione}
+
+\textbf{Albero radicato:} albero con un nodo speciale detto \textbf{radice}.
+\begin{itemize}
+	\item \textbf{Padre/Figlio:} $u$ è padre di $v$ se $(u,v) \in E$ e $u$ è più vicino alla radice
+	\item \textbf{Foglia:} nodo senza figli
+	\item \textbf{Altezza:} lunghezza del cammino più lungo dalla radice a una foglia
+	\item \textbf{Profondità} di $v$: distanza dalla radice a $v$
+\end{itemize}
+
+\begin{definizione}[Albero binario]
+	Albero radicato in cui ogni nodo ha al più 2 figli (sinistro e destro).
+	
+	\textbf{Albero binario completo:} tutte le foglie allo stesso livello, ogni nodo interno ha 2 figli.
+	
+	Un albero binario completo di altezza $h$ ha $2^{h+1} - 1$ nodi.
+\end{definizione}
+
+\textbf{Visite di alberi binari:}
+\begin{itemize}
+	\item \textbf{Preorder:} radice $\to$ sinistro $\to$ destro
+	\item \textbf{Inorder:} sinistro $\to$ radice $\to$ destro
+	\item \textbf{Postorder:} sinistro $\to$ destro $\to$ radice
+\end{itemize}
+
+\subsection{Appendice C (Calcolo combinatorio e probabilità)}
+
+\subsubsection{Principi di conteggio}
+
+\textbf{1. Principio del prodotto:}
+
+Se un evento può avvenire in $m$ modi e un altro in $n$ modi, allora entrambi possono avvenire in $m \times n$ modi.
+
+\begin{esempio}
+	Quante stringhe binarie di lunghezza 3?
+	
+	Ogni posizione: 2 scelte $\Rightarrow$ totale: $2 \times 2 \times 2 = 8$
+\end{esempio}
+
+\textbf{2. Principio della somma:}
+
+Se un evento può avvenire in $m$ modi disgiunti o in $n$ modi disgiunti, può avvenire in $m + n$ modi.
+
+\subsubsection{Permutazioni e combinazioni}
+
+\begin{definizione}[Permutazione]
+	Numero di modi per ordinare $n$ oggetti distinti:
+	\[
+	P(n) = n! = n \times (n-1) \times \cdots \times 2 \times 1
+	\]
+\end{definizione}
+
+\begin{definizione}[Permutazione con ripetizioni]
+	Se tra $n$ oggetti ci sono gruppi di $n_1, n_2, \ldots, n_k$ oggetti identici:
+	\[
+	\frac{n!}{n_1! \cdot n_2! \cdot \ldots \cdot n_k!}
+	\]
+\end{definizione}
+
+\begin{esempio}
+	Permutazioni della parola ``MISSISSIPPI'' (11 lettere: 4 I, 4 S, 2 P, 1 M):
+	\[
+	\frac{11!}{4! \cdot 4! \cdot 2! \cdot 1!} = 34650
+	\]
+\end{esempio}
+
+\begin{definizione}[Disposizioni]
+	Numero di modi per scegliere $k$ oggetti da $n$ tenendo conto dell'ordine:
+	\[
+	D(n,k) = \frac{n!}{(n-k)!} = n \times (n-1) \times \cdots \times (n-k+1)
+	\]
+\end{definizione}
+
+\begin{definizione}[Combinazioni (coefficiente binomiale)]
+	Numero di modi per scegliere $k$ oggetti da $n$ \textbf{senza} considerare l'ordine:
+	\[
+	C(n,k) = \binom{n}{k} = \frac{n!}{k!(n-k)!}
+	\]
+\end{definizione}
+
+\textbf{Proprietà dei coefficienti binomiali:}
+\begin{align*}
+	\binom{n}{0} &= \binom{n}{n} = 1 \\
+	\binom{n}{k} &= \binom{n}{n-k} \quad \text{(simmetria)} \\
+	\binom{n}{k} &= \binom{n-1}{k-1} + \binom{n-1}{k} \quad \text{(ricorsione - Pascal)} \\
+	\sum_{k=0}^{n} \binom{n}{k} &= 2^n
+\end{align*}
+
+\subsubsection{Probabilità}
+
+\begin{definizione}[Spazio campionario]
+	Insieme $\Omega$ di tutti i possibili risultati di un esperimento.
+\end{definizione}
+
+\begin{definizione}[Evento]
+	Sottoinsieme $A \subseteq \Omega$ dello spazio campionario.
+\end{definizione}
+
+\begin{definizione}[Probabilità]
+	Funzione $P: \mathcal{P}(\Omega) \to [0,1]$ tale che:
+	\begin{itemize}
+		\item $P(\Omega) = 1$
+		\item $P(A \cup B) = P(A) + P(B)$ se $A \cap B = \emptyset$ (additività)
+	\end{itemize}
+	
+	\textbf{Caso equiprobabile:}
+	\[
+	P(A) = \frac{|A|}{|\Omega|} = \frac{\text{casi favorevoli}}{\text{casi possibili}}
+	\]
+\end{definizione}
+
+\textbf{Regole fondamentali:}
+\begin{itemize}
+	\item $P(\emptyset) = 0$
+	\item $P(\overline{A}) = 1 - P(A)$ (complemento)
+	\item $P(A \cup B) = P(A) + P(B) - P(A \cap B)$ (unione)
+\end{itemize}
+
+\subsubsection{Probabilità condizionata e indipendenza}
+
+\begin{definizione}[Probabilità condizionata]
+	La probabilità di $A$ dato $B$ (con $P(B) > 0$):
+	\[
+	P(A \mid B) = \frac{P(A \cap B)}{P(B)}
+	\]
+\end{definizione}
+
+\begin{teorema}[Regola del prodotto]
+	\[
+	P(A \cap B) = P(A \mid B) \cdot P(B) = P(B \mid A) \cdot P(A)
+	\]
+\end{teorema}
+
+\begin{definizione}[Eventi indipendenti]
+	$A$ e $B$ sono indipendenti se:
+	\[
+	P(A \cap B) = P(A) \cdot P(B)
+	\]
+	
+	Equivalentemente: $P(A \mid B) = P(A)$
+\end{definizione}
+
+\begin{teorema}[Teorema di Bayes]
+	\[
+	P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}
+	\]
+\end{teorema}
+
+\subsubsection{Variabili casuali e valore atteso}
+
+\begin{definizione}[Variabile casuale]
+	Funzione $X: \Omega \to \mathbb{R}$ che assegna un valore numerico a ogni risultato.
+\end{definizione}
+
+\begin{definizione}[Valore atteso]
+	Media pesata dei valori:
+	\[
+	E[X] = \sum_{x} x \cdot P(X = x)
+	\]
+\end{definizione}
+
+\textbf{Proprietà del valore atteso:}
+\begin{itemize}
+	\item $E[aX + b] = aE[X] + b$ (linearità)
+	\item $E[X + Y] = E[X] + E[Y]$ (sempre vera)
+	\item $E[XY] = E[X] \cdot E[Y]$ (solo se $X$ e $Y$ indipendenti)
+\end{itemize}
+
+\begin{definizione}[Variabile indicatrice]
+	Variabile casuale che vale 1 se un evento si verifica, 0 altrimenti.
+	\[
+	I_A = \begin{cases}
+		1 & \text{se } A \text{ si verifica} \\
+		0 & \text{altrimenti}
+	\end{cases}
+	\]
+	
+	\textbf{Proprietà fondamentale:} $E[I_A] = P(A)$
+\end{definizione}
+
+\begin{esempio}[Numero atteso di confronti in QuickSort]
+	Usando variabili indicatrici si dimostra che il numero atteso di confronti è $\Theta(n \log n)$.
+\end{esempio}
+
+\subsection{Appendice D (Matrici)}
+
+\subsubsection{Definizioni base}
+
+\begin{definizione}[Matrice]
+	Una matrice $A$ di dimensione $m \times n$ è una tabella di $m$ righe e $n$ colonne:
+	\[
+	A = \begin{bmatrix}
+		a_{11} & a_{12} & \cdots & a_{1n} \\
+		a_{21} & a_{22} & \cdots & a_{2n} \\
+		\vdots & \vdots & \ddots & \vdots \\
+		a_{m1} & a_{m2} & \cdots & a_{mn}
+	\end{bmatrix}
+	\]
+	
+	Notazione: $A = (a_{ij})$ dove $a_{ij}$ è l'elemento in posizione $(i,j)$
+\end{definizione}
+
+\textbf{Tipi speciali:}
+\begin{itemize}
+	\item \textbf{Matrice quadrata:} $m = n$
+	\item \textbf{Matrice identità} $I_n$: diagonale di 1, resto di 0
+	\[
+	I_3 = \begin{bmatrix}
+		1 & 0 & 0 \\
+		0 & 1 & 0 \\
+		0 & 0 & 1
+	\end{bmatrix}
+	\]
+	\item \textbf{Matrice diagonale:} solo la diagonale può essere non-zero
+	\item \textbf{Matrice triangolare superiore:} $a_{ij} = 0$ per $i > j$
+	\item \textbf{Matrice simmetrica:} $A = A^T$ (vale $a_{ij} = a_{ji}$)
+\end{itemize}
+
+\subsubsection{Operazioni fondamentali}
+
+\textbf{1. Somma:} (solo se $A$ e $B$ hanno stesse dimensioni)
+\[
+(A + B)_{ij} = a_{ij} + b_{ij}
+\]
+Complessità: $\Theta(mn)$
+
+\textbf{2. Prodotto per scalare:}
+\[
+(cA)_{ij} = c \cdot a_{ij}
+\]
+Complessità: $\Theta(mn)$
+
+\textbf{3. Trasposizione:} scambia righe con colonne
+\[
+(A^T)_{ij} = a_{ji}
+\]
+Se $A$ è $m \times n$, allora $A^T$ è $n \times m$
+
+Complessità: $\Theta(mn)$
+
+\textbf{4. Prodotto:} $A$ è $m \times n$, $B$ è $n \times p$
+\[
+(AB)_{ij} = \sum_{k=1}^{n} a_{ik} b_{kj}
+\]
+$AB$ è $m \times p$
+
+Complessità (algoritmo naive): $\Theta(mnp)$
+
+Per matrici quadrate $n \times n$: $\Theta(n^3)$
+
+\subsubsection{Proprietà del prodotto}
+
+\begin{itemize}
+	\item \textbf{Associativa:} $(AB)C = A(BC)$
+	\item \textbf{Distributiva:} $A(B + C) = AB + AC$
+	\item \textbf{NON commutativa:} in generale $AB \neq BA$
+	\item $(AB)^T = B^T A^T$ (inversione ordine)
+	\item $IA = AI = A$ (elemento neutro)
+\end{itemize}
+
+\subsubsection{Determinante e matrice inversa}
+
+\begin{definizione}[Determinante]
+	Per matrice $2 \times 2$:
+	\[
+	\det \begin{bmatrix}
+		a & b \\
+		c & d
+	\end{bmatrix} = ad - bc
+	\]
+	
+	Per matrici $n \times n$: sviluppo di Laplace (ricorsivo)
+\end{definizione}
+
+\textbf{Proprietà:}
+\begin{itemize}
+	\item $\det(AB) = \det(A) \cdot \det(B)$
+	\item $\det(A^T) = \det(A)$
+	\item $\det(I) = 1$
+	\item $\det(cA) = c^n \det(A)$ per matrice $n \times n$
+\end{itemize}
+
+\begin{definizione}[Matrice inversa]
+	$A$ è invertibile se esiste $A^{-1}$ tale che:
+	\[
+	AA^{-1} = A^{-1}A = I
+	\]
+	
+	\textbf{Condizione necessaria e sufficiente:} $\det(A) \neq 0$
+\end{definizione}
+
+\textbf{Proprietà della matrice inversa:}
+\begin{itemize}
+	\item $(A^{-1})^{-1} = A$
+	\item $(AB)^{-1} = B^{-1}A^{-1}$ (inversione ordine)
+	\item $(A^T)^{-1} = (A^{-1})^T$
+\end{itemize}
+
+\subsubsection{Applicazioni agli algoritmi}
+
+\textbf{1. Grafi:} matrice di adiacenza
+
+$A^k[i][j]$ = numero di cammini di lunghezza $k$ da $i$ a $j$
+
+\textbf{2. Programmazione dinamica:} Floyd-Warshall usa prodotto matriciale generalizzato
+
+\textbf{3. Complessità prodotto matriciale:}
+\begin{itemize}
+	\item Algoritmo standard: $\Theta(n^3)$
+	\item Algoritmo di Strassen: $\Theta(n^{\log_2 7}) \approx \Theta(n^{2.81})$
+	\item Algoritmi avanzati: $O(n^{2.37})$ (teorici, non pratici)
+\end{itemize}
+
+
+% ----------------------------------------------------------------
+\subsection{Domande d'esame (Appello 2)}
+
+\begin{hardnote}
+	Queste sono domande reali dell'esame.\footnotemark
+\end{hardnote}
+\footnotetext{Se si studiano solo queste l'esame si passa solo se si è colpiti da un fulmine mentre si fa un salto mortale carpiato suonando il flauto}
+
+
+\subsubsection*{Definizione di algoritmo}
+\textbf{D:} Definizione sufficiente di algoritmo?\\
+\textbf{R:} Procedura ben definita che produce output da input in tempo finito.
+
+\subsubsection*{Problema computazionale}
+\textbf{D:} Cos'è un problema computazionale?\\
+\textbf{R:} Relazione input-output desiderata. Il problema dice \textit{cosa},
+l'algoritmo dice \textit{come}.
+
+\subsubsection*{Efficienza}
+\textbf{D:} Cosa si intende per efficienza?\\
+\textbf{R:} Come crescono le risorse al crescere di $n$
+(non il tempo in secondi, dipendente dall'hardware).
+
+\subsubsection*{InsertionSort vs MergeSort}
+\textbf{D:} InsSort $= 10n^2$, MergeSort $= 32n\log_2 n$. Quando è più
+veloce InsSort?\\
+\textbf{R:} Per $n$ piccoli: $10n^2 < 32n\log_2 n$ solo inizialmente.
+
+\subsubsection*{\texorpdfstring{$100n^2$ vs $2^n$}{100n2 vs 2n}}
+\textbf{D:} Minimo $n$ tale che $100n^2 < 2^n$?\\
+\textbf{R:} $n \ge 15$.
+
+\subsubsection*{Invariante di ciclo}
+\textbf{D:} Cos'è un'invariante di ciclo?\\
+\textbf{R:} Proprietà vera all'inizio di ogni iterazione. Si dimostra per
+inizializzazione, conservazione e conclusione.
+
+\subsubsection*{\texorpdfstring{Vale $\max(f,g) = \Theta(f+g)$?}%
+	{Vale max(f,g) = Theta(f+g)?}}
+\textbf{R:} Sì: $\max(f,g) \le f+g \le 2\max(f,g)$, con $c_1=1$, $c_2=2$.
+
+\subsubsection*{\texorpdfstring{$2^{n+1}$ e $2^{2n}$ vs $O(2^n)$}%
+	{2n+1 e 22n vs O(2n)}}
+\textbf{R:} $2^{n+1} = O(2^n)$ (costante 2). $2^{2n} = 4^n \neq O(2^n)$
+(richiederebbe $2^n \le c$, impossibile).
+
+\subsubsection*{Costo costante in RAM}
+\textbf{R:} Quando la parola di memoria ha dimensione fissa (es.\ 64 bit).
+
+\subsubsection*{Prestazioni su istanze note}
+\textbf{R:} Precomputare le soluzioni e restituirle direttamente
+quando quell'istanza viene ricevuta.
+
+\subsubsection*{\texorpdfstring{$T(n)=T(n-1)+n^c$}{T(n)=T(n-1)+nc}}
+\textbf{R:} $T(n) = \Theta(n^{c+1})$.
+Dim.: $\sum_{k=1}^n k^c \approx \int_1^n x^c\,dx = \frac{n^{c+1}}{c+1}$.
+
+\subsubsection*{\texorpdfstring{$T(n)=2T(n/3)+1$}{T(n)=2T(n/3)+1}}
+\textbf{R:} Master Theorem, caso 1: $T(n) = \Theta(n^{\log_3 2})$
+($\log_3 2 \approx 0.63$).
+
+\subsubsection*{Divide et impera: classe di problemi}
+\textbf{R:} Problemi divisibili in 2+ sotto-istanze con combinazione
+a costo al più polinomiale.
+
+\subsubsection*{Analisi probabilistica}
+\textbf{R:} Uso del calcolo della probabilità nell'analisi degli algoritmi
+(non solo caso medio).
+
+\subsubsection*{permute-without-identity}
+\textbf{R:} No: con $n=3$ produce solo 3 permutazioni invece delle 5 attese.
+
+\subsubsection*{Hire-Assistant: probabilità}
+\textbf{R:} Esattamente 1 assunzione: $1/n$. Esattamente $n$ assunzioni:
+$1/n!$.
+
+\subsubsection*{Generatore casuale}
+\textbf{R:} Valore intero in un intervallo con probabilità uniforme.
+
+\subsubsection*{Algoritmo randomizzato}
+\textbf{R:} Il comportamento dipende dall'input \emph{e} da valori casuali.
+
+\subsubsection*{Ricorrenza con frazioni}
+\textbf{D:} $T(n)\le T(10n/11)+T(n/11)+O(n)$?\\
+\textbf{R:} $T(n) = O(n\log n)$. Ogni livello costa $O(n)$, profondità
+$O(\log n)$.
+
+\subsubsection*{Partition su array}
+\textbf{D:} Partition su $[13,19,9,5,12,8,7,4,21,2,6,11]$, pivot $A[11]$?\\
+\textbf{R:} $[9,5,8,7,4,2,6,\mathbf{11},21,13,19,12]$, pivot in pos.\ 7.
+
+\subsubsection*{Quicksort con elementi uguali}
+\textbf{R:} $O(n^2)$: ogni Partition genera partizione $(n{-}1)$ vs $0$.
+
+\subsubsection*{Partition elementi uguali: fix}
+\textbf{R:} Restituisce indice massimo. Fix: flag booleano; se tutti uguali,
+restituire $\lfloor(p+r)/2\rfloor$.
+
+\subsubsection*{Quicksort non crescente}
+\textbf{R:} Invertire il confronto in Partition: da $\le$ a $\ge$.
+
+\subsubsection*{Rand-Select: caso peggiore}
+\textbf{R:} Il pivot è sempre il massimo: dimensione scende di 1 a ogni
+passo, $O(n^2)$.
+
+\subsubsection*{\texorpdfstring{IV statistica d'ordine}{IV statistica d'ordine}}
+\textbf{D:} IV statistica di $[8,4,8,3,4,2,3,2]$?\\
+\textbf{R:} Ordinato: $[2,2,3,3,4,4,8,8]$. IV elemento $= 3$.
+
+\subsubsection*{Eliminare duplicati}
+\textbf{D:} Eliminare duplicati in $\Theta(n\log n)$?\\
+\textbf{R:} Ordinare, poi scorrere linearmente rimuovendo consecutivi uguali.
+
+\subsubsection*{Build-Max-Heap: indice decrescente}
+\textbf{R:} Le foglie sono già heap. MaxHeapify richiede figli sistemati:
+si parte dal basso.
+
+\subsubsection*{Visita inorder con pila}
+\textbf{R:} Visita in ordine (inorder), $O(n)$.
+Pattern: push-sinistra, pop-visita-destra.
+
+\subsubsection*{LCS senza tabella b}
+\begin{lstlisting}[language={}, numbers=none, frame=none,
+	backgroundcolor=\color{white}, basicstyle=\ttfamily\footnotesize]
+	PRINT-LCS(c, X, Y, i, j)
+	if c[i,j] == 0 then return
+	if X[i] == Y[j]
+	PRINT-LCS(c, X, Y, i-1, j-1)
+	print X[i]
+	else if c[i-1,j] >= c[i,j-1]
+	PRINT-LCS(c, X, Y, i-1, j)
+	else
+	PRINT-LCS(c, X, Y, i, j-1)
+\end{lstlisting}
+Costo $O(m+n)$: ogni chiamata riduce $i$ o $j$ di 1.
+
+\subsubsection*{Cammino minimo vs TSP}
+\textbf{R:} Cammino minimo: sorgente $\to$ destinazione, polinomiale
+(Dijkstra). TSP: circuito visitando ogni nodo una volta, NP-difficile.
+
+\subsubsection*{Prima e ultima cifra (Java)}
+\begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+	int last  = n % 10;
+	int first = n / (int) Math.pow(10, (int)(Math.log10(n)));
+\end{lstlisting}
+
+\subsubsection*{\texorpdfstring{\texttt{T extends Comparable}}%
+	{T extends Comparable}}
+\textbf{R:} La ricerca binaria usa confronti: serve \texttt{compareTo()},
+disponibile solo se $T$ estende \texttt{Comparable}.
+
+\subsubsection*{Ereditarietà e attributo omonimo}
+\textbf{R:} \texttt{super.getIdA()} per \texttt{A.idA},
+\texttt{this.getIdA()} per \texttt{B.idA}.
+Le variabili private non sono ereditate.
+
+\subsubsection*{Errore in makeCombination}
+\textbf{R:} \texttt{values = numbers} copia solo il riferimento locale.
+Fix: copia elemento per elemento.
+
+\subsubsection*{Eccezione in try-with-resources}
+\textbf{R:} L'eccezione di \texttt{close()} è soppressa (JLS 14.20.3):
+diventa \textit{suppressed exception} della prima.
+
+\subsubsection*{Downcasting Java}
+\textbf{D:} \texttt{A value = new B(); B value1 = (A) value; value = null;}?\\
+\textbf{R:} \texttt{value} $\to$ null; \texttt{value1} punta all'oggetto
+\texttt{B} ancora in memoria.
+
+\subsubsection*{Stack con due code}
+\noindent\textbf{Push} $i$-esimo: enqueue in ausiliaria, svuota corrente
+nell'ausiliaria, scambia. Costo: $O(i)$. Totale $n$ push: $O(n^2)$.\\
+\noindent\textbf{Pop}: dequeue. Costo: $O(1)$.
+
+\subsubsection*{Ricerca in matrice destrorsa}
+\textbf{R:} Ricerca binaria su ogni riga. Complessità: $O(n\log n)$.
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+	public static <T extends Comparable<T>>
+	int[] search(T[][] M, T x) {
+		int n = M.length;
+		for (int i = 0; i < n; i++) {
+			int lo = 0, hi = n - 1;
+			while (lo <= hi) {
+				int mid = (lo + hi) / 2;
+				int cmp = M[i][mid].compareTo(x);
+				if      (cmp == 0) return new int[]{i, mid};
+				else if (cmp <  0) lo = mid + 1;
+				else               hi = mid - 1;
+			}
+		}
+		return null;
+	}
+\end{lstlisting}
+

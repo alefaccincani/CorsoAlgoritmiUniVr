@@ -1,0 +1,685 @@
+	\section{InsertionSort e MergeSort}
+
+\begin{softnote}
+	Ora studiamo due algoritmi di ordinamento fondamentali. InsertionSort è semplice ma lento, MergeSort è più complesso ma veloce. Capirai la differenza tra approccio \textbf{incrementale} e \textbf{divide et impera}.
+\end{softnote}
+
+\subsubsection{InsertionSort}
+
+Inserisce ogni elemento nella posizione corretta tra quelli già ordinati
+(come le carte da gioco).
+
+\begin{nota}
+	\textbf{Analogia con le carte:} quando ordini una mano di carte, prendi una carta alla volta e la inserisci nella posizione giusta tra quelle già ordinate. Questo è esattamente quello che fa InsertionSort!
+\end{nota}
+
+\begin{algorithm}
+	\caption{InsertionSort}
+	\KwIn{$A = \langle a_1, \ldots, a_n \rangle$, array di elementi 
+		confrontabili con $\leq$}
+	\KwOut{$A$ ordinato rispetto a $\leq$}
+	\For{$i = 2$ \KwTo $n$}{
+		$key = A[i]$ \tcp*{Inserisce $A[i]$ nella parte ordinata $a_1, \ldots, a_{i-1}$}
+		$j = i - 1$\;
+		\While{$j > 0$ \textbf{and} $A[j] > key$}{
+			$A[j+1] = A[j]$\;
+			$j = j - 1$\;
+		}
+		$A[j+1] = key$\;
+	}
+	\Return{$A$}
+\end{algorithm}
+
+\begin{softnote}
+	\textbf{Come funziona InsertionSort passo p\\asso:}
+	
+	\begin{enumerate}
+		\item Parte dall'elemento in posizione 2 (il primo è già ``ordinato'')
+		\item Prende l'elemento corrente (\texttt{key})
+		\item Lo confronta con gli elementi precedenti (da destra a sinistra)
+		\item Sposta gli elementi più grandi verso destra
+		\item Inserisce \texttt{key} nella posizione corretta
+		\item Ripete per tutti gli elementi
+	\end{enumerate}
+\end{softnote}
+
+\begin{nota}
+	Ordina gli elementi \textbf{sul posto} (in-place), cioè non usa array aggiuntivi ma modifica direttamente l'array di input.
+\end{nota}
+
+\textbf{Ciclo Algoritmo}
+
+\begin{center}
+	
+	\vspace{0.4em}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		5 & 2 & 4 & 6 & 1 \\
+		\hline
+	\end{tabular}
+	$= A$
+	
+	\vspace{0.4em}
+	{\small\textit{Ogni blocco rappresenta un ciclo for (0 o più cicli while)}}
+	\vspace{0.4em}
+	
+	\scalebox{0.9}{%
+		\begin{tabular}{|c|c|c|c|c|l|}
+			\hline
+			\textit{1} & \textit{2} & \textit{3} & \textit{4} & \textit{5} & \textit{Commento} \\
+			\hline
+			5 & \textcolor{codered}{2} & 4 & 6 & 1 &
+			\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 5 \\ Scambio 5$\to$2}} \\
+			j & i & & & & \\[3pt]
+			\hline
+			2 & 5 & \textcolor{codered}{4} & 6 & 1 &
+			\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,5 \\ Scambio 5$\to$4}} \\
+			$\leftarrow$ & j & i & & & \\[3pt]
+			\hline
+			2 & 4 & 5 & \textcolor{codered}{6} & 1 &
+			\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5 \\ Nessun scambio}} \\
+			& $\leftarrow$ & j & i & & \\[3pt]
+			\hline
+			2 & 4 & 5 & 6 & \textcolor{codered}{1} &
+			\multirow{2}{*}{\parbox{3cm}{\small Seq. ord.: 2,4,5,6 \\ 1 $\to$ pos. I}} \\
+			& & $\leftarrow$ & j & i & \\[3pt]
+			\hline
+			1 & 2 & 4 & 5 & 6 &
+			\multirow{2}{*}{\parbox{3cm}{\small Seq. ordinata}} \\
+			& & & & i & \\[3pt]
+			\hline
+		\end{tabular}%
+	}
+\end{center}
+
+\begin{softnote}
+	Nella tabella:
+	\begin{itemize}
+		\item \textcolor{codered}{Rosso} = elemento che stiamo inserendo (\texttt{key})
+		\item $i$ = indice elemento corrente
+		\item $j$ = indice di confronto (parte da $i-1$ e va a ritroso)
+		\item Le frecce $\leftarrow$ mostrano il movimento degli elementi verso destra
+	\end{itemize}
+\end{softnote}
+
+\pagebreak
+\subsubsection*{Invariante di ciclo}
+
+\begin{definizione}[Invariante di ciclo]
+	Un'asserzione (proprietà booleana) sempre vera all'inizio
+	di ogni iterazione di un ciclo.
+\end{definizione}
+
+\begin{nota}
+	L'invariante di ciclo è come una \textbf{promessa} che l'algoritmo mantiene: ``prima di ogni giro del ciclo, questa proprietà è vera''. Serve per dimostrare matematicamente che l'algoritmo funziona correttamente.
+\end{nota}
+
+La validità si dimostra in tre passi:
+\begin{enumerate}
+	\item \textbf{Inizializzazione:} è vera prima della prima iterazione.
+	\item \textbf{Conservazione:} se è vera prima di un'iterazione,
+	rimane vera prima di quella successiva.
+	\item \textbf{Conclusione:} quando il ciclo termina, l'invariante
+	fornisce una proprietà utile a dimostrare la correttezza.
+\end{enumerate}
+
+\begin{esempio}[Invariante di InsertionSort]
+	\textit{``All'inizio del ciclo \texttt{for}, il sottoarray
+		$A[1:i-1]$ è ordinato e formato dagli stessi elementi
+		che erano in $A[1:i-1]$.''}
+	
+	\begin{itemize}
+		\item \textbf{Inizializzazione:} $i=2$, quindi $A[1:1]$
+		è un solo elemento $\Rightarrow$ ordinato. \checkmark
+		\item \textbf{Conservazione:} \texttt{key}$= A[i]$,
+		il ciclo \texttt{while} sposta $A[i-1], A[i-2],\ldots$
+		a destra finché non trova la posizione corretta per
+		\texttt{key}. Quindi $A[1:i]$ diventa ordinato con
+		gli stessi elementi. All'iterazione successiva
+		$i$ aumenta di 1, l'invariante vale su $A[1:i-1]$.
+		\checkmark
+		\item \textbf{Conclusione:} il ciclo termina con $i = n+1$.
+		Per l'invariante, $A[1:n]$ è ordinato con gli stessi
+		elementi $\Rightarrow$ l'algoritmo è corretto. \checkmark
+	\end{itemize}
+\end{esempio}
+
+\begin{softnote}
+	\textbf{In parole semplici:}
+	\begin{itemize}
+		\item \textbf{Inizializzazione}: all'inizio funziona (un elemento è sempre ordinato)
+		\item \textbf{Conservazione}: se funziona al passo $i$, funziona anche al passo $i+1$
+		\item \textbf{Conclusione}: alla fine, l'intero array è ordinato
+	\end{itemize}
+	
+	È come l'effetto domino: se il primo pezzo cade e ogni pezzo fa cadere il successivo, alla fine cadono tutti!
+\end{softnote}
+
+\subsubsection*{Modello RAM}
+
+
+Per analizzare la complessità si usa un modello astratto di
+computer: la \textbf{Random Access Machine (RAM)}.
+
+\begin{itemize}
+	\item Un solo processore con memoria ad accesso casuale.
+	\item Numeri interi e a virgola mobile con dimensione fissa
+	(es.\ 64 bit per parola).
+	\item Istruzioni elementari (lettura, scrittura, somma,
+	sottrazione, moltiplicazione, divisione, confronto,
+	\texttt{if}, salto, chiamata a procedura).
+	\item Ogni istruzione ha \textbf{costo costante} $= 1$.
+\end{itemize}
+
+\begin{nota}
+	È una semplificazione: nella realtà cache, pipeline e
+	parallelismo influenzano i tempi reali. In questo corso
+	si ignorano questi dettagli.
+	
+	\textbf{Perché usiamo il modello RAM?} Perché ci permette di confrontare algoritmi in modo uniforme, indipendentemente dall'hardware specifico su cui girano.
+\end{nota}
+
+\subsubsection*{Dimensione dell'input e tempo di esecuzione}
+
+\begin{definizione}[Dimensione dell'input]
+	Misura della quantità di bit/word necessari per rappresentare
+	l'input. Un indicatore è \textbf{corretto} se la dimensione
+	reale è in relazione polinomiale con esso.
+\end{definizione}
+
+\begin{definizione}[Tempo di esecuzione]
+	Numero totale di operazioni elementari eseguite dall'algoritmo
+	nel modello RAM, in funzione della dimensione $n$ dell'input.
+\end{definizione}
+
+\begin{nota}
+	\textbf{Indicatore corretto:} una misura semplificata della dimensione dell'input che mantiene una relazione ragionevole con la dimensione reale.
+	
+	\textbf{Esempi:}
+	\begin{itemize}
+		\item Per un array di $n$ numeri: indicatore = $n$ (numero di elementi)
+		\item Per una matrice $n \times n$: indicatore = $n$ (anche se contiene $n^2$ elementi)
+		\item Per un numero intero: indicatore = numero di bit necessari a rappresentarlo
+	\end{itemize}
+\end{nota}
+
+Esempi di indicatori corretti:
+\begin{itemize}
+	\item \textbf{Array di $n$ elementi:} indicatore $= n$. \checkmark
+	\item \textbf{Matrice $n \times n$:} indicatore $= n$
+	(la dimensione reale $n \cdot k(n+1)$ è polinomiale in $n$).
+	\checkmark
+	\item \textbf{Intero $n$:} indicatore $= \lfloor \lg n \rfloor + 1$
+	(numero di bit). \textbf{Non} si può usare $n$ come
+	indicatore perché $2^{|I|} \approx n$, relazione
+	esponenziale. \checkmark
+\end{itemize}
+
+\begin{esempio}[Matrice $n \times n$]
+	Sia $A$ una matrice $n \times n$ di interi, dove ogni intero
+	richiede $k$ bit. La RAM memorizza la matrice riga per riga.
+	
+	Ogni riga occupa $nk$ bit per gli interi, più $k$ bit per il
+	marcatore di fine riga. L'intera matrice richiede:
+	\[
+	|I| = n\bigl(n+1\bigr)k \text{ bit}
+	= n(kn + k) \text{ bit}
+	= \boxed{kn^2 + kn \text{ bit}}
+	= \Theta(n)
+	\]
+	
+	\begin{center}
+		\begin{tikzpicture}[scale=1.2]
+			% --- matrice n x n ---
+			\draw[step=0.6cm, gray!60, thin] (0,0) grid (3.6, 3.6);
+			\draw[thick] (0,0) rectangle (3.6, 3.6);
+			\node[above] at (1.8, 3.6) {$n$};
+			\node[left]  at (0,  1.8)  {$n$};
+			\node[font=\tiny] at (0.3, 3.3) {$a_{1,1}$};
+			\node[font=\tiny] at (3.3, 3.3) {$a_{1,n}$};
+			\node[font=\tiny] at (0.3, 0.3) {$a_{n,1}$};
+			\node[font=\tiny] at (3.3, 0.3) {$a_{n,n}$};
+			
+			% --- freccia RAM ---
+			\draw[->, thick] (4.0, 1.8) -- (5.2, 1.8);
+			\node[above, font=\small] at (4.6, 1.9) {RAM};
+			
+			% --- stack RAM ---
+			\foreach \y in {0, 0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2}
+			\draw[draw=gray!80, fill=codebg]
+			(5.4, \y) rectangle (7.2, \y+0.35);
+			\node[font=\tiny] at (6.3, 3.35) {$a_{1,1}$};
+			\node[font=\tiny] at (6.3, 2.95) {$a_{1,2}$};
+			\node[font=\tiny] at (6.3, 2.55) {$\vdots$};
+			\node[font=\tiny] at (6.3, 2.15) {$a_{1,n}$};
+			\node[font=\tiny, color=codered] at (6.3, 1.75) {\texttt{fine riga} ($k$ bit)};
+			\node[font=\tiny] at (6.3, 1.35) {$a_{2,1}$};
+			\node[font=\tiny] at (6.3, 0.95) {$\vdots$};
+			\node[font=\tiny] at (6.3, 0.55) {$a_{n,n}$};
+			\node[font=\tiny, color=codered] at (6.3, 0.15) {\texttt{fine riga} ($k$ bit)};
+			
+			% --- graffa dimensione ---
+			\draw[decorate, decoration={brace, amplitude=5pt, mirror}]
+			(7.3, 0) -- (7.3, 3.55)
+			node[midway, right=6pt, font=\small] {$n$ righe};
+			
+			% --- annotazione dimensione riga ---
+			\draw[decorate, decoration={brace, amplitude=4pt}]
+			(5.4, 3.6) -- (7.2, 3.6)
+			node[midway, above=5pt, font=\tiny]
+			{$nk + k$ bit per riga};
+		\end{tikzpicture}
+	\end{center}
+	
+	Si usa come indicatore $|I| = n$. È \textbf{corretto} perché
+	la dimensione reale $kn^2 + kn$ è un \textbf{polinomio in $n$}.
+\end{esempio}
+
+\begin{nota}
+	L'errore comune è usare il \emph{valore} di un intero $n$ come
+	dimensione dell'input invece del numero di bit necessari a
+	rappresentarlo. Questo porta a sottostimare la complessità.
+	
+	\textbf{Esempio:} il numero 1000 ha valore 1000, ma occupa solo $\lceil \log_2(1000) \rceil = 10$ bit. La dimensione dell'input è 10, non 1000!
+\end{nota}
+
+\subsubsection*{Analisi di InsertionSort}
+
+$c_k$ = costo esecuzione istruzione alla riga $k$. \quad
+$t_i - 1$ = \# cicli \textbf{while} nel $i$-esimo ciclo \textbf{for}.
+
+\begin{center}
+	\begin{tabular}{rll r r}
+		\toprule
+		& \textsc{Insertion-Sort}$(A, n)$ & & \textit{cost} & \textit{times} \\
+		\midrule
+		1 & \textbf{for} $i = 2$ \textbf{to} $n$ & & $c_1$ & $n$ \\
+		2 & \quad $key = A[i]$ & & $c_2$ & $n-1$ \\
+		3 & \quad \textcolor{codegreen}{\texttt{// Insert $A[i]$ into the sorted subarray $A[1:i-1]$}} & & $0$ & $n-1$ \\
+		4 & \quad $j = i - 1$ & & $c_4$ & $n-1$ \\
+		5 & \quad \textbf{while} $j > 0$ \textbf{and} $A[j] > key$ & & $c_5$ & $\displaystyle\sum_{i=2}^{n} t_i$ \\[6pt]
+		6 & \qquad $A[j+1] = A[j]$ & & $c_6$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
+		7 & \qquad $j = j - 1$ & & $c_7$ & $\displaystyle\sum_{i=2}^{n} (t_i - 1)$ \\[6pt]
+		8 & \quad $A[j+1] = key$ & & $c_8$ & $n-1$ \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{softnote}
+	\textbf{Contare le iterazioni:}
+	
+	\textbf{for} $i = \ell$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $\#\text{Cicli} = n - \ell + 1$
+	
+	\textbf{Esempio:} \textbf{for} $i = 2$ \textbf{to} $n$ \quad $\Rightarrow$ \quad $n - 1$ iterazioni
+\end{softnote}
+
+
+\[
+T(n) = c_1 n + c_2(n-1) + c_4(n-1)
++ c_5 \sum_{i=2}^{n} t_i
++ c_6 \sum_{i=2}^{n} (t_i-1)
++ c_7 \sum_{i=2}^{n} (t_i-1)
++ c_8(n-1)
+\]
+
+
+Indichiamo con $c_k$ il costo dell'istruzione alla riga $k$,
+e con $t_i$ il numero di volte che il ciclo \texttt{while} viene
+eseguito durante l'$i$-esimo ciclo \texttt{for}.
+
+\begin{nota}
+	$t_i$ dipende dai dati:
+	\begin{itemize}
+		\item Se $A[i]$ è già al posto giusto: $t_i = 1$ (un solo confronto)
+		\item Se $A[i]$ deve andare all'inizio: $t_i = i$ (confronta con tutti)
+	\end{itemize}
+\end{nota}
+
+\pagebreak
+
+\subsubsection*{Caso migliore: array già ordinato}
+
+Se l'array è già ordinato, il corpo del \texttt{while} non viene
+mai eseguito: $t_i = 1$ per ogni $i$.
+Le somme $\sum(t_i - 1) = 0$, quindi:
+
+\[
+T(n) = c_1 n + c_2(n-1) + c_4(n-1) + c_5(n-1) + c_8(n-1)
+\]
+\[
+= \underbrace{(c_1 + c_2 + c_4 + c_5 + c_8)}_{a} n
+- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{b}
+\]
+\[
+= an - b \quad \Rightarrow \quad \boxed{T(n) = \Theta(n)}
+\]
+
+\begin{nota}
+	Nel caso migliore la crescita è \textbf{lineare}: ogni elemento
+	viene confrontato una sola volta con il suo predecessore e
+	nessuno scambio viene effettuato.
+	
+	\textbf{Esempio pratico:} se l'array è $[1, 2, 3, 4, 5]$, l'algoritmo fa solo $n-1$ confronti e nessuno spostamento. Velocissimo!
+\end{nota}
+
+\subsubsection*{Caso peggiore: array ordinato al contrario}
+
+Se l'array è in ordine decrescente, ogni $A[i]$ deve essere
+confrontato con \textbf{tutti} gli elementi in $A[1:i-1]$,
+quindi $t_i = i$. Usando $\sum_{i=2}^{n} i = \frac{n(n+1)}{2} - 1$:
+
+\[
+T(n) = c_1 n + c_2(n-1) + c_4(n-1)
++ c_5\!\left(\frac{n(n+1)}{2} - 1\right)
++ (c_6 + c_7)\frac{n(n-1)}{2}
++ c_8(n-1)
+\]
+
+Raccogliendo i termini per grado:
+
+\[
+T(n) = \underbrace{\frac{c_5 + c_6 + c_7}{2}}_{a} n^2
++ \underbrace{\left(c_1 + c_2 + c_4 + \frac{c_5 - c_6 - c_7}{2} + c_8\right)}_{b} n
+- \underbrace{(c_2 + c_4 + c_5 + c_8)}_{c}
+\]
+\[
+\Rightarrow \quad \boxed{T(n) = \Theta(n^2)}
+\]
+
+\begin{nota}
+	Nel caso peggiore la crescita è \textbf{quadratica}: ogni nuovo
+	elemento deve ``scendere'' fino in fondo alla parte già ordinata,
+	confrontandosi con tutti gli elementi precedenti.
+	
+	\textbf{Esempio pratico:} se l'array è $[5, 4, 3, 2, 1]$:
+	\begin{itemize}
+		\item Il 4 fa 1 confronto
+		\item Il 3 fa 2 confronti
+		\item Il 2 fa 3 confronti
+		\item L'1 fa 4 confronti
+	\end{itemize}
+	Totale: $1 + 2 + 3 + 4 = 10 = \frac{n(n-1)}{2}$ confronti. Molto lento!
+\end{nota}
+
+\begin{center}
+	\begin{tabular}{lll}
+		\toprule
+		Caso & Input & Complessità \\
+		\midrule
+		Migliore & Array già ordinato      & $\Theta(n)$   \\
+		Peggiore & Array ordinato inverso  & $\Theta(n^2)$ \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{hardnote}
+	Solitamente si considera come complessità di un algoritmo il
+	tempo di esecuzione con input che rappresenta il caso peggiore.
+	
+	\begin{enumerate}[label=\arabic*.]
+		\item È una garanzia sulla descrizione del comportamento dell'algoritmo.
+		\item In alcuni casi, il caso peggiore è il più frequente.
+		\item Il caso medio spesso è simile al caso peggiore (vedi InsertionSort).
+	\end{enumerate}
+	
+	\textbf{Per InsertionSort:} il caso medio è $\Theta(n^2)$ come il caso peggiore, perché in media metà degli elementi vanno spostati.
+\end{hardnote}
+
+\pagebreak
+
+\subsection{MergeSort}
+
+MergeSort è un algoritmo di ordinamento basato sul metodo \textbf{divide et impera},
+più efficiente di InsertionSort nel caso peggiore: $\Theta(n \lg n)$ contro $\Theta(n^2)$.
+
+\subsubsection{Metodo Divide et Impera}
+
+Il metodo divide et impera è un paradigma di progettazione degli algoritmi
+che si articola in tre fasi ricorsive:
+
+\begin{itemize}
+	\item \textbf{Divide:} il problema di dimensione $n$ viene suddiviso
+	in $a$ sotto-problemi di dimensione $n/b$.
+	\item \textbf{Impera:} ogni sotto-problema viene risolto ricorsivamente.
+	La ricorsione si ferma quando il problema è sufficientemente piccolo
+	da essere risolto direttamente (caso base).
+	\item \textbf{Combina:} le soluzioni dei sotto-problemi vengono
+	unite per ottenere la soluzione del problema originale.
+\end{itemize}
+
+\begin{nota}
+	InsertionSort usa un approccio \textbf{incrementale}: estende la
+	soluzione di $A[1 \ldots i-1]$ inserendo $A[i]$ nella posizione corretta.
+	MergeSort usa invece \textbf{divide et impera}: risolve due metà
+	indipendentemente e le fonde.
+\end{nota}
+
+\subsubsection{Descrizione dell'algoritmo}
+
+Applicando divide et impera al problema dell'ordinamento:
+
+\begin{itemize}
+	\item \textbf{Divide:} l'array $A[p \ldots r]$ viene spezzato in due
+	sotto-array $A[p \ldots q]$ e $A[q+1 \ldots r]$, dove
+	$q = \lfloor (p+r)/2 \rfloor$.
+	\item \textbf{Impera:} i due sotto-array vengono ordinati ricorsivamente
+	con MergeSort. Quando $p = r$ (sotto-array di un solo elemento),
+	la ricorsione termina.
+	\item \textbf{Combina:} i due sotto-array ordinati vengono fusi
+	dall'operazione \textsc{Merge}$(A, p, q, r)$.
+\end{itemize}
+
+L'operazione chiave è \textsc{Merge}: dati due sotto-array adiacenti già
+ordinati, li fonde in un unico sotto-array ordinato.
+
+\subsubsection{Pseudocodice}
+
+Dato $A[1 \ldots n]$, MergeSort si invoca con
+\textsc{Merge-Sort}$(A,\, 1,\, n)$.
+
+\begin{algorithm}[H]
+	\caption{\textsc{Merge-Sort}$(A, p, r)$}
+	\KwIn{Array $A$, indici $p \leq r$}
+	\KwOut{$A[p \ldots r]$ ordinato in loco}
+	\BlankLine
+	\If{$p < r$}{
+		$q = \lfloor (p + r) / 2 \rfloor$\;
+		\textsc{Merge-Sort}$(A,\, p,\, q)$\;
+		\textsc{Merge-Sort}$(A,\, q+1,\, r)$\;
+		\textsc{Merge}$(A,\, p,\, q,\, r)$\;
+	}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Merge}$(A, p, q, r)$}
+	\KwIn{$A[p \ldots q]$ e $A[q+1 \ldots r]$ già ordinati}
+	\KwOut{$A[p \ldots r]$ ordinato}
+	\BlankLine
+	$n_L = q - p + 1$\;
+	$n_R = r - q$\;
+	crea array $L[0 \ldots n_L-1]$ e $R[0 \ldots n_R-1]$\;
+	\BlankLine
+	\For{$i = 0$ \KwTo $n_L - 1$}{
+		$L[i] = A[p + i]$\;
+	}
+	\For{$j = 0$ \KwTo $n_R - 1$}{
+		$R[j] = A[q + 1 + j]$\;
+	}
+	\BlankLine
+	$i = 0$;\quad $j = 0$;\quad $k = p$\;
+	\BlankLine
+	\While{$i < n_L$ \normalfont\textbf{and} $j < n_R$}{
+		\eIf{$L[i] \leq R[j]$}{
+			$A[k] = L[i]$;\; $i = i + 1$\;
+		}{
+			$A[k] = R[j]$;\; $j = j + 1$\;
+		}
+		$k = k + 1$\;
+	}
+	\BlankLine
+	\While{$i < n_L$}{
+		$A[k] = L[i]$;\; $i = i + 1$;\; $k = k + 1$\;
+	}
+	\While{$j < n_R$}{
+		$A[k] = R[j]$;\; $j = j + 1$;\; $k = k + 1$\;
+	}
+\end{algorithm}
+
+\begin{nota}
+	Questa è la versione più semplice di \textsc{Merge}. Nel Cormen (ed.\ IV)
+	e in rete esistono versioni più compatte che usano la tecnica della
+	\textbf{sentinella}: si aggiunge $+\infty$ in fondo a $L$ e $R$,
+	eliminando i due cicli \textbf{while} finali.
+\end{nota}
+
+
+\subsubsection{Correttezza: Invariante di ciclo di Merge}
+
+\begin{definizione}[Invariante di \textsc{Merge}]
+	All'inizio di ogni iterazione del ciclo \textbf{while} principale,
+	$A[p \ldots k-1]$ contiene, ordinati, gli $i+j$ elementi minori
+	di tutti gli elementi in $L[0 \ldots n_L-1]$ e $R[0 \ldots n_R-1]$.
+	$L[i]$ e $R[j]$ sono gli elementi più piccoli dei rispettivi array
+	non ancora copiati in $A$.
+\end{definizione}
+
+\begin{proof}
+	\begin{enumerate}
+		\item \textbf{Inizializzazione:} $k = p$, quindi $A[p \ldots k-1]$
+		è vuoto ($0$ elementi copiati). Con $i = j = 0$, $L[0]$ e
+		$R[0]$ sono i minimi non ancora copiati. L'invariante è vera. \checkmark
+		
+		\item \textbf{Conservazione:} supponiamo $L[i] \leq R[j]$ (il caso
+		$L[i] > R[j]$ è simmetrico). $L[i]$ è il minimo tra tutti gli
+		elementi non ancora copiati, quindi viene copiato in $A[k]$.
+		Incrementando $k$ e $i$, l'array $A[p \ldots k-1]$ contiene
+		ora $i+j$ elementi ordinati e $L[i]$ è il nuovo minimo
+		non copiato di $L$. L'invariante è mantenuta. \checkmark
+		
+		\item \textbf{Conclusione:} il ciclo termina quando $i = n_L$
+		oppure $j = n_R$, cioè quando uno dei due array è esaurito.
+		I rimanenti elementi dell'altro array (già ordinati e tutti
+		maggiori di quelli copiati) vengono aggiunti dai due cicli
+		\textbf{while} finali. Al termine, $A[p \ldots r]$ è ordinato
+		e contiene gli stessi elementi originali. \checkmark
+	\end{enumerate}
+\end{proof}
+
+\subsubsection{Complessità}
+
+\paragraph{Complessità di \textsc{Merge}.}
+
+Sia $n = r - p + 1$ la dimensione del sotto-array da fondere:
+\begin{itemize}
+	\item Copiare in $L$ e $R$: $n_L + n_R = n$ operazioni
+	\item Ciclo \textbf{while} principale: al più $n$ iterazioni
+	\item Cicli \textbf{while} finali: al più $n$ iterazioni totali
+\end{itemize}
+\[
+T_{\textsc{Merge}}(n) = \Theta(n)
+\]
+
+\paragraph{Equazione di ricorrenza di MergeSort.}
+
+Con $a = 2$ sotto-problemi di dimensione $n/2$, costo di divisione
+$D(n) = \Theta(1)$ e costo di fusione $C(n) = \Theta(n)$:
+\[
+T(n) = \begin{cases}
+	\Theta(1)                & \text{se } n = 1           \\[4pt]
+	2\,T(n/2) + \Theta(n)   & \text{altrimenti}
+\end{cases}
+\]
+
+Applicando il \textbf{Teorema dell'Esperto}:
+\[
+\boxed{T(n) = \Theta(n \lg n)} \qquad \text{dove } \lg = \log_2
+\]
+
+\paragraph{Soluzione per albero di ricorsione.}
+
+\begin{center}
+	\begin{nota}
+		Ad ogni livello $i$ dell'albero vi sono $2^i$ sotto-problemi di
+		dimensione $n/2^i$, ciascuno con costo di fusione $\Theta(n/2^i)$.
+		Il costo totale per livello è:
+		\[
+		2^i \cdot \Theta\!\left(\frac{n}{2^i}\right) = \Theta(n)
+		\]
+		Il numero di livelli è $\lg n + 1$ (le foglie hanno dimensione 1,
+		con $n/2^{\lg n} = 1$). Sommando su tutti i livelli:
+		\[
+		T(n) = (\lg n + 1) \cdot \Theta(n) = \Theta(n \lg n)
+		\]
+	\end{nota}
+\end{center}
+
+\subsubsection{Confronto con InsertionSort}
+
+\begin{nota}
+	I due algoritmi rappresentano due filosofie opposte:
+	InsertionSort usa un approccio \textbf{incrementale}, MergeSort usa
+	\textbf{divide et impera}. La scelta dipende dal contesto.
+\end{nota}
+
+\begin{center}
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Proprietà}      & \textbf{InsertionSort}    & \textbf{MergeSort}        \\
+		\midrule
+		Paradigma               & Incrementale              & Divide et impera          \\
+		Caso migliore           & $\Theta(n)$               & $\Theta(n \lg n)$         \\
+		Caso peggiore           & $\Theta(n^2)$             & $\Theta(n \lg n)$         \\
+		Caso medio              & $\Theta(n^2)$             & $\Theta(n \lg n)$         \\
+		Memoria extra           & $\Theta(1)$ (in-place)    & $\Theta(n)$ (array $L$, $R$) \\
+		Stabile                 & Sì                        & Sì                        \\
+		Adatto a input piccoli  & Sì                        & No                        \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{softnote}
+	\textbf{Quando usare InsertionSort?}
+	\begin{itemize}
+		\item Array piccoli ($n \leq 20\text{--}30$): la costante nascosta
+		in $\Theta(n^2)$ è talmente piccola che batte MergeSort in pratica.
+		\item Array \textbf{quasi ordinati}: con pochi elementi fuori posto,
+		InsertionSort è quasi $\Theta(n)$.
+		\item Ambienti con memoria limitata: nessun array aggiuntivo.
+	\end{itemize}
+	
+	\textbf{Quando usare MergeSort?}
+	\begin{itemize}
+		\item Array grandi: $\Theta(n \lg n)$ diventa rapidamente più
+		conveniente di $\Theta(n^2)$.
+		\item Quando si vuole una \textbf{garanzia} sul caso peggiore
+		(non dipende dall'ordine dell'input).
+		\item Ordinamento esterno (dati su disco): MergeSort si adatta
+		naturalmente alla fusione di blocchi.
+	\end{itemize}
+\end{softnote}
+
+\begin{hardnote}
+	\textbf{Perché $\Theta(n \lg n)$ è asintoticamente ottimale?}
+	
+	Qualsiasi algoritmo di ordinamento \textbf{basato su confronti}
+	richiede nel caso peggiore almeno $\Omega(n \lg n)$ confronti
+	(dimostrazione tramite alberi di decisione, cap.\ 8 CLRS).
+	MergeSort è quindi \textbf{asintoticamente ottimale} per questa
+	classe di algoritmi.
+	
+	InsertionSort, con il suo $\Theta(n^2)$, è lontano dall'ottimo
+	per input grandi, ma rimane utile grazie alle sue costanti
+	moltiplicative molto piccole e alla semplicità implementativa.
+\end{hardnote}
+
+\begin{esempio}[Crescita a confronto]
+	Per $n = 10^6$ elementi:
+	\begin{itemize}
+		\item InsertionSort (caso peggiore): $\sim 10^{12}$ operazioni
+		\item MergeSort: $\sim 2 \times 10^7$ operazioni
+		($n \lg_2 n \approx 2 \times 10^7$)
+	\end{itemize}
+	La differenza è di \textbf{cinque ordini di grandezza}.
+	Su un processore da $10^9$ operazioni/secondo, InsertionSort
+	impiegherebbe $\sim 16$ minuti, MergeSort $\sim 0{,}02$ secondi.
+\end{esempio}

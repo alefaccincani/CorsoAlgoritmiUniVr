@@ -1,0 +1,467 @@
+\section{HeapSort}
+
+\begin{softnote}
+	HeapSort è l'ultimo algoritmo di ordinamento per confronti che
+	studiamo. Combina il meglio di InsertionSort (ordina \textbf{sul posto})
+	e di MergeSort (complessità $O(n \lg n)$), ma introduce una tecnica
+	nuova: si basa su una \textbf{struttura dati} dedicata, lo \emph{heap},
+	che trova applicazione anche nelle code di priorità.
+\end{softnote}
+
+% ----------------------------------------------------------------
+\subsection{Idea Generale}
+
+HeapSort:
+\begin{itemize}
+	\item ordina \textbf{sul posto} come InsertionSort;
+	\item ha complessità $O(n \lg n)$ nel caso peggiore, come MergeSort;
+	\item nel caso medio è \textbf{meno veloce} di QuickSort, perché le
+	costanti nascoste in $O(n \lg n)$ sono più piccole in QuickSort
+	che in HeapSort;
+	\item è basato sulla struttura dati \textbf{heap}, usata anche in
+	altri algoritmi importanti come le code di priorità.
+\end{itemize}
+
+% ----------------------------------------------------------------
+\subsection{Struttura Dati Heap}
+
+\begin{definizione}[Heap binario]
+	Uno \textbf{heap} è un array che rappresenta un albero binario
+	\emph{quasi completo}:
+	\begin{itemize}
+		\item ogni nodo dell'albero corrisponde a un elemento dell'array;
+		\item tutti i livelli devono essere completamente riempiti tranne
+		eventualmente l'ultimo, che può essere parziale ma sempre
+		riempito da sinistra verso destra;
+		\item se $A$ è uno heap: $A.\mathit{length}$ è il numero di elementi
+		dell'array, $A.\mathit{heapSize}$ è il numero di nodi
+		dell'albero rappresentati ($0 \le A.\mathit{heapSize} \le
+		A.\mathit{length}$);
+		\item la radice dell'albero è in $A[1]$.
+	\end{itemize}
+\end{definizione}
+
+\begin{nota}
+	\textbf{Albero binario completo vs.\ quasi completo:}
+	\begin{itemize}
+		\item \textbf{Completo:} ciascun nodo interno ha esattamente due
+		figli; le foglie sono tutte allo stesso livello.
+		\item \textbf{Quasi completo:} tutti i livelli riempiti tranne
+		eventualmente l'ultimo, sempre riempito da sinistra.
+		(Se si numerano i nodi per livelli, la numerazione non ha
+		``buchi''.)
+	\end{itemize}
+\end{nota}
+
+\subsubsection{Navigazione dell'albero tramite indici}
+
+Dato il nodo in posizione $i$, genitore e figli si calcolano con:
+\[
+\textsc{Parent}(i) = \lfloor i/2 \rfloor, \qquad
+\textsc{Left}(i)   = 2i,               \qquad
+\textsc{Right}(i)  = 2i + 1.
+\]
+
+\begin{nota}
+	Moltiplicare/dividere per 2 richiede solo di spostare di 1 bit a
+	sinistra/destra: operazione estremamente efficiente a livello hardware.
+\end{nota}
+
+\subsubsection{Tipi di heap e proprietà}
+
+\begin{definizione}[Max-heap e min-heap]
+	\begin{itemize}
+		\item \textbf{Max-heap:} $A[\textsc{Parent}(i)] \ge A[i]$ per ogni
+		$i \ne 1$ (il genitore è sempre $\ge$ dei figli).
+		\item \textbf{Min-heap:} $A[\textsc{Parent}(i)] \le A[i]$ per ogni
+		$i \ne 1$ (il genitore è sempre $\le$ dei figli).
+	\end{itemize}
+	\textsc{HeapSort} usa i \textbf{max-heap}; i min-heap sono usati per
+	realizzare le code di priorità.
+\end{definizione}
+
+\subsubsection{Altezza dello heap}
+
+\begin{definizione}[Altezza di un nodo]
+	L'\textbf{altezza} di un nodo è il numero di archi del cammino
+	semplice più lungo che parte dal nodo e termina in una foglia
+	(numero di livelli sottostanti al livello del nodo).
+	L'\textbf{altezza dello heap} è l'altezza della radice.
+\end{definizione}
+
+\begin{teorema}[Altezza di un heap di $n$ nodi]
+	Un albero binario quasi completo di $n$ nodi ha altezza
+	$h = \lfloor \lg n \rfloor$.
+\end{teorema}
+
+\begin{proof}
+	Vale $2^h \le n < 2^{h+1}$. Applicando $\lg$: $h \le \lg n < h+1$,
+	quindi $h = \lfloor \lg n \rfloor$.
+\end{proof}
+
+\begin{esempio}[Altezza con $n=10$]
+	$h = \lfloor \lg 10 \rfloor = \lfloor 3{,}32 \rfloor = 3$.
+\end{esempio}
+
+\begin{nota}
+	Quasi tutte le operazioni fondamentali sugli heap sono eseguite in
+	un tempo proporzionale all'altezza dell'albero, quindi $O(\lg n)$.
+\end{nota}
+
+\subsubsection{Operazioni fondamentali sullo heap}
+
+Sono 6 le operazioni fondamentali:
+\begin{enumerate}
+	\item \textsc{BuildMaxHeap} — genera un max-heap da un array
+	generico in tempo $O(n)$;
+	\item \textsc{MaxHeapify} — ripristina la proprietà di max-heap
+	quando a un elemento viene diminuito il valore; tempo
+	$O(\lg n)$ (necessaria a \textsc{BuildMaxHeap});
+	\item \textsc{MaxHeapInsert}, \textsc{HeapExtractMax},
+	\textsc{HeapIncreaseKey} e \textsc{HeapMax} — consentono di
+	usare uno heap per realizzare una coda di priorità; complessità
+	$O(\lg n)$ tranne \textsc{HeapMax} che è $O(1)$.
+\end{enumerate}
+
+% ----------------------------------------------------------------
+\subsection{MaxHeapify}
+
+\begin{softnote}
+	\textsc{MaxHeapify} è l'operazione di base: dato un nodo $i$ il cui
+	valore è stato diminuito, ``fa scendere'' $A[i]$ fino alla posizione
+	corretta ripristinando la proprietà di max-heap nel sottoalbero
+	radicato in $i$.
+\end{softnote}
+
+\paragraph{Precondizione.}
+I sottoalberi radicati in $\textsc{Left}(i)$ e $\textsc{Right}(i)$
+sono già max-heap; la proprietà può essere violata solo nel nodo $i$.
+
+\begin{algorithm}[H]
+	\caption{\textsc{MaxHeapify}$(A, i)$}
+	\KwIn{Array $A$, indice $i$; sottoalberi di $\textsc{Left}(i)$ e
+		$\textsc{Right}(i)$ sono max-heap}
+	\KwOut{$A$ con la proprietà di max-heap ristabilita nel sottoalbero
+		radicato in $i$}
+	$l \gets \textsc{Left}(i)$\;
+	$\mathit{max} \gets (l \le A.\mathit{heapSize}\ \KwAnd\ A[l] > A[i])
+	\mathbin{?}\ l : i$\tcp*{Figlio sx vs.\ radice}
+	$r \gets \textsc{Right}(i)$\;
+	\If{$r \le A.\mathit{heapSize}$ \KwAnd $A[r] > A[\mathit{max}]$}{
+		$\mathit{max} \gets r$\;
+	}
+	\If{$\mathit{max} \ne i$}{
+		scambia $A[i]$ con $A[\mathit{max}]$\;
+		$\textsc{MaxHeapify}(A, \mathit{max})$\tcp*{Ricorsione sul figlio}
+	}
+\end{algorithm}
+
+\subsubsection{Analisi di complessità di MaxHeapify}
+
+Sia $n$ il numero di nodi del sottoalbero da sistemare.
+
+\paragraph{Ricorrenza.}
+\textsc{MaxHeapify} esegue $\Theta(1)$ operazioni più una sola chiamata
+ricorsiva sul sottoalbero più grande:
+\[
+T(n) \le T\!\left(\tfrac{2}{3}n\right) + \Theta(1).
+\]
+
+\paragraph{Giustificazione del fattore $\frac{2}{3}$.}
+Nel caso peggiore l'ultimo livello dell'albero è riempito esattamente
+a metà: il sottoalbero sinistro ha un livello in più del destro. Se
+$h$ è l'altezza della radice, il sottoalbero sinistro (completo) ha
+$2^h - 1$ nodi, quello destro (completo) $2^{h-1} - 1$ nodi e
+il totale è $n = 3 \cdot 2^{h-1} - 1$. La proporzione del sottoalbero
+sinistro è:
+\[
+\frac{2^h - 1}{3 \cdot 2^{h-1} - 1}
+\;\le\; \frac{2^h}{3 \cdot 2^{h-1}}
+= \frac{2}{3}.
+\]
+
+\paragraph{Soluzione.}
+Applicando il Teorema dell'Esperto (caso 2), la ricorrenza
+$T(n) \le T\!\left(\alpha n\right) + \Theta(1)$ ha soluzione
+$T(n) = O(\lg n)$ per qualsiasi $\alpha < 1$:
+\[
+T_{\textsc{MaxHeapify}}(n) = O(\lg n) = O(h).
+\]
+
+\begin{hardnote}
+	\textbf{Caso peggiore concreto:} un elemento posto alla radice deve
+	scendere fino a una foglia, eseguendo $\lfloor \lg n \rfloor$ chiamate
+	ricorsive. Quindi la complessità è anche $\Omega(\lg n)$, cioè
+	$\Theta(\lg n)$ nel caso peggiore.
+\end{hardnote}
+
+% ----------------------------------------------------------------
+\subsection{BuildMaxHeap}
+
+\begin{softnote}
+	Per trasformare un array generico in un max-heap si osserva che
+	tutti gli elementi in $A[\lfloor n/2 \rfloor + 1 : n]$ sono
+	\textbf{foglie}, quindi già heap di un elemento. Basta applicare
+	\textsc{MaxHeapify} a tutti i nodi interni, risalendo dall'ultimo
+	verso la radice.
+\end{softnote}
+
+\begin{algorithm}[H]
+	\caption{\textsc{BuildMaxHeap}$(A)$}
+	\KwIn{Array $A$ di $n$ elementi}
+	\KwOut{$A$ riordinato come max-heap}
+	$A.\mathit{heapSize} \gets A.\mathit{length}$\;
+	\For{$i \gets \lfloor A.\mathit{length}/2 \rfloor$ \KwTo $1$}{
+		$\textsc{MaxHeapify}(A, i)$\;
+	}
+\end{algorithm}
+
+\subsubsection{Correttezza di BuildMaxHeap}
+
+\begin{definizione}[Invariante di BuildMaxHeap]
+	All'inizio di ogni iterazione del ciclo \texttt{for}, ogni nodo di
+	indice $i+1, \ldots, n$ è la radice di un max-heap.
+\end{definizione}
+
+\begin{proof}
+	\begin{enumerate}
+		\item \textbf{Inizializzazione:} prima del I ciclo, $i = \lfloor n/2
+		\rfloor$. Tutti i nodi successivi sono foglie, dunque radici di
+		max-heap di un solo elemento. \checkmark
+		\item \textbf{Conservazione:} i figli del nodo $i$ hanno indice
+		maggiore di $i$, quindi per l'invariante sono radici di
+		max-heap. \textsc{MaxHeapify}$(A, i)$ ripristina la proprietà
+		nel sottoalbero radicato in $i$, garantendo che all'iterazione
+		$i-1$ i nodi $i, \ldots, n$ siano tutti radici di max-heap.
+		\checkmark
+		\item \textbf{Conclusione:} alla fine del ciclo $i = 0$, quindi il
+		nodo 1 è la radice di un max-heap che comprende tutti i nodi da
+		1 a $n$: $A$ è un max-heap. \checkmark
+	\end{enumerate}
+\end{proof}
+
+\subsubsection{Complessità di BuildMaxHeap}
+
+\begin{softnote}
+	Una stima immediata è $O(n \lg n)$ (si chiama \textsc{MaxHeapify}
+	$n/2$ volte, ciascuna $O(\lg n)$). Ma si può dimostrare un limite
+	più stretto: $O(n)$.
+\end{softnote}
+
+Per ogni altezza $h'$ con $0 \le h' \le \lfloor \lg n \rfloor$,
+il numero di nodi ad altezza $h'$ è al più
+$n_{h'} = \lceil n / 2^{h'+1} \rceil$.
+
+\begin{proof}[Dimostrazione per induzione]
+	Le foglie ($h'=0$) sono $\lceil n/2 \rceil = \lceil n/2^{0+1} \rceil$.
+	Se $n_{h'-1} \le \lceil n/2^{h'} \rceil$, allora
+	$n_{h'} = \lceil n_{h'-1}/2 \rceil \le \lceil n/2^{h'+1} \rceil$.
+\end{proof}
+
+\textsc{MaxHeapify} usa tempo $O(h')$ per ciascun nodo ad altezza
+$h'$. Il costo totale è:
+\[
+\sum_{h'=1}^{\lfloor \lg n \rfloor}
+\left\lceil \frac{n}{2^{h'+1}} \right\rceil O(h')
+\;\le\;
+O\!\left(n \sum_{h'=0}^{\lfloor \lg n \rfloor} \frac{h'}{2^{h'}}
+\right)
+\;=\;
+O\!\left(n \cdot \frac{1/2}{(1-1/2)^2}\right)
+= O(n).
+\]
+
+\begin{nota}
+	Si usa la somma della serie $\sum_{h'=0}^{\infty} h' x^{h'} =
+	x/(1-x)^2$ con $x = 1/2$, ottenendo il valore finito 2.
+\end{nota}
+
+\begin{teorema}[Complessità di BuildMaxHeap]
+	\[
+	T_{\textsc{BuildMaxHeap}}(n) = O(n).
+	\]
+\end{teorema}
+
+% ----------------------------------------------------------------
+\subsection{Algoritmo HeapSort}
+
+\begin{softnote}
+	Una volta costruito il max-heap, l'elemento massimo si trova sempre
+	in $A[1]$. L'idea è estrarlo iterativamente: si scambia la radice con
+	l'ultimo elemento, si riduce l'\textit{heapSize} di 1 e si ripristina
+	la proprietà con \textsc{MaxHeapify}. Al termine l'array è ordinato in
+	modo crescente.
+\end{softnote}
+
+\begin{algorithm}[H]
+	\caption{\textsc{HeapSort}$(A)$}
+	\KwIn{Array $A$ di $n$ elementi}
+	\KwOut{$A$ ordinato in loco}
+	$\textsc{BuildMaxHeap}(A)$\;
+	\For{$i \gets A.\mathit{length}$ \KwTo $2$}{
+		scambia $A[1]$ con $A[i]$\;
+		$A.\mathit{heapSize} \gets A.\mathit{heapSize} - 1$\;
+		$\textsc{MaxHeapify}(A, 1)$\;
+	}
+\end{algorithm}
+
+\subsubsection{Correttezza di HeapSort}
+
+\begin{definizione}[Invariante di HeapSort]
+	All'inizio di ogni iterazione del ciclo \texttt{for}, il sottoarray
+	$A[1:i]$ è un max-heap contenente gli $i$ elementi più piccoli di
+	$A[1:n]$, e il sottoarray $A[i+1:n]$ contiene gli $n-i$ elementi più
+	grandi di $A[1:n]$, ordinati in modo crescente.
+\end{definizione}
+
+\subsubsection{Complessità di HeapSort}
+
+\begin{itemize}
+	\item \textsc{BuildMaxHeap}: $O(n)$.
+	\item Ciclo \texttt{for}: $n-1$ chiamate a \textsc{MaxHeapify},
+	ciascuna $O(\lg n)$.
+\end{itemize}
+
+\[
+T_{\textsc{HeapSort}}(n) = O(n) + (n-1)\,O(\lg n) = O(n \lg n).
+\]
+
+\begin{center}
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Caso} & \textbf{Input} & \textbf{Complessità} \\
+		\midrule
+		Peggiore & qualsiasi & $O(n \lg n)$ \\
+		Medio    & qualsiasi & $O(n \lg n)$ \\
+		Migliore & qualsiasi & $O(n \lg n)$ \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{hardnote}
+	\textbf{Da ricordare all'esame:} HeapSort è $O(n \lg n)$ in tutti i
+	casi e ordina sul posto. Nel caso medio è più lento di QuickSort
+	(costanti peggiori), ma non soffre del caso peggiore $\Theta(n^2)$ di
+	QuickSort non randomizzato.
+\end{hardnote}
+
+% ----------------------------------------------------------------
+\subsection{Code di Priorità}
+
+\begin{softnote}
+	Lo heap non serve solo per ordinare: è la struttura dati ideale per
+	realizzare una \textbf{coda di priorità}, che consente di estrarre
+	sempre l'elemento con priorità massima (o minima) in modo efficiente.
+\end{softnote}
+
+\begin{definizione}[Coda di max-priorità]
+	Una \textbf{coda di max-priorità} è una struttura dati che gestisce
+	un insieme $S$ di elementi, ciascuno associato a un valore detto
+	\emph{chiave} o \emph{priorità}, in modo da estrarre l'elemento di
+	priorità massima o modificare la priorità di un elemento nel modo più
+	efficiente possibile. Analogamente si definisce la coda di
+	\textbf{min-priorità}.
+\end{definizione}
+
+\subsubsection{Operazioni fondamentali}
+
+Se $x$ è un elemento, $x.\mathit{key}$ è la sua chiave/priorità.
+Le operazioni fondamentali sono:
+\begin{itemize}
+	\item \textbf{Insert}$(S, x)$: inserisce $x$ in $S$.
+	\item \textbf{Max}$(S)$: restituisce l'elemento di $S$ con priorità
+	massima.
+	\item \textbf{ExtractMax}$(S)$: rimuove e restituisce l'elemento con
+	priorità massima.
+	\item \textbf{IncreaseKey}$(S, x, k)$: aumenta la chiave di $x$ a
+	$k$ (con $k \ge x.\mathit{key}$).
+\end{itemize}
+
+\begin{nota}
+	Se si vuole \textbf{diminuire} il valore di un elemento, è sufficiente
+	farlo direttamente e poi invocare \textsc{MaxHeapify} per ripristinare
+	la proprietà di max-heap.
+\end{nota}
+
+\subsubsection{Implementazione delle operazioni}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Max}$(S)$}
+	\KwIn{$S$ coda di max-priorità}
+	\KwOut{Elemento con priorità massima}
+	\Return $S[1]$\;
+\end{algorithm}
+
+Complessità: $O(1)$.
+
+\begin{algorithm}[H]
+	\caption{\textsc{ExtractMax}$(S)$}
+	\KwIn{$S$ coda di max-priorità}
+	\KwOut{Elemento con priorità massima, rimosso da $S$}
+	\If{$S.\mathit{heapSize} < 1$}{\Return \texttt{"Coda vuota!"}\;}
+	$\mathit{max} \gets S[1]$\;
+	$S[1] \gets S[S.\mathit{heapSize}]$\;
+	$S.\mathit{heapSize} \gets S.\mathit{heapSize} - 1$\;
+	$\textsc{MaxHeapify}(S, 1)$\;
+	\Return $\mathit{max}$\;
+\end{algorithm}
+
+Complessità: $O(\lg n)$.
+
+\begin{algorithm}[H]
+	\caption{\textsc{IncreaseKey}$(S, i, \mathit{key})$}
+	\KwIn{$S$ coda di max-priorità, posizione $i$, nuovo valore
+		$\mathit{key}$}
+	\KwOut{Priorità $S[i].\mathit{key}$ aggiornata in $S$}
+	\If{$\mathit{key} < S[i].\mathit{key}$}{
+		\Return \texttt{"Errore: nuova priorità minore dell'attuale"}\;
+	}
+	$S[i].\mathit{key} \gets \mathit{key}$\;
+	\While{$i > 1$ \KwAnd $S[\textsc{Parent}(i)].\mathit{key}
+		< S[i].\mathit{key}$}{
+		scambia $S[i]$ con $S[\textsc{Parent}(i)]$\;
+		$i \gets \textsc{Parent}(i)$\;
+	}
+\end{algorithm}
+
+\begin{softnote}
+	Se la nuova chiave rompe la proprietà di max-heap, l'elemento viene
+	scambiato con il genitore fino a trovare la posizione corretta
+	(risalita verso la radice).
+\end{softnote}
+
+Complessità: $O(\lg n)$ (al più si sale dalla foglia più profonda
+alla radice).
+
+\begin{algorithm}[H]
+	\caption{\textsc{Insert}$(S, x)$}
+	\KwIn{$S$ coda di max-priorità, nuovo elemento $x$}
+	\KwOut{$S$ aggiornato con $x$}
+	$S.\mathit{heapSize} \gets S.\mathit{heapSize} + 1$\;
+	$\mathit{key} \gets x.\mathit{key}$\;
+	$x.\mathit{key} \gets -\infty$\tcp*{Inserisce in fondo con priorità minima}
+	$S[S.\mathit{heapSize}] \gets x$\;
+	$\textsc{IncreaseKey}(S,\, S.\mathit{heapSize},\, \mathit{key})$\tcp*{Risale alla posizione corretta}
+\end{algorithm}
+
+Complessità: $O(\lg n)$ (l'elemento potrebbe risalire dalla foglia
+più profonda alla radice).
+
+\begin{center}
+	\begin{tabular}{ll}
+		\toprule
+		\textbf{Operazione} & \textbf{Complessità} \\
+		\midrule
+		\textsc{Max}           & $O(1)$      \\
+		\textsc{ExtractMax}    & $O(\lg n)$  \\
+		\textsc{IncreaseKey}   & $O(\lg n)$  \\
+		\textsc{Insert}        & $O(\lg n)$  \\
+		\textsc{BuildMaxHeap}  & $O(n)$      \\
+		\textsc{MaxHeapify}    & $O(\lg n)$  \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+
+
+% ============================================================
