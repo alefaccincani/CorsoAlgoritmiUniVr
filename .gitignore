@@ -1,0 +1,39 @@
+# LaTeX auxiliary files
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.idx
+*.ilg
+*.ind
+*.glg
+*.glo
+*.gls
+*.acn
+*.acr
+*.alg
+*.ist
+*.xdy
+*.nav
+*.snm
+*.vrb
+*.dvi
+*.ps
+
+# MacOS
+.DS_Store
+
+# Editor
+*.swp
+*.swo
+~*
