@@ -532,6 +532,39 @@ Dato $A[1 \ldots n]$, MergeSort si invoca con
 	eliminando i due cicli \textbf{while} finali.
 \end{nota}
 
+\begin{esempio}[{MergeSort su $A=[5,2,4,6,1,3]$}]
+	\begin{center}
+		\begin{tikzpicture}[
+			level distance=13mm,
+			level 1/.style={sibling distance=56mm},
+			level 2/.style={sibling distance=28mm},
+			level 3/.style={sibling distance=14mm},
+			every node/.style={draw, rounded corners, font=\footnotesize,
+				minimum width=1cm, inner sep=2pt}
+			]
+			\node {$[1,2,3,4,5,6]$}
+			child { node {$[2,4,5]$}
+				child { node {$[2,5]$}
+					child { node {$[5]$} }
+					child { node {$[2]$} }
+				}
+				child { node {$[4]$} }
+			}
+			child { node {$[1,3,6]$}
+				child { node {$[1]$} }
+				child { node {$[3,6]$}
+					child { node {$[6]$} }
+					child { node {$[3]$} }
+				}
+			};
+		\end{tikzpicture}
+	\end{center}
+	Le foglie sono i sotto-array di dimensione 1 (già ordinati).
+	La fase di \emph{merge} risale l'albero dal basso verso la radice,
+	fondendo i fratelli a ogni livello. Con $n=6$ ci sono $\lceil\lg 6\rceil
+	= 3$ livelli di merge, ognuno di costo $\Theta(n)$.
+\end{esempio}
+
 
 \subsubsection{Correttezza: Invariante di ciclo di Merge}
 

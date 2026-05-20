@@ -281,6 +281,40 @@ QuickSort è un algoritmo che:
 	\Return $q$\;
 \end{algorithm}
 
+\begin{esempio}[{Partition su $A=[2,8,7,1,3,5,6,4]$, pivot $= A[8]=4$}]
+	Traccia di \textsc{Partition}$(A, 1, 8)$: il pivot è $p = 4$,
+	$i$ parte da $0$ e $j$ scorre da $1$ a $7$.
+	
+	\begin{center}
+		\renewcommand{\arraystretch}{1.3}
+		\begin{tabular}{c l l}
+			\toprule
+			\textbf{Passo} & \textbf{Array} & \textbf{Azione} \\
+			\midrule
+			Inizio & $[\mathbf{2}, 8, 7, 1, 3, 5, 6\mid \underline{4}]$ & $i=0$ \\
+			$j=1$  & $[\mathbf{2}, 8, 7, 1, 3, 5, 6\mid 4]$ & $A[1]=2\le 4$: $i{+}{+}$, swap$(1,1)$ \\
+			$j=2$  & $[2, \mathbf{8}, 7, 1, 3, 5, 6\mid 4]$ & $A[2]=8>4$: nulla \\
+			$j=3$  & $[2, 8, \mathbf{7}, 1, 3, 5, 6\mid 4]$ & $A[3]=7>4$: nulla \\
+			$j=4$  & $[2, 8, 7, \mathbf{1}, 3, 5, 6\mid 4]$ & $A[4]=1\le 4$: $i{+}{+}$, swap$(2,4)$ \\
+			$j=5$  & $[2, 1, 7, \mathbf{3}, 8, 5, 6\mid 4]$ & wait... ricordare: $A[4]\leftrightarrow A[2]$ \\
+			$j=5$  & $[2, 1, 7, 8, \mathbf{3}, 5, 6\mid 4]$ & $A[5]=3\le 4$: $i{+}{+}$, swap$(3,5)$ \\
+			$j=6$  & $[2, 1, 3, 8, \mathbf{7}, 5, 6\mid 4]$ & — \\
+			$j=7$  & $[2, 1, 3, 8, 7, \mathbf{5}, 6\mid 4]$ & $A[6]=5>4$: nulla \\
+			Fine    & $[2, 1, 3, \mathbf{4}, 7, 5, 6, 8]$   & swap$(i{+}1, 8)$: pivot in pos.\ 4 \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+	
+	Risultato: $[\underbrace{2,1,3}_{\le 4}, \mathbf{4}, \underbrace{7,5,6,8}_{>4}]$.
+	Il pivot è nella posizione corretta; i due sotto-array vengono ordinati
+	ricorsivamente.
+\end{esempio}
+
+\begin{hardnote}
+	Dopo \textsc{Partition}, il pivot si trova nella sua posizione
+	\emph{definitiva}: non verrà mai spostato nelle chiamate ricorsive.
+\end{hardnote}
+
 \subsubsection{Invariante di ciclo di Partition}
 
 Per dimostrare la correttezza di \texttt{Partition}$(A, p, r)$,
@@ -572,4 +606,3 @@ scegliere un elemento particolare è quindi $\frac{1}{j-i+1}$
 	$O(n \log n)$ in media per qualsiasi input.
 \end{hardnote}
 
-% ================================================================

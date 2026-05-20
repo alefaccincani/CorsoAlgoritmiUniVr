@@ -1,5 +1,3 @@
-% === INSERIRE DOPO l'ultima \section{} già presente nel documento ===
-
 % ============================================================
 \section{Hashing e Tabelle Hash}
 % ============================================================
@@ -315,6 +313,57 @@ Le operazioni sono:
 	$O(1)$.
 \end{nota}
 
+\begin{esempio}[Tabella hash con concatenamento, $m=7$]
+	Funzione hash: $h(k) = k \bmod 7$.
+	Chiavi da inserire: $\{10, 22, 31, 4, 15, 28, 17, 88, 59\}$.
+	
+	\begin{center}
+		\begin{tikzpicture}[
+			slot/.style={draw, minimum width=1.2cm, minimum height=0.6cm, font=\small},
+			node distance=0pt
+			]
+			% Colonna degli slot
+			\foreach \i in {0,...,6}{
+				\node[slot] (s\i) at (0, -\i*0.7) {\i};
+			}
+			% Catene
+			% slot 0: 28
+			\node[slot] (n28) at (1.8,-0) {28};
+			\draw[->] (s0.east) -- (n28.west);
+			
+			% slot 1: 22 -> 15 -> 88
+			\node[slot] (n22) at (1.8,-0.7) {22};
+			\node[slot] (n15) at (3.3,-0.7) {15};
+			\node[slot] (n88) at (4.8,-0.7) {88};
+			\draw[->] (s1.east) -- (n22.west);
+			\draw[->] (n22.east) -- (n15.west);
+			\draw[->] (n15.east) -- (n88.west);
+			
+			% slot 2: NIL
+			% slot 3: 10 -> 31
+			\node[slot] (n10) at (1.8,-2.1) {10};
+			\node[slot] (n31) at (3.3,-2.1) {31};
+			\draw[->] (s3.east) -- (n10.west);
+			\draw[->] (n10.east) -- (n31.west);
+			
+			% slot 4: 4
+			\node[slot] (n4) at (1.8,-2.8) {4};
+			\draw[->] (s4.east) -- (n4.west);
+			
+			% slot 5: NIL
+			% slot 6: 17 -> 59
+			\node[slot] (n17) at (1.8,-4.2) {17};
+			\node[slot] (n59) at (3.3,-4.2) {59};
+			\draw[->] (s6.east) -- (n17.west);
+			\draw[->] (n17.east) -- (n59.west);
+		\end{tikzpicture}
+	\end{center}
+	
+	Il \textbf{fattore di carico} è $\alpha = n/m = 9/7 \approx 1.3$.
+	La ricerca di una chiave richiede in media $O(1 + \alpha) = O(1)$ se
+	$m = \Theta(n)$.
+\end{esempio}
+
 % ------------------------------------------------------------
 \subsubsection{Risoluzione mediante indirizzamento aperto}
 % ------------------------------------------------------------
@@ -457,3 +506,4 @@ degradano le prestazioni).
 	l'ipotesi di hashing con permutazioni indipendenti, le permutazioni
 	prodotte ne hanno molte caratteristiche.
 \end{nota}
+

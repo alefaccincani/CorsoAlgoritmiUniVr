@@ -1,0 +1,531 @@
+% === INSERIRE DOPO l'ultima \section{} esistente (fine del documento, prima di \end{document}) ===
+
+% ============================================================
+\section{Programmazione Dinamica}
+% Slide: s09_1_programmazioneDinamica-handout.pdf
+% Fonte: Capitolo 14 CLRS — Prof. Roberto Posenato, A.A. 2025/2026
+% ============================================================
+
+\begin{softnote}
+La \textbf{programmazione dinamica} è un paradigma per la progettazione di algoritmi
+che risolvono problemi di ottimizzazione. Introdotta da Bellman (1957), si applica
+quando il problema presenta \emph{sottostruttura ottima} e \emph{sottoproblemi
+	sovrapposti}: la soluzione ottima contiene le soluzioni ottime dei sottoproblemi, e
+un approccio ricorsivo naïve risolverebbe gli stessi sottoproblemi più volte,
+con costo esponenziale.
+\end{softnote}
+
+% -------------------------------------------------------
+\subsection{Idea generale}
+% -------------------------------------------------------
+
+La tecnica si articola in \textbf{4 fasi}:
+
+\begin{enumerate}
+\item \textbf{Caratterizzazione} della struttura di una soluzione ottima.
+\item \textbf{Definizione ricorsiva} del valore di una soluzione ottima.
+\item \textbf{Calcolo} del valore secondo uno schema \emph{bottom-up}.
+\item \textbf{Costruzione} della soluzione ottima dalle informazioni calcolate.
+\end{enumerate}
+
+In termini moderni, la programmazione dinamica descrive il problema come un insieme
+di \textbf{stati} (o sottoproblemi). Per ogni stato si definiscono:
+\begin{itemize}
+\item i \emph{casi base};
+\item le \emph{transizioni}: come combinare stati più piccoli per ottenere il
+valore dello stato corrente;
+\item l'\emph{ordine di calcolo}, che deve rispettare le dipendenze tra stati.
+\end{itemize}
+
+Il costo totale dell'algoritmo è spesso:
+\[
+\#\text{stati} \;\times\; \text{costo per calcolare una transizione.}
+\]
+
+La stessa ricorrenza può essere implementata con una tabella \emph{bottom-up}
+(tabulazione) oppure con ricorsione e \emph{memoization}.
+
+\begin{nota}
+\paragraph{Quando si usa la programmazione dinamica.}
+Si usa quando:
+\begin{itemize}
+	\item una soluzione ottima contiene al suo interno le soluzioni ottime dei
+	sottoproblemi (\textbf{sottostruttura ottima});
+	\item un algoritmo ricorsivo richiederebbe di risolvere più volte gli stessi
+	sottoproblemi (\textbf{sottoproblemi sovrapposti});
+	\item i sottoproblemi possono essere descritti da un numero limitato di parametri,
+	cioè da uno \textbf{stato}.
+\end{itemize}
+\end{nota}
+
+\subsubsection{Confronto con Divide et Impera}
+
+\begin{center}
+\begin{tabular}{lll}
+	\toprule
+	\textbf{Proprietà} & \textbf{Tabulazione (bottom-up)} & \textbf{Divide et Impera} \\
+	\midrule
+	Tipo di risoluzione   & bottom-up   & top-down \\
+	Tipo di programma     & iterativa   & ricorsiva \\
+	Uso della memoria     & esplicito per i risultati & implicito \\
+	Applicazione ideale   & sottoistanze non disgiunte & sottoistanze disgiunte \\
+	\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{nota}
+La programmazione dinamica può essere implementata anche top-down tramite
+\emph{memoization}, mantenendo la struttura ricorsiva del divide et impera ma
+riutilizzando i risultati già calcolati.
+\end{nota}
+
+% -------------------------------------------------------
+\subsection{Esempi di applicazione: confronto di sequenze DNA}
+% -------------------------------------------------------
+
+\begin{softnote}
+Una sequenza DNA si rappresenta come una stringa sull'alfabeto $\{A, C, G, T\}$.
+Il confronto tra due sequenze può rivelare quanto siano correlati i due organismi
+di origine. Esistono diversi criteri di confronto:
+\begin{itemize}
+	\item verificare se una sequenza è sottostringa dell'altra;
+	\item determinare il numero minimo di modifiche per trasformare una nell'altra
+	(distanza di edit);
+	\item trovare una \emph{sottosequenza comune} di lunghezza massima.
+\end{itemize}
+\end{softnote}
+
+% -------------------------------------------------------
+\subsection{Massima Sottosequenza Comune (LCS)}
+% -------------------------------------------------------
+
+\begin{definizione}[Sottosequenza]
+Data una sequenza $\langle a_1, \ldots, a_n \rangle$, una \textbf{sottosequenza} è un
+sottoinsieme ordinato $\langle a_{i_1}, a_{i_2}, \ldots, a_{i_k} \rangle$ dove la
+sequenza di indici $\langle i_1, i_2, \ldots, i_k \rangle$ è strettamente crescente.
+\end{definizione}
+
+\begin{esempio}[Sottosequenza]
+Data $X = \langle A, B, C, B, D, A, B \rangle$, la sequenza
+$Z = \langle B, C, D, B \rangle$ è sottosequenza di $X$ perché i suoi indici in $X$
+formano la sequenza crescente $\langle 2, 3, 5, 7 \rangle$.
+\end{esempio}
+
+\begin{definizione}[Sottosequenza comune — LCS]
+Date due sequenze $X$ e $Y$, una sequenza $Z$ è \textbf{sottosequenza comune} di $X$
+e $Y$ se è sottosequenza di entrambe. La \textbf{Massima Sottosequenza Comune}
+(\emph{Longest Common Subsequence}, LCS) è la sottosequenza comune di lunghezza
+massima.
+\end{definizione}
+
+\begin{esempio}[LCS (CLRS)]
+Sia $X = \langle A, B, C, B, D, A, B \rangle$ e $Y = \langle B, D, C, A, B, A \rangle$.
+La sequenza $\langle B, C, A \rangle$ è una sottosequenza comune; la sottosequenza
+comune più lunga è $\langle B, C, B, A \rangle$ (lunghezza 4).
+\end{esempio}
+
+\paragraph{Problema formale.}
+\textbf{Input:} due sequenze $X$ e $Y$ sullo stesso alfabeto.
+\textbf{Output:} la sottosequenza comune di lunghezza massima.
+
+\subsubsection{Fase 1 — Sottostruttura ottima}
+
+Sia $X_i = \langle x_1, \ldots, x_i \rangle$ l'$i$-esimo prefisso di $X$.
+
+\begin{teorema}[Sottostruttura ottima della LCS]
+Dati $X = \langle x_1, \ldots, x_m \rangle$, $Y = \langle y_1, \ldots, y_n \rangle$
+e una LCS $Z = \langle z_1, \ldots, z_k \rangle$:
+\begin{enumerate}
+	\item Se $x_m = y_n$, allora $z_k = x_m$ e $Z_{k-1}$ è una LCS di $X_{m-1}$ e
+	$Y_{n-1}$.
+	\item Se $x_m \neq y_n$ e $z_k \neq x_m$, allora $Z$ è una LCS di $X_{m-1}$ e $Y$.
+	\item Se $x_m \neq y_n$ e $z_k \neq y_n$, allora $Z$ è una LCS di $X$ e $Y_{n-1}$.
+\end{enumerate}
+\end{teorema}
+
+\begin{proof}
+\textbf{Punto 1.} Se $x_m = y_n$ ma $Z$ non termina con tale carattere, si può
+sostituire l'ultimo elemento di $Z$ con $x_m$ ottenendo una LCS che termina con
+$x_m = y_n$. Tolto l'ultimo carattere, la parte rimanente è una LCS di $X_{m-1}$ e
+$Y_{n-1}$.
+
+\textbf{Punto 2.} Se $z_k \neq x_m$, allora $Z$ è una LCS di $X_{m-1}$ e $Y$: se
+esistesse una sottosequenza comune $W$ di $X_{m-1}$ e $Y$ con $|W| > k$, allora $W$
+sarebbe anche sottosequenza comune di $X$ e $Y$, contraddicendo l'ipotesi.
+
+\textbf{Punto 3.} Dimostrazione simmetrica al punto 2.
+\end{proof}
+
+\subsubsection{Fase 2 — Definizione ricorsiva del valore}
+
+Sia $c[i,j]$ la lunghezza di una LCS di $X_i$ e $Y_j$.
+La soluzione del problema originale è $c[m, n]$.
+La ricorrenza è:
+
+\[
+c[i,j] =
+\begin{cases}
+0 & \text{se } i = 0 \text{ o } j = 0 \\
+c[i-1,\, j-1] + 1 & \text{se } i,j > 0 \text{ e } x_i = y_j \\
+\max\{c[i,\, j-1],\; c[i-1,\, j]\} & \text{se } i,j > 0 \text{ e } x_i \neq y_j
+\end{cases}
+\]
+
+\begin{hardnote}
+Perché non basta il Divide et Impera? Con $i = j = n$, il numero di chiamate
+ricorsive nel caso peggiore vale $T(i,j) = 2\binom{i+j}{i} - 1$, valore
+\textbf{esponenziale} quando $i$ e $j$ crescono insieme. I sottoproblemi distinti
+sono invece soltanto $\Theta(nm)$, uno per ogni coppia di prefissi $(X_i, Y_j)$.
+\end{hardnote}
+
+\subsubsection{Fase 3 — Calcolo bottom-up: algoritmo \textsc{LCS-Length}}
+
+\begin{algorithm}[H]
+\caption{\textsc{LCS-Length}$(X, Y)$}
+\KwIn{$X = \langle x_1,\ldots,x_m\rangle$, $Y = \langle y_1,\ldots,y_n\rangle$}
+\KwOut{Tabelle $c[0{:}m,\,0{:}n]$ e $b[1{:}m,\,1{:}n]$}
+
+Siano $b[1{:}m,\,1{:}n]$ e $c[0{:}m,\,0{:}n]$ due tabelle inizializzate a $0$
+\tcp*{$b$ serve per ricostruire la LCS}
+
+\For{$i \leftarrow 1$ \KwTo $m$}{
+	\For{$j \leftarrow 1$ \KwTo $n$}{
+		\eIf{$x_i = y_j$}{
+			$c[i,j] \leftarrow c[i-1,j-1] + 1$\;
+			$b[i,j] \leftarrow \text{``}\nwarrow\text{''}$\;
+		}{
+			\eIf{$c[i-1,j] \geq c[i,j-1]$}{
+				$c[i,j] \leftarrow c[i-1,j]$\;
+				$b[i,j] \leftarrow \text{``}\uparrow\text{''}$\;
+			}{
+				$c[i,j] \leftarrow c[i,j-1]$\;
+				$b[i,j] \leftarrow \text{``}\leftarrow\text{''}$\;
+			}
+		}
+	}
+}
+\Return{$c$, $b$}
+\end{algorithm}
+
+Il tempo di computazione è $\Theta(nm)$.
+
+\subsubsection{Fase 4 — Ricostruzione: algoritmo \textsc{Print-LCS}}
+
+\begin{algorithm}[H]
+\caption{\textsc{Print-LCS}$(b, X, i, j)$}
+\KwIn{Matrice $b$; sequenza $X$; indici correnti $i$, $j$}
+
+\If{$i = 0$ \KwAnd $j = 0$}{\Return}
+
+\eIf{$b[i,j] = \text{``}\nwarrow\text{''}$}{
+	\textsc{Print-LCS}$(b, X, i-1, j-1)$\;
+	stampa $x_i$\;
+}{
+	\eIf{$b[i,j] = \text{``}\uparrow\text{''}$}{
+		\textsc{Print-LCS}$(b, X, i-1, j)$\;
+	}{
+		\textsc{Print-LCS}$(b, X, i, j-1)$\;
+	}
+}
+\end{algorithm}
+
+Si invoca come \textsc{Print-LCS}$(b, X, |X|, |Y|)$. Il tempo di computazione è
+$O(n + m)$.
+
+\begin{esempio}[LCS su ABCBDAB / BDCABA]
+Per $X = \langle A,B,C,B,D,A,B \rangle$ e $Y = \langle B,D,C,A,B,A \rangle$,
+l'algoritmo restituisce la LCS $\langle B, C, B, A \rangle$ di lunghezza 4,
+leggendo le frecce $\nwarrow$ nella tabella $b$.
+\end{esempio}
+
+% -------------------------------------------------------
+\subsection{Massima Sottosequenza Crescente}
+% -------------------------------------------------------
+
+\begin{definizione}[Sottosequenza crescente]
+Una sottosequenza $a_{i_1}, a_{i_2}, \ldots, a_{i_k}$ di interi è
+\textbf{crescente} se $a_{i_1} < a_{i_2} < \cdots < a_{i_k}$.
+\end{definizione}
+
+\paragraph{Problema.}
+\textbf{Input:} sequenza di interi $a_1, \ldots, a_n$.
+\textbf{Output:} sottosequenza crescente di lunghezza massima.
+
+\begin{esempio}[MSC]
+La sequenza $5, 2, 8, 6, 3, 6, 9, 7$ ha massima sottosequenza crescente
+$2, 3, 6, 9$ (lunghezza 4).
+\end{esempio}
+
+\subsubsection{Riduzione a cammino massimo in un DAG}
+
+Si costruisce un DAG $G = (V, E)$ dove esiste l'arco $(i, j)$ se e solo se
+$i < j$ e $a_i < a_j$. Trovare la massima sottosequenza crescente è
+\textbf{equivalente} a trovare il cammino più lungo nel DAG.
+
+\subsubsection{Definizione ricorsiva}
+
+Sia $L(j)$ la lunghezza del cammino più lungo che termina nel nodo $j$:
+\[
+L(j) = 1 + \max\bigl(\{0\} \cup \{L(i) \mid (i,j) \in E\}\bigr).
+\]
+
+Il valore della soluzione ottima è $\max_j L(j)$.
+
+\subsubsection{Algoritmo bottom-up (versione valutativa)}
+
+\begin{algorithm}[H]
+\caption{\textsc{MSCresc-V}$(a_1, \ldots, a_n)$}
+\KwIn{Sequenza di interi $a_1, \ldots, a_n$}
+\KwOut{Lunghezza della massima sottosequenza crescente}
+
+Costruisci il DAG trasposto $G^T = (V, E^T)$ da $(a_1, \ldots, a_n)$\;
+$L \leftarrow$ array di $n$ interi \tcp*{soluzioni parziali}
+$\mathit{ottimo} \leftarrow -\infty$\;
+
+\For{$j \leftarrow 1$ \KwTo $n$}{
+	$\mathit{max} \leftarrow 0$\;
+	\For{ogni $i$ tale che $(j, i) \in E^T$}{
+		\If{$L[i] > \mathit{max}$}{$\mathit{max} \leftarrow L[i]$}
+	}
+	$L[j] \leftarrow 1 + \mathit{max}$\;
+	\If{$L[j] > \mathit{ottimo}$}{$\mathit{ottimo} \leftarrow L[j]$}
+}
+\Return{$\mathit{ottimo}$}
+\end{algorithm}
+
+\paragraph{Complessità.}
+La costruzione del grafo trasposto richiede $O(n^2)$. Il calcolo di tutti gli
+$L(j)$ richiede $O(|E|)$, con $|E| \leq \frac{n(n-1)}{2}$.
+La complessità totale è $O(n^2)$.
+
+\begin{hardnote}
+L'approccio Divide et Impera puro genera $2^{j-1}$ chiamate ricorsive per calcolare
+$L(j)$ nel caso peggiore (sequenza completamente crescente), rendendo l'algoritmo
+esponenziale. La programmazione dinamica risolve ciascuno degli $n$ stati
+esattamente una volta.
+\end{hardnote}
+
+% -------------------------------------------------------
+\subsection{String Matching Approssimato}
+% -------------------------------------------------------
+
+\begin{softnote}
+Nella ricerca approssimata di un pattern $P$ in un testo $T$ si ammettono tre tipi
+di errore: \emph{sostituzione} (caratteri corrispondenti diversi),
+\emph{gap in $P$} (un carattere di $T$ non allineato con nessun carattere di $P$),
+\emph{gap in $T$} (un carattere di $P$ non allineato con nessun carattere di $T$).
+Questo problema generalizza lo string matching esatto ed è strettamente correlato
+alla \textbf{distanza di edit} (Levenshtein).
+\end{softnote}
+
+\begin{definizione}[Occorrenza $k$-approssimata]
+Data una stringa $T$ (testo, lunghezza $n$) e una stringa $P$ (pattern,
+lunghezza $m < n$), un'\textbf{occorrenza $k$-approssimata} di $P$ in $T$ è un
+allineamento di $P$ con una sottostringa di $T$ in cui compaiono esattamente $k$
+errori dei tipi: sostituzione, gap in $P$, gap in $T$.
+\end{definizione}
+
+\paragraph{Problema formale.}
+\textbf{Input:} testo $T$ di lunghezza $n$, pattern $P$ di lunghezza $m < n$.
+\textbf{Output:} occorrenza $k$-approssimata minima (rispetto a $k$) di $P$ in $T$.
+
+\subsubsection{Definizione ricorsiva}
+
+Sia $K[i,j]$ il minimo numero di errori nell'approssimare $P[1,\ldots,i]$ con una
+sottostringa di $T[1,\ldots,j]$ che termina in posizione $j$. La soluzione ottima è
+$k = \min_j K[m, j]$.
+
+Equazione di ricorrenza unificata:
+\[
+K[i,j] = \min\bigl\{\,\mathrm{diff}(i,j) + K[i-1,j-1],\;\;
+1 + K[i-1,j],\;\;
+1 + K[i,j-1]\,\bigr\}
+\]
+dove $\mathrm{diff}(i,j) = 0$ se $P[i] = T[j]$, altrimenti $1$.
+
+\paragraph{Casi base.}
+\begin{itemize}
+\item $K[i, 0] = i$ \quad (il pattern ha $i$ caratteri in più della stringa vuota);
+\item $K[0, j] = 0$ \quad (il pattern vuoto si allinea a costo $0$ a qualunque prefisso di $T$).
+\end{itemize}
+
+\subsubsection{Algoritmo \textsc{SMA}}
+
+\begin{algorithm}[H]
+\caption{\textsc{SMA}$(T, P)$}
+\KwIn{Testo $T$, pattern $P$}
+\KwOut{(numero minimo di errori; posizione ultimo carattere dell'occorrenza in $T$)}
+
+$n \leftarrow |T|$;\; $m \leftarrow |P|$\;
+\For{$i \leftarrow 0$ \KwTo $n$}{$K[0,i] \leftarrow 0$}
+\For{$i \leftarrow 0$ \KwTo $m$}{$K[i,0] \leftarrow i$}
+
+\For{$i \leftarrow 1$ \KwTo $m$}{
+	\For{$j \leftarrow 1$ \KwTo $n$}{
+		$\mathit{diff} \leftarrow (T[j] = P[i])\ ?\ 0 : 1$\;
+		$K[i,j] \leftarrow \min\{\,\mathit{diff} + K[i-1,j-1],\;\; 1+K[i-1,j],\;\; 1+K[i,j-1]\,\}$\;
+	}
+}
+
+$\mathit{Min} \leftarrow +\infty$;\; $\mathit{pos} \leftarrow -1$\;
+\For{$j \leftarrow 1$ \KwTo $n$}{
+	\If{$K[m,j] < \mathit{Min}$}{
+		$\mathit{Min} \leftarrow K[m,j]$;\; $\mathit{pos} \leftarrow j$\;
+	}
+}
+\Return{$(\mathit{Min},\; \mathit{pos})$}
+\end{algorithm}
+
+La complessità è $\Theta(nm)$.
+
+\begin{esempio}[SMA su ``It's snowy'' / ``sunny'']
+Con $T = \texttt{It's snowy}$ e $P = \texttt{sunny}$, la tabella $K$ produce
+$\min_j K[5,j] = 3$, confermando che il pattern si abbina al testo con 3 errori.
+\end{esempio}
+
+% -------------------------------------------------------
+\subsection{Problema dello Zaino (Knapsack 0-1)}
+% -------------------------------------------------------
+
+\paragraph{Problema formale.}
+\textbf{Input:} $n$ oggetti con valore $v_i$ e peso $p_i$ (interi positivi);
+portata massima $P$.
+\textbf{Output:} vettore $x \in \{0,1\}^n$ che massimizza
+$\sum_{i=1}^n x_i v_i$ con vincolo $\sum_{i=1}^n x_i p_i \leq P$.
+
+\begin{nota}
+Questa versione è chiamata \textbf{Zaino 0-1} perché ogni oggetto o si prende
+($ x_i = 1$) o si lascia ($x_i = 0$). Esistono anche le versioni \emph{frazionaria}
+(risolvibile greedy) e \emph{con ripetizione}.
+\end{nota}
+
+\subsubsection{Sottostruttura ottima}
+
+Si considera la soluzione ottima per i primi $j$ oggetti con capacità $w$.
+\begin{itemize}
+\item Se l'oggetto $j$ \textbf{non è} nella soluzione: la soluzione è ottima per
+i primi $j-1$ oggetti con capacità $w$.
+\item Se l'oggetto $j$ \textbf{è} nella soluzione: toltolo, rimane una soluzione
+ottima per i primi $j-1$ oggetti con capacità $w - p_j$.
+\end{itemize}
+In entrambi i casi: \emph{taglia e incolla} mostra che la soluzione ottima del
+problema originale contiene la soluzione ottima del sottoproblema.
+
+\subsubsection{Definizione ricorsiva}
+
+Sia $K[j,w]$ il massimo valore ottenibile usando uno zaino di capacità $w$ e i
+primi $j$ oggetti. La soluzione è $K[n, P]$.
+
+\[
+K[j,w] =
+\begin{cases}
+0 & \text{se } j = 0 \text{ o } w = 0 \\
+K[j-1,\, w] & \text{se } p_j > w \\
+\max\!\bigl\{K[j-1,\, w],\; K[j-1,\, w-p_j]+v_j\bigr\} & \text{altrimenti}
+\end{cases}
+\]
+
+\subsubsection{Algoritmo \textsc{Zaino}}
+
+\begin{algorithm}[H]
+\caption{\textsc{Zaino}$(P, p, v)$}
+\KwIn{Portata $P$; array pesi $p$; array valori $v$}
+\KwOut{Valore ottimo dello zaino}
+
+$n \leftarrow |v|$\;
+\tcp*{In Java le tabelle sono già inizializzate a 0}
+\For{$j \leftarrow 1$ \KwTo $n$}{
+	\For{$w \leftarrow 1$ \KwTo $P$}{
+		\eIf{$p[j] > w$}{
+			$K[j,w] \leftarrow K[j-1,w]$ \tcp*{oggetto $j$ troppo pesante}
+		}{
+			$K[j,w] \leftarrow \max\bigl(K[j-1,w],\; K[j-1,w-p[j]]+v[j]\bigr)$\;
+		}
+	}
+}
+\Return{$K[n,P]$}
+\end{algorithm}
+
+\paragraph{Complessità.} La complessità è $\Theta(nP)$.
+
+\begin{hardnote}
+$\Theta(nP)$ è \textbf{pseudo-polinomiale}, non polinomiale nella dimensione
+dell'input. Se $k$ è il numero di bit per rappresentare $P$, allora
+$k = \Theta(\log P)$, cioè $P = \Theta(2^k)$: il costo può essere esponenziale
+nella lunghezza della rappresentazione binaria di $P$.
+Il problema Zaino 0-1 è NP-difficile.
+\end{hardnote}
+
+\begin{esempio}[Zaino 0-1]
+Con $v = [6, 13, 4, 4]$, $p = [3, 13, 5, 3]$, $P = 13$, lo zaino ottimo contiene
+gli oggetti $\{x_1, x_3, x_4\}$ con valore totale $6+4+4=14$ e peso $3+5+3=11$.
+\end{esempio}
+
+% -------------------------------------------------------
+\subsection{Casi comuni di sottoproblemi}
+% -------------------------------------------------------
+
+\begin{nota}
+Caratterizzare correttamente la decomposizione in sottoproblemi richiede
+creatività ed esperienza. Quattro schemi ricorrono più frequentemente:
+\begin{enumerate}
+	\item \textbf{Prefisso singolo.} Input $x_1,\ldots,x_n$; il sottoproblema
+	considera $x_1,\ldots,x_i$. Numero di stati: $O(n)$.
+	\item \textbf{Doppio prefisso.} Input $x_1,\ldots,x_m$ e $y_1,\ldots,y_n$;
+	il sottoproblema considera $x_1,\ldots,x_i$ e $y_1,\ldots,y_j$.
+	Numero di stati: $O(nm)$.
+	\item \textbf{Intervallo.} Input $x_1,\ldots,x_n$; il sottoproblema
+	considera $x_i,\ldots,x_j$. Numero di stati: $O(n^2)$
+	(tabella $n \times n$ triangolare superiore).
+	\item \textbf{Sottoalbero.} Input: albero radicato di $n$ nodi; il
+	sottoproblema è un sottoalbero radicato. Numero di stati: $O(n)$.
+\end{enumerate}
+\end{nota}
+
+% -------------------------------------------------------
+\subsection{Memoization}
+% -------------------------------------------------------
+
+\begin{definizione}[Memoization]
+Tecnica (termine coniato da Donald Michie nel 1968, senza la ``r'' di
+\emph{memorization}) che, in un programma ricorsivo, memorizza i risultati delle
+chiamate già eseguite in una struttura di supporto (hash table, array, matrice)
+indicizzata dai parametri, per riutilizzarli anziché ricalcolarli.
+\end{definizione}
+
+\begin{softnote}
+\textbf{Confronto tra i tre approcci:}
+\begin{itemize}
+	\item \textbf{Tabulazione bottom-up}: risolve \emph{tutte} le sottoistanze
+	rispettando l'ordine di dipendenza. Iterativa, costanti moltiplicative
+	ridotte.
+	\item \textbf{Divide et impera}: risolve solo le sottoistanze necessarie ma
+	ricalcola quelle comuni ogni volta.
+	\item \textbf{Memoization}: mantiene la struttura ricorsiva del divide et
+	impera ma riusa i risultati già incontrati. Può essere più efficiente
+	della tabulazione se molte sottoistanze non sono necessarie; in generale
+	ha overhead maggiore per le chiamate ricorsive.
+\end{itemize}
+\end{softnote}
+
+\subsubsection{Esempio: Zaino con memoization}
+
+\begin{algorithm}[H]
+\caption{\textsc{Zaino-Memo}$(i, w)$}
+\KwIn{Indice oggetto $i$, capacità residua $w$; $P$, $v$, $p$ globali}
+\KwOut{Valore ottimo per i primi $i$ oggetti con capacità $w$}
+
+\If{$K$.\textsc{containsKey}$(i, w)$}{\Return{$K$.\textsc{get}$(i, w)$}}
+\If{$i = 0$ \KwAnd $w = 0$}{\Return{$0$}}
+\eIf{$p[i] > w$}{
+	$k \leftarrow$ \textsc{Zaino-Memo}$(i-1, w)$ \tcp*{troppo pesante}
+}{
+	$k \leftarrow \max\bigl($\textsc{Zaino-Memo}$(i-1,w)$,\;
+	\textsc{Zaino-Memo}$(i-1,w-p[i])+v[i]\bigr)$\;
+}
+$K$.\textsc{put}$((i,w),\, k)$\;
+\Return{$k$}
+\end{algorithm}
+
+Complessità: $O(nP)$, identica alla versione tabulare, ma con costanti
+moltiplicative più grandi per l'overhead delle chiamate ricorsive.

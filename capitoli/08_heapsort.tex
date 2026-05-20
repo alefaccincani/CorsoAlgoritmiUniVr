@@ -53,6 +53,59 @@ HeapSort:
 	\end{itemize}
 \end{nota}
 
+\begin{esempio}[Rappresentazione Heap: array e albero]
+	Dato l'array $A = [16, 14, 10, 8, 7, 9, 3, 2, 4, 1]$, la corrispondente
+	struttura ad albero è:
+	
+	\begin{center}
+		\begin{tikzpicture}[
+			every node/.style={circle, draw, minimum size=7mm, font=\small},
+			level distance=12mm,
+			level 1/.style={sibling distance=48mm},
+			level 2/.style={sibling distance=24mm},
+			level 3/.style={sibling distance=12mm}
+			]
+			\node {16}
+			child { node {14}
+				child { node {8}
+					child { node {2} }
+					child { node {4} }
+				}
+				child { node {7}
+					child { node {1} }
+					child[missing] {}
+				}
+			}
+			child { node {10}
+				child { node {9} }
+				child { node {3} }
+			};
+		\end{tikzpicture}
+	\end{center}
+	
+	\noindent Le posizioni dell'array corrispondono ai nodi per livelli
+	(BFS):
+	
+	\begin{center}
+		\begin{tikzpicture}
+			\foreach \val/\idx in {16/1,14/2,10/3,8/4,7/5,9/6,3/7,2/8,4/9,1/10}{
+				\draw (\idx-1,0) rectangle (\idx,0.7);
+				\node at (\idx-0.5, 0.35) {\val};
+				\node[font=\tiny] at (\idx-0.5, -0.25) {\idx};
+			}
+		\end{tikzpicture}
+	\end{center}
+	
+	\noindent \textbf{Regola di navigazione} (indice 1-based):
+	\[
+	\mathrm{left}(i) = 2i, \quad
+	\mathrm{right}(i) = 2i+1, \quad
+	\mathrm{parent}(i) = \lfloor i/2 \rfloor.
+	\]
+	Il nodo $i=2$ (valore 14) ha figlio sinistro in posizione $4$ (valore 8)
+	e figlio destro in posizione $5$ (valore 7).
+\end{esempio}
+
 \subsubsection{Navigazione dell'albero tramite indici}
 
 Dato il nodo in posizione $i$, genitore e figli si calcolano con:
@@ -462,6 +515,3 @@ più profonda alla radice).
 	\end{tabular}
 \end{center}
 
-
-
-% ============================================================

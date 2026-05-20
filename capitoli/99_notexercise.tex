@@ -545,6 +545,74 @@ $A^k[i][j]$ = numero di cammini di lunghezza $k$ da $i$ a $j$
 	\item Algoritmi avanzati: $O(n^{2.37})$ (teorici, non pratici)
 \end{itemize}
 
+% ----------------------------------------------------------------
+\subsection{Esercizi proposti in aula}
+	\subsubsection{Confronto tra BST e Min-Heap}
+	
+	\begin{definizione}[Proprietà BST]
+		In un \textbf{albero binario di ricerca} (BST), per ogni nodo $v$ vale:
+		\[
+		key(\text{sottoalbero sinistro di } v) \;\leq\; key(v) \;\leq\; key(\text{sottoalbero destro di } v)
+		\]
+		Questa proprietà garantisce un \emph{ordinamento totale e globale} tra tutti i nodi dell'albero.
+	\end{definizione}
+	
+	\begin{definizione}[Proprietà Min-Heap]
+		In un \textbf{min-heap}, per ogni nodo $v$ con figli $u_1, u_2$ vale:
+		\[
+		key(v) \;\leq\; key(u_1), \qquad key(v) \;\leq\; key(u_2)
+		\]
+		Questa proprietà garantisce solo un \emph{ordinamento parziale e locale} tra padre e figli diretti. Non esiste alcuna relazione d'ordine imposta tra il figlio sinistro e il figlio destro.
+	\end{definizione}
+	
+	\begin{nota}[Differenza chiave]
+		Nel BST la struttura permette di navigare efficientemente verso sinistra o destra per cercare un valore; nel min-heap sappiamo solo che la radice è il minimo globale, ma non abbiamo informazioni sull'ordinamento relativo tra i due sottoalberi.
+	\end{nota}
+	
+	\subsection{Elencare ordinatamente le chiavi: BST vs Min-Heap}
+	
+	\subsubsection{BST: visita in-order in \texorpdfstring{$O(n)$}{O(n)}}
+	
+	Nel BST è possibile elencare tutte le $n$ chiavi in ordine crescente in tempo $O(n)$ tramite la \textbf{visita in-order} (sinistra $\to$ radice $\to$ destra), che visita ogni nodo esattamente una volta.
+	
+	\begin{algorithm}[H]
+		\caption{\textsc{InOrder}$(v)$}
+		\KwIn{Radice $v$ di un BST}
+		\KwOut{Chiavi stampate in ordine crescente}
+		\If{$v \neq \textsc{Nil}$}{
+			\textsc{InOrder}$(\text{figlio sinistro di } v)$\;
+			stampa $key(v)$\;
+			\textsc{InOrder}$(\text{figlio destro di } v)$\;
+		}
+	\end{algorithm}
+	
+	\subsubsection{Min-Heap: impossibile in \texorpdfstring{$O(n)$}{O(n)}}
+	
+	\begin{hardnote}
+		\textbf{Non è possibile} elencare ordinatamente le chiavi di un min-heap in tempo $O(n)$.
+	\end{hardnote}
+	
+	\paragraph{Dimostrazione per assurdo.}
+	Supponiamo per assurdo che esista un algoritmo $A$ che, dato un min-heap di $n$ elementi, ne elenca le chiavi in ordine in tempo $O(n)$.
+	
+	\begin{enumerate}
+		\item La costruzione di un min-heap a partire da $n$ elementi arbitrari richiede tempo $O(n)$ (algoritmo di Floyd).
+		\item Per ipotesi, $A$ elenca le chiavi ordinate in $O(n)$.
+		\item Concatenando le due operazioni otterremmo un algoritmo di \textbf{ordinamento in tempo}:
+		\[
+		O(n) + O(n) = O(n)
+		\]
+		\item Ma questo contraddice il \textbf{limite inferiore} $\Omega(n \log n)$ dimostrato per qualsiasi algoritmo di ordinamento basato su confronti.
+	\end{enumerate}
+	
+	Quindi $A$ non può esistere. $\square$
+	
+	\begin{softnote}
+		In parole semplici: se potessimo estrarre tutte le chiavi in ordine da un heap in $O(n)$, avremmo un algoritmo di sorting lineare, cosa dimostrata impossibile nel modello a confronti. La proprietà del min-heap è \emph{troppo debole} per supportare un'enumerazione ordinata efficiente.
+	\end{softnote}
+	
+	\paragraph{Costo effettivo.}
+	Estrarre tutte le $n$ chiavi ordinate da un min-heap richiede $n$ operazioni di \textsc{ExtractMin}, ciascuna di costo $O(\log n)$, per un totale di $O(n \log n)$ — esattamente il costo dell'\textbf{HeapSort}.
 
 % ----------------------------------------------------------------
 \subsection{Domande d'esame (Appello 2)}
