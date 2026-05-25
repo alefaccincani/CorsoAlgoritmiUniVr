@@ -60,11 +60,12 @@ La scelta della rappresentazione incide direttamente sulla complessita' degli al
 \[
 \begin{array}{c|c|c}
 \text{Operazione} & \text{Matrice di adiacenza} & \text{Liste di adiacenza} \\
-\hline
+\toprule
 \text{Memoria} & \Theta(n^2) & \Theta(n+m) \\
 \text{Verificare se }(u,v)\in E & \Theta(1) & \Theta(d(u)) \\
 \text{Accedere agli adiacenti di }u & \Theta(n) & \Theta(d(u)) \\
-\text{Identificare tutti gli archi} & \Theta(n^2) & \Theta(n+m)
+\text{Identificare tutti gli archi} & \Theta(n^2) & \Theta(n+m) \\
+\bottomrule
 \end{array}
 \]
 
@@ -102,11 +103,12 @@ Con ordine dei vertici $1,2,4,5$, la matrice di adiacenza e':
 \[
 \begin{array}{c|cccc}
  & 1 & 2 & 4 & 5 \\
-\hline
+\toprule
 1 & 0 & 1 & 1 & 0 \\
 2 & 1 & 0 & 1 & 0 \\
 4 & 1 & 1 & 0 & 1 \\
-5 & 0 & 0 & 1 & 0
+5 & 0 & 0 & 1 & 0 \\
+\bottomrule
 \end{array}
 \]
 La stessa informazione con liste di adiacenza e':
@@ -120,23 +122,31 @@ La stessa informazione con liste di adiacenza e':
 \]
 
 \subsubsection{Grafico o diagramma}
-\begin{center}
-\begin{verbatim}
-Grafo non orientato:
-
-1 ----- 2
- \     /
-  \   /
-    4 ----- 5
-
-Liste di adiacenza:
-
-Adj[1] = <2,4>
-Adj[2] = <1,4>
-Adj[4] = <1,2,5>
-Adj[5] = <4>
-\end{verbatim}
-\end{center}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={primary, thick}
+		]
+		\node[v] (n1) at (0,1.2) {1};
+		\node[v] (n2) at (1.6,1.2) {2};
+		\node[v] (n4) at (0.8,0) {4};
+		\node[v] (n5) at (2.4,0) {5};
+		\draw[e] (n1)--(n2) (n1)--(n4) (n2)--(n4) (n4)--(n5);
+	\end{tikzpicture}
+	\hspace{1.5cm}
+	\raisebox{1.2cm}{\begin{minipage}{0.38\textwidth}
+		\footnotesize
+		\textbf{Liste di adiacenza:}
+		\begin{itemize}[leftmargin=*, nosep, topsep=2pt]
+			\item $\mathrm{Adj}[1]=\langle 2,4\rangle$
+			\item $\mathrm{Adj}[2]=\langle 1,4\rangle$
+			\item $\mathrm{Adj}[4]=\langle 1,2,5\rangle$
+			\item $\mathrm{Adj}[5]=\langle 4\rangle$
+		\end{itemize}
+	\end{minipage}}
+	\caption{Grafo non orientato d'esempio e liste di adiacenza.}
+\end{figure}
 
 \subsubsection{Dimostrazione}
 Le slide non presentano una dimostrazione formale delle rappresentazioni; forniscono definizioni e costi. I costi seguono direttamente dalla struttura dati:
@@ -234,10 +244,11 @@ I colori hanno il seguente significato:
 \[
 \begin{array}{c|l}
 \text{Colore} & \text{Significato} \\
-\hline
+\toprule
 \textsc{White} & \text{nodo non ancora scoperto} \\
 \textsc{Gray} & \text{nodo scoperto ma non ancora completato} \\
-\textsc{Black} & \text{nodo completato: tutti i suoi vicini sono stati scoperti}
+\textsc{Black} & \text{nodo completato: tutti i suoi vicini sono stati scoperti} \\
+\bottomrule
 \end{array}
 \]
 
@@ -293,15 +304,17 @@ La componente raggiungibile da $2$ contiene i nodi $2,1,4,5$. I nodi $3$ e $6$ n
 
 \begin{center}
 \begin{tabular}{c|c|c|c|c}
+\toprule
 Passo & Operazione & Coda $Q$ & Distanze finite & Predecessori nuovi \\
-\hline
+\midrule
 $0$ & inizializza $s=2$ & $\langle 2\rangle$ & $2.d=0$ & -- \\
 $1$ & esamina $2$, scopre $1$ & $\langle 1\rangle$ & $1.d=1$ & $1.\pi=2$ \\
 $2$ & esamina $2$, scopre $4$ & $\langle 1,4\rangle$ & $4.d=1$ & $4.\pi=2$ \\
 $3$ & completa $2$ & $\langle 1,4\rangle$ & -- & -- \\
 $4$ & esamina $1$ & $\langle 4\rangle$ & -- & -- \\
 $5$ & esamina $4$, scopre $5$ & $\langle 5\rangle$ & $5.d=2$ & $5.\pi=4$ \\
-$6$ & completa $5$ & $\langle\rangle$ & -- & --
+$6$ & completa $5$ & $\langle\rangle$ & -- & -- \\
+\bottomrule
 \end{tabular}
 \end{center}
 
@@ -320,52 +333,71 @@ L'albero BF e':
 \]
 
 \subsubsection{Grafico o diagramma}
-\begin{center}
-\begin{verbatim}
-Grafo dell'esempio:
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		w/.style={v, fill=white},
+		g/.style={v, fill=gray!35},
+		b/.style={v, fill=primary!85, text=white},
+		e/.style={-{Stealth[length=2mm]}, primary, thick}
+		]
+		\node[w] (n1) at (0,1.2) {1};
+		\node[g] (n2) at (1.6,1.2) {2};
+		\node[g] (n4) at (0.8,0) {4};
+		\node[w] (n5) at (2.4,0) {5};
+		\node[w] (n3) at (4.2,1.2) {3};
+		\node[w] (n6) at (4.2,0) {6};
+		\draw[e] (n1)--(n2) (n1)--(n4) (n2)--(n4) (n4)--(n5) (n3)--(n6);
+		\node[font=\scriptsize, below=2mm of n2] {sorgente $s=2$};
+		\node[font=\scriptsize, anchor=west] at (5.0,1.5) {
+			\begin{tabular}{@{}l@{}}
+				\cellcolor{white}\rule{0pt}{2.5mm}\;White\; non scoperto\\
+				\cellcolor{gray!35}\;Gray\; in coda\\
+				\cellcolor{primary!85}\textcolor{white}{\;Black\; completato}
+			\end{tabular}
+		};
+	\end{tikzpicture}
+	\caption{\textsc{BFS}$(G,2)$ dopo la scansione del nodo $2$: $1,4$ grigi in coda, $2$ nero.}
+\end{figure}
 
-1 ----- 2
- \     /
-  \   /
-    4 ----- 5
-
-3 ----- 6
-
-BFS(G,2):
-
-inizio:
-Q = <2>
-colori: 2 grigio, altri bianchi
-d: 2=0
-
-dopo scansione di 2:
-Q = <1,4>
-colori: 1,4 grigi; 2 nero
-d: 1=1, 4=1
-pi: 1<-2, 4<-2
-
-dopo scansione di 1:
-Q = <4>
-nessun nuovo nodo
-
-dopo scansione di 4:
-Q = <5>
-d: 5=2
-pi: 5<-4
-
-dopo scansione di 5:
-Q = <>
-fine
-
-Albero BF:
-
-    2
-   / \
-  1   4
-       \
-        5
-\end{verbatim}
-\end{center}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		w/.style={v, fill=white},
+		e/.style={primary, thick},
+		tree/.style={-{Stealth[length=2mm]}, primary, thick},
+		lbl/.style={font=\scriptsize, primary}
+		]
+		\node[w] (n1) at (0,1.2) {1};
+		\node[w] (n2) at (1.6,1.2) {2};
+		\node[w] (n4) at (0.8,0) {4};
+		\node[w] (n5) at (2.4,0) {5};
+		\node[w] (n3) at (4.2,1.2) {3};
+		\node[w] (n6) at (4.2,0) {6};
+		\draw[e, gray!50] (n1)--(n2) (n1)--(n4) (n2)--(n4) (n4)--(n5) (n3)--(n6);
+		\node[lbl, above=1mm of n2] {$d{=}0$};
+		\node[lbl, above=1mm of n1] {$d{=}1$};
+		\node[lbl, below=1mm of n4] {$d{=}1$};
+		\node[lbl, below=1mm of n5] {$d{=}2$};
+		\node[lbl, above=1mm of n3] {$d{=}\infty$};
+		\node[lbl, below=1mm of n6] {$d{=}\infty$};
+	\end{tikzpicture}
+	\hspace{1.2cm}
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		tree/.style={-{Stealth[length=2mm]}, primary, thick}
+		]
+		\node[v] (r) at (0,1.4) {2};
+		\node[v] (l) at (-1.0,0) {1};
+		\node[v] (m) at (0.2,0) {4};
+		\node[v] (d) at (1.4,-1.0) {5};
+		\draw[tree] (r)--(l) (r)--(m) (m)--(d);
+		\node[font=\scriptsize, below=2mm of d] {albero BF};
+	\end{tikzpicture}
+	\caption{Grafo con distanze finali da $s{=}2$ (sinistra) e albero BF con archi $\pi$ (destra).}
+\end{figure}
 
 \subsubsection{Dimostrazione}
 La correttezza di BFS rispetto ai cammini minimi nei grafi non pesati viene dimostrata nelle slide tramite tre lemmi, un corollario e un teorema.
@@ -687,10 +719,11 @@ Questa differenza e' centrale:
 \[
 \begin{array}{c|c}
 \text{BFS} & \text{DFS} \\
-\hline
+\toprule
 \text{esplora per livelli} & \text{esplora andando in profondita'} \\
 \text{usa una coda FIFO} & \text{usa ricorsione, cioe' una pila implicita} \\
-\text{calcola distanze minime non pesate} & \text{calcola tempi di scoperta e completamento}
+\text{calcola distanze minime non pesate} & \text{calcola tempi di scoperta e completamento} \\
+\bottomrule
 \end{array}
 \]
 
@@ -726,11 +759,12 @@ Le slide riportano la seguente classificazione degli archi ispezionati da DFS:
 \[
 \begin{array}{c|l}
 \text{Tipo} & \text{Condizione} \\
-\hline
+\toprule
 T\ \text{(tree)} & \text{l'arco }(u,v)\text{ e' ispezionato e }v\text{ e' bianco} \\
 B\ \text{(backward)} & \text{l'arco }(u,v)\text{ e' ispezionato e }v\text{ e' grigio} \\
 F\ \text{(forward)} & \text{l'arco }(u,v)\text{ e' ispezionato, }v\text{ e' nero e }u.d<v.d \\
-C\ \text{(cross)} & \text{l'arco }(u,v)\text{ e' ispezionato, }v\text{ e' nero e }u.d>v.f
+C\ \text{(cross)} & \text{l'arco }(u,v)\text{ e' ispezionato, }v\text{ e' nero e }u.d>v.f \\
+\bottomrule
 \end{array}
 \]
 
@@ -780,13 +814,14 @@ I tempi sono:
 \[
 \begin{array}{c|cc}
 \text{Nodo} & d & f \\
-\hline
+\toprule
 2 & 1 & 8 \\
 1 & 2 & 7 \\
 4 & 3 & 6 \\
 5 & 4 & 5 \\
 3 & 9 & 12 \\
-6 & 10 & 11
+6 & 10 & 11 \\
+\bottomrule
 \end{array}
 \]
 
@@ -794,7 +829,7 @@ Evoluzione della pila ricorsiva:
 \[
 \begin{array}{c|c|c}
 \text{Evento} & time & \text{Stack chiamate DFS-Visit} \\
-\hline
+\toprule
 \text{scopri }2 & 1 & \langle 2\rangle \\
 \text{scopri }1 & 2 & \langle 1,2\rangle \\
 \text{scopri }4 & 3 & \langle 4,1,2\rangle \\
@@ -806,41 +841,43 @@ Evoluzione della pila ricorsiva:
 \text{scopri }3 & 9 & \langle 3\rangle \\
 \text{scopri }6 & 10 & \langle 6,3\rangle \\
 \text{completa }6 & 11 & \langle 6,3\rangle \\
-\text{completa }3 & 12 & \langle 3\rangle
+\text{completa }3 & 12 & \langle 3\rangle \\
+\bottomrule
 \end{array}
 \]
 
 \subsubsection{Grafico o diagramma}
-\begin{center}
-\begin{verbatim}
-Foresta DF dell'esempio:
-
-2
-|
-1
-|
-4
-|
-5
-
-3
-|
-6
-
-Tempi:
-
-2: d=1,  f=8
-1: d=2,  f=7
-4: d=3,  f=6
-5: d=4,  f=5
-3: d=9,  f=12
-6: d=10, f=11
-
-Espressione a parentesi:
-
-(2 (1 (4 (5 5) 4) 1) 2)(3 (6 6) 3)
-\end{verbatim}
-\end{center}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={-{Stealth[length=2mm]}, primary, thick},
+		lbl/.style={font=\scriptsize, primary}
+		]
+		\node[v] (n2) at (0,2.4) {2};
+		\node[v] (n1) at (0,1.2) {1};
+		\node[v] (n4) at (0,0) {4};
+		\node[v] (n5) at (0,-1.2) {5};
+		\node[v] (n3) at (2.8,1.2) {3};
+		\node[v] (n6) at (2.8,0) {6};
+		\draw[e] (n2)--(n1) (n1)--(n4) (n4)--(n5) (n3)--(n6);
+		\node[lbl, right=1mm of n2] {$d{=}1,\ f{=}8$};
+		\node[lbl, right=1mm of n1] {$d{=}2,\ f{=}7$};
+		\node[lbl, right=1mm of n4] {$d{=}3,\ f{=}6$};
+		\node[lbl, right=1mm of n5] {$d{=}4,\ f{=}5$};
+		\node[lbl, right=1mm of n3] {$d{=}9,\ f{=}12$};
+		\node[lbl, right=1mm of n6] {$d{=}10,\ f{=}11$};
+	\end{tikzpicture}
+	\hspace{1.2cm}
+	\begin{minipage}{0.42\textwidth}
+		\centering
+		\footnotesize
+		\textbf{Espressione a parentesi:}\\[0.3em]
+		$(2\ (1\ (4\ (5\ 5)\ 4)\ 1)\ 2)$\\[0.4em]
+		$(3\ (6\ 6)\ 3)$
+	\end{minipage}
+	\caption{Foresta DF dell'esempio e tempi $d/f$ (schema delle slide).}
+\end{figure}
 
 \subsubsection{Dimostrazione}
 Le slide non richiedono le dimostrazioni dei teoremi 20.7, 20.9 e 20.10. Si esplicita pero' la proprieta' a parentesi indicata nel materiale.
@@ -969,11 +1006,12 @@ Inserendo ogni nodo in testa alla lista al momento del completamento:
 \[
 \begin{array}{c|c}
 \text{Nodo completato} & \text{Lista} \\
-\hline
+\toprule
 d & \langle d\rangle \\
 b & \langle b,d\rangle \\
 c & \langle c,b,d\rangle \\
-a & \langle a,c,b,d\rangle
+a & \langle a,c,b,d\rangle \\
+\bottomrule
 \end{array}
 \]
 La lista
@@ -983,25 +1021,36 @@ La lista
 e' un ordinamento topologico: $a$ precede $b$ e $c$, e sia $b$ sia $c$ precedono $d$.
 
 \subsubsection{Grafico o diagramma}
-\begin{center}
-\begin{verbatim}
-DAG:
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={-{Stealth[length=2mm]}, primary, thick}
+		]
+		\node[v] (a) at (0,1.4) {a};
+		\node[v] (b) at (-1.1,0) {b};
+		\node[v] (c) at (1.1,0) {c};
+		\node[v] (d) at (0,-1.4) {d};
+		\draw[e] (a)--(b) (a)--(c) (b)--(d) (c)--(d);
+		\node[font=\scriptsize, below=3mm of d] {DAG: $\langle a,c,b,d\rangle$ è un ordinamento topologico};
+	\end{tikzpicture}
+	\caption{DAG per l'ordinamento topologico (architettura delle slide).}
+\end{figure}
 
-    a
-   / \
-  v   v
-  b   c
-   \ /
-    v
-    d
-
-Ordinamento topologico possibile:
-
-a  c  b  d
-
-Tutti gli archi vanno da sinistra verso destra.
-\end{verbatim}
-\end{center}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={-{Stealth[length=2mm]}, primary, thick}
+		]
+		\foreach \i/\lab in {0/a, 1/c, 2/b, 3/d}{
+			\node[v] (o\i) at (\i*1.5,0) {\lab};
+		}
+		\draw[e] (o0)--(o1) (o0)--(o2) (o1)--(o3) (o2)--(o3);
+		\node[font=\scriptsize, below=4mm of o1] {ordinamento $\langle a,c,b,d\rangle$: archi da sinistra a destra};
+	\end{tikzpicture}
+	\caption{Un ordinamento topologico valido disposto su una linea.}
+\end{figure}
 
 \subsubsection{Dimostrazione}
 La correttezza si basa sul fatto indicato nelle slide:
@@ -1188,24 +1237,67 @@ b\to a,\quad a\to b,\quad c\to b,\quad d\to c,\quad c\to d.
 La seconda DFS su $G^T$, usando l'ordine decrescente dei tempi $f$ della prima DFS, produce alberi DFS che coincidono con le componenti fortemente connesse.
 
 \subsubsection{Grafico o diagramma}
-\begin{center}
-\begin{verbatim}
-G:
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={-{Stealth[length=2mm]}, primary, thick},
+		comp/.style={draw=primary!50, dashed, rounded corners, inner sep=4pt}
+		]
+		\node[v] (a) at (0,0.8) {a};
+		\node[v] (b) at (1.6,0.8) {b};
+		\node[v] (c) at (3.4,0.8) {c};
+		\node[v] (d) at (5.0,0.8) {d};
+		\draw[e] (a) to[bend left=18] (b);
+		\draw[e] (b) to[bend left=18] (a);
+		\draw[e] (b)--(c);
+		\draw[e] (c) to[bend left=18] (d);
+		\draw[e] (d) to[bend left=18] (c);
+		\node[comp, fit=(a)(b)] (cab) {};
+		\node[comp, fit=(c)(d)] (ccd) {};
+		\node[font=\scriptsize, below=2mm of cab] {$\{a,b\}$};
+		\node[font=\scriptsize, below=2mm of ccd] {$\{c,d\}$};
+	\end{tikzpicture}
+	\caption{Grafo orientato $G$ e componenti fortemente connesse (esempio SCC delle slide).}
+\end{figure}
 
-a <----> b ----> c <----> d
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={-{Stealth[length=2mm]}, primary, thick},
+		comp/.style={draw=primary!50, dashed, rounded corners, inner sep=4pt},
+		gt/.style={font=\small\bfseries, primary}
+		]
+		\node[gt] at (-0.3,1.55) {$G$};
+		\node[v] (a) at (0,0.8) {a};
+		\node[v] (b) at (1.5,0.8) {b};
+		\node[v] (c) at (3.2,0.8) {c};
+		\node[v] (d) at (4.7,0.8) {d};
+		\draw[e] (a) to[bend left=18] (b);
+		\draw[e] (b) to[bend left=18] (a);
+		\draw[e] (b)--(c);
+		\draw[e] (c) to[bend left=18] (d);
+		\draw[e] (d) to[bend left=18] (c);
+		\node[comp, fit=(a)(b)] {};
+		\node[comp, fit=(c)(d)] {};
+		\draw[-{Stealth[length=2.5mm]}, primary, thick] (2.35,0.35) -- (2.85,0.35);
 
-Componenti fortemente connesse:
-
-{a,b} ----> {c,d}
-
-G^T:
-
-a <----> b <---- c <----> d
-
-La seconda DFS su G^T, nell'ordine corretto,
-estrae un albero per ciascuna componente.
-\end{verbatim}
-\end{center}
+		\node[gt] at (6.0,1.55) {$G^T$};
+		\node[v] (at) at (6.0,0.8) {a};
+		\node[v] (bt) at (7.5,0.8) {b};
+		\node[v] (ct) at (9.2,0.8) {c};
+		\node[v] (dt) at (10.7,0.8) {d};
+		\draw[e] (at) to[bend left=18] (bt);
+		\draw[e] (bt) to[bend left=18] (at);
+		\draw[e] (ct)--(bt);
+		\draw[e] (dt) to[bend left=18] (ct);
+		\draw[e] (ct) to[bend left=18] (dt);
+		\node[comp, fit=(at)(bt)] {};
+		\node[comp, fit=(ct)(dt)] {};
+	\end{tikzpicture}
+	\caption{$G$, $G^T$ e componenti $\{a,b\}\to\{c,d\}$: la seconda DFS su $G^T$ estrae un albero per componente.}
+\end{figure}
 
 \subsubsection{Dimostrazione}
 \paragraph{Dimostrazione del lemma.}
@@ -1411,23 +1503,28 @@ Stampa quindi:
 \]
 
 \subsubsection{Grafico o diagramma}
-\begin{center}
-\begin{verbatim}
-Catena dei predecessori:
-
-5.pi = 4
-4.pi = 2
-2.pi = NULL
-
-Risalita:
-
-5 -> 4 -> 2
-
-Stampa ricorsiva:
-
-2 -> 4 -> 5
-\end{verbatim}
-\end{center}
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, thick, minimum size=7mm, font=\small},
+		e/.style={primary, thick},
+		pi/.style={-{Stealth[length=2mm]}, primary, thick},
+		lbl/.style={font=\scriptsize, primary}
+		]
+		\node[v] (n2) at (0,1.2) {2};
+		\node[v] (n1) at (-1.2,0) {1};
+		\node[v] (n4) at (0.4,0) {4};
+		\node[v] (n5) at (1.8,-0.8) {5};
+		\draw[e, gray!45] (n1)--(n2) (n1)--(n4) (n2)--(n4) (n4)--(n5);
+		\draw[pi] (n5)--(n4) node[midway, right, lbl] {$\pi$};
+		\draw[pi] (n4)--(n2);
+		\node[lbl, above=1mm of n2] {$2.\pi=\textsc{Null}$};
+		\node[font=\scriptsize, below=3mm of n5] {
+			\textsc{Print-Path}$(2,5)$ stampa $2\to 4\to 5$
+		};
+	\end{tikzpicture}
+	\caption{Catena dei predecessori da BFS per ricostruire il cammino minimo $2\to 4\to 5$.}
+\end{figure}
 
 \subsubsection{Dimostrazione}
 La procedura e' corretta per induzione sulla lunghezza del cammino.

@@ -14,6 +14,16 @@ Un valore $v$ è mediana se almeno il 50\% degli elementi è $\le v$ e almeno il
 Nelle slide, quando si scrive "mediana" si intende la \textbf{mediana inferiore}.
 \end{definizione}
 
+\begin{esempio}[Statistica d'ordine]
+	Dato $A=\{3,5,9,4,6,1\}$ con $n=6$: la I statistica d'ordine è $1$ (minimo),
+	la IV statistica d'ordine è $5$, la VI statistica d'ordine è $9$ (massimo).
+\end{esempio}
+
+\begin{esempio}[Mediana inferiore e superiore]
+	Sempre con $A=\{3,5,9,4,6,1\}$: la mediana inferiore (III statistica d'ordine) è $4$;
+	la mediana superiore (IV statistica d'ordine) è $5$.
+\end{esempio}
+
 \subsection{Intuizione}
 Ordinare tutto l'array per trovare un solo rango è spesso inutile: il problema Selezione richiede un solo elemento, non la permutazione completa.
 
@@ -21,9 +31,63 @@ Ordinare tutto l'array per trovare un solo rango è spesso inutile: il problema 
 Selezione è un esempio didatticamente centrale di algoritmo divide et impera randomizzato con costo medio lineare.
 
 \subsection{Algoritmo}
-\paragraph{Problema Selezione.}
-Input: insieme $A$ di $n$ numeri e intero $1\le i\le n$.\newline
-Output: $i$-esimo elemento più piccolo di $A$.
+\begin{definizione}[Problema Selezione]
+	\textbf{Input:} un insieme $A$ di $n$ numeri (distinti, per semplicità) e un intero $1\le i\le n$.\newline
+	\textbf{Output:} l'$i$-esimo elemento più piccolo di $A$.
+\end{definizione}
+
+\paragraph{Minimo e massimo.}
+\begin{algorithm}[H]
+	\caption{\textsc{Minimum}$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{Valore minimo $m\in A$}
+	$m\gets A[1]$\;
+	\For{$i\gets 2$ \KwTo $n$}{
+		\If{$m>A[i]$}{$m\gets A[i]$}
+	}
+	\Return $m$\;
+\end{algorithm}
+Richiede $n-1$ confronti: $\Theta(n)$, ottimale (ogni elemento non minimo deve confrontarsi almeno una volta).
+
+\begin{algorithm}[H]
+	\caption{\textsc{Maximum}$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{Valore massimo $M\in A$}
+	$M\gets A[1]$\;
+	\For{$i\gets 2$ \KwTo $n$}{
+		\If{$M<A[i]$}{$M\gets A[i]$}
+	}
+	\Return $M$\;
+\end{algorithm}
+Analogo a \textsc{Minimum}, con $\Theta(n)$ confronti.
+
+\begin{algorithm}[H]
+	\caption{\textsc{MinMax}$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{Coppia $(m,M)$ minimo e massimo in $A$}
+	\If{$n\bmod 2\neq 0$}{
+		$m\gets M\gets A[1]$\;
+		$i\gets 2$\;
+	}
+	\Else{
+		\If{$A[1]<A[2]$}{$m\gets A[1]$;\; $M\gets A[2]$}
+		\Else{$M\gets A[1]$;\; $m\gets A[2]$}
+		$i\gets 3$\;
+	}
+	\While{$i\le n-1$}{
+		\If{$A[i]<A[i+1]$}{
+			\If{$m>A[i]$}{$m\gets A[i]$}
+			\If{$M<A[i+1]$}{$M\gets A[i+1]$}
+		}
+		\Else{
+			\If{$m>A[i+1]$}{$m\gets A[i+1]$}
+			\If{$M<A[i]$}{$M\gets A[i]$}
+		}
+		$i\gets i+2$\;
+	}
+	\Return $(m,M)$\;
+\end{algorithm}
+Confronti: $\lceil\frac{3n}{2}\rceil-2$ (migliore di $2(n-1)$ di due scansioni separate).
 
 \paragraph{Riduzione con pivot $v$.}
 \[
@@ -55,6 +119,31 @@ v & |A_L|<i\le |A_L|+|A_v|,\\
 	\Else{
 		\Return \textsc{RandSelect}$(A,q+1,r,i-k)$\;
 	}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Partition}$(A,p,r)$}
+	\KwIn{Array $A$, indici $p,r$; pivot in $A[r]$}
+	\KwOut{Indice $q$ del pivot dopo la partizione}
+	$x\gets A[r]$\;
+	$i\gets p-1$\;
+	\For{$j\gets p$ \KwTo $r-1$}{
+		\If{$A[j]\le x$}{
+			$i\gets i+1$\;
+			scambia $A[i]$ con $A[j]$\;
+		}
+	}
+	scambia $A[i+1]$ con $A[r]$\;
+	\Return $i+1$\;
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{RandPartition}$(A,p,r)$}
+	\KwIn{Array $A$, indici $p,r$}
+	\KwOut{Indice $q$ restituito da \textsc{Partition}}
+	$i\gets$ indice casuale in $\{p,\ldots,r\}$\;
+	scambia $A[r]$ con $A[i]$\;
+	\Return \textsc{Partition}$(A,p,r)$\;
 \end{algorithm}
 
 \subsection{Esempio guidato}
@@ -90,9 +179,58 @@ AL={} | Av={4} | AR={5,9,6}
 \end{verbatim}
 \end{center}
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		node distance=6mm and 8mm,
+		box/.style={draw, primary, rounded corners, minimum width=1.6cm,
+			minimum height=0.7cm, font=\small, align=center},
+		arr/.style={-{Stealth[length=2mm]}, primary, thick}
+		]
+		\node[box] (A) {$A=\{3,5,9,4,6,1\}$\\$i=3$};
+		\node[box, below=of A] (p) {pivot $v=3$};
+		\node[box, below left=10mm and -5mm of p] (AL) {$A_L=\{1\}$};
+		\node[box, below=of p] (Av) {$A_v=\{3\}$};
+		\node[box, below right=10mm and -5mm of p] (AR) {$A_R=\{5,9,4,6\}$};
+		\node[box, below=14mm of AR] (R1) {ricorsione\\$i'=1$};
+		\draw[arr] (A) -- (p);
+		\draw[arr] (p) -- (AL);
+		\draw[arr] (p) -- (Av);
+		\draw[arr] (p) -- (AR);
+		\draw[arr] (AR) -- (R1) node[midway, right, font=\scriptsize] {$3>|A_L|+|A_v|$};
+	\end{tikzpicture}
+	\caption{Partizione ricorsiva di \textsc{RandSelect} sull'esempio della mediana inferiore.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		node distance=5mm and 6mm,
+		box/.style={draw, primary, rounded corners, minimum width=1.4cm,
+			minimum height=0.65cm, font=\small, align=center},
+		arr/.style={-{Stealth[length=2mm]}, primary, thick}
+		]
+		\node[box] (AR) {$A_R=\{5,9,4,6\}$\\$i'=1$};
+		\node[box, below=of AR] (p2) {pivot $v=4$};
+		\node[box, below left=8mm and -2mm of p2] (AL2) {$A_L=\emptyset$};
+		\node[box, below=of p2] (Av2) {$A_v=\{4\}$};
+		\node[box, below right=8mm and -2mm of p2] (AR2) {$A_R=\{5,9,6\}$};
+		\node[box, below=10mm of Av2, fill=cyan!10] (ans) {risposta $4$};
+		\draw[arr] (AR) -- (p2);
+		\draw[arr] (p2) -- (AL2);
+		\draw[arr] (p2) -- (Av2);
+		\draw[arr] (p2) -- (AR2);
+		\draw[arr] (Av2) -- (ans) node[midway, right, font=\scriptsize] {$0<1\le 1$};
+	\end{tikzpicture}
+	\caption{Secondo passo ricorsivo dell'Esempio 3 delle slide.}
+\end{figure}
+
 \subsection{Dimostrazione}
 \paragraph{Caso medio (come nelle slide).}
-Definiamo pivot ``buono'' se è tra 25-esimo e 75-esimo percentile.
+\begin{definizione}[Pivot buono]
+	Un pivot $v$ è \textbf{buono} se cade tra il 25-esimo e il 75-esimo percentile di $A$.
+	Il $j$-esimo \textbf{percentile} è il minimo valore sotto cui ricade almeno il $j\%$ degli elementi considerati.
+\end{definizione}
 Allora con probabilità $1/2$ il pivot è buono e il sottoproblema ha dimensione al più $3n/4$.
 
 Indicando con $s(n)=\Theta(n)$ il costo di una \textsc{RandPartition} e con $w(n)$ il costo totale fino al primo pivot buono, le slide assumono:
@@ -115,6 +253,18 @@ Conclusione:
 \[
 E[T(n)]=\Theta(n).
 \]
+
+\begin{lemma}[Pivot buono e riduzione di dimensione]
+	Se $A[q]$ è un pivot buono, allora $|A_L|\le\frac{3}{4}|A|$ e $|A_R|\le\frac{3}{4}|A|$.
+\end{lemma}
+\begin{proof}
+	Per definizione di percentile, al più il 25\% degli elementi è strettamente minore di $v$ e al più il 25\% è strettamente maggiore; il resto appartiene ad $A_v$. Quindi $|A_L|,|A_R|\le n/4$ nel caso $|A_v|$ trascurabile; in generale $|A_L|+|A_v|+|A_R|=n$ implica $|A_L|,|A_R|\le\frac{3}{4}n$.
+\end{proof}
+
+\begin{softnote}
+	Sia $X_v$ la variabile indicatrice dell'evento ``$v$ è un elemento buono''. Allora $\Pr\{X_v=1\}=E[X_v]=\frac{1}{2}$.
+	Per due pivot casuali $A[q]$ e $A[q']$: $E[X_{A[q]}+X_{A[q']}]=1$, quindi il numero atteso di partizioni prima di un pivot buono è $2$ e $E[w(n)]=O(n)$.
+\end{softnote}
 
 \subsection{Analisi}
 \paragraph{Caso peggiore.}
@@ -150,10 +300,4 @@ $i' = i-|A_L|-|A_v|$.
 	\item Riscrivere \textsc{RandSelect} con duplicati espliciti (partizione a tre insiemi).
 \end{itemize}
 
-% ----------------------------------------------------------------
-\subsection{Contenuto richiesto ma non nel materiale ufficiale}
-
-\subsubsection*{Selezione deterministica lineare (Median of Medians)}
-\begin{hardnote}
-Contenuto non presente nel materiale ufficiale del corso.
-\end{hardnote}
+% Median-of-Medians (\textsc{Select} deterministico, CLRS 9.3): fuori handout s05_1 (studio fino a 9.3 escluso).

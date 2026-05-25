@@ -1,5 +1,3 @@
-% === INSERIRE DOPO l'ultima \section{} esistente (fine del documento, prima di \end{document}) ===
-
 % ============================================================
 \section{Programmazione Dinamica}
 % Slide: s09_1_programmazioneDinamica-handout.pdf
@@ -238,6 +236,27 @@ l'algoritmo restituisce la LCS $\langle B, C, B, A \rangle$ di lunghezza 4,
 leggendo le frecce $\nwarrow$ nella tabella $b$.
 \end{esempio}
 
+\begin{figure}[H]
+	\centering
+	\renewcommand{\arraystretch}{1.1}
+	\setlength{\tabcolsep}{3pt}
+	\begin{tabular}{c|cccccccc}
+		\toprule
+		 & $\epsilon$ & $B$ & $D$ & $C$ & $A$ & $B$ & $A$ \\
+		\midrule
+		$i$ & $\epsilon$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		$A$ & 0 & 0 & 1 & 1 & 1 & 1 & 1 & 1 \\
+		$B$ & 0 & 0 & 1 & 1 & 2 & 2 & 2 & 2 \\
+		$C$ & 0 & 0 & 1 & 1 & 2 & 2 & 2 & 3 \\
+		$B$ & 0 & 0 & 1 & 1 & 2 & 2 & 3 & 3 \\
+		$D$ & 0 & 0 & 1 & 2 & 2 & 2 & 3 & 3 \\
+		$A$ & 0 & 0 & 1 & 2 & 2 & 2 & 3 & \cellcolor{cyan!15}4 \\
+		$B$ & 0 & 0 & 1 & 2 & 2 & 2 & 3 & 4 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Tabella $c[i,j]$ per LCS di $X=\langle A,B,C,B,D,A,B\rangle$ e $Y=\langle B,D,C,A,B,A\rangle$ (valore ottimo $4$ in $c[7,7]$).}
+\end{figure}
+
 % -------------------------------------------------------
 \subsection{Massima Sottosequenza Crescente}
 % -------------------------------------------------------
@@ -261,6 +280,23 @@ $2, 3, 6, 9$ (lunghezza 4).
 Si costruisce un DAG $G = (V, E)$ dove esiste l'arco $(i, j)$ se e solo se
 $i < j$ e $a_i < a_j$. Trovare la massima sottosequenza crescente è
 \textbf{equivalente} a trovare il cammino più lungo nel DAG.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		v/.style={circle, draw=primary, minimum size=6mm, font=\scriptsize},
+		e/.style={-{Stealth[length=1.8mm]}, primary, thick}
+		]
+		\foreach \i/\lab in {1/5,2/2,3/8,4/6,5/3,6/6,7/9,8/7}{
+			\node[v] (n\i) at (90-45*\i:2.2cm) {\lab};
+		}
+		\foreach \i/\j in {1/3,1/7,2/5,2/7,3/7,4/7,5/6,5/7,6/7}{
+			\draw[e] (n\i) -- (n\j);
+		}
+		\draw[e, red!70!black, thick] (n2) -- (n5) -- (n6) -- (n7);
+	\end{tikzpicture}
+	\caption{DAG per $a=\langle 5,2,8,6,3,6,9,7\rangle$: cammino massimo $2\to 3\to 6\to 9$ (lunghezza 4).}
+\end{figure}
 
 \subsubsection{Definizione ricorsiva}
 
@@ -383,6 +419,25 @@ Con $T = \texttt{It's snowy}$ e $P = \texttt{sunny}$, la tabella $K$ produce
 $\min_j K[5,j] = 3$, confermando che il pattern si abbina al testo con 3 errori.
 \end{esempio}
 
+\begin{figure}[H]
+	\centering
+	\footnotesize
+	\renewcommand{\arraystretch}{1.05}
+	\begin{tabular}{c|ccccccccccc}
+		\toprule
+		& $\epsilon$ & I & t & ' & s & \texttt{ } & s & n & o & w & y \\
+		\midrule
+		$\epsilon$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		s & 1 & 1 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 \\
+		u & 2 & 2 & 2 & 2 & 1 & 1 & 1 & 1 & 2 & 2 & 2 \\
+		n & 3 & 3 & 3 & 3 & 2 & 2 & 2 & 1 & 2 & 3 & 3 \\
+		n & 4 & 4 & 4 & 4 & 3 & 3 & 3 & 2 & 2 & 3 & 4 \\
+		y & 5 & 5 & 5 & 5 & 4 & 4 & 4 & 3 & 3 & 3 & \cellcolor{cyan!15}3 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Tabella $K[i,j]$ per \textsc{SMA} con $T=\texttt{It's snowy}$ e $P=\texttt{sunny}$: $\min_j K[5,j]=3$ (evidenziato).}
+\end{figure}
+
 % -------------------------------------------------------
 \subsection{Problema dello Zaino (Knapsack 0-1)}
 % -------------------------------------------------------
@@ -460,6 +515,24 @@ Il problema Zaino 0-1 è NP-difficile.
 Con $v = [6, 13, 4, 4]$, $p = [3, 13, 5, 3]$, $P = 13$, lo zaino ottimo contiene
 gli oggetti $\{x_1, x_3, x_4\}$ con valore totale $6+4+4=14$ e peso $3+5+3=11$.
 \end{esempio}
+
+\begin{figure}[H]
+	\centering
+	\footnotesize
+	\renewcommand{\arraystretch}{1.05}
+	\begin{tabular}{c|*{14}{c}}
+		\toprule
+		$w$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 \\
+		\midrule
+		$j=0$ & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+		$j=1$ & 0 & 0 & 0 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 \\
+		$j=2$ & 0 & 0 & 0 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 \\
+		$j=3$ & 0 & 0 & 0 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 10 & 10 \\
+		$j=4$ & 0 & 0 & 0 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 6 & 10 & \cellcolor{cyan!15}14 \\
+		\bottomrule
+	\end{tabular}
+	\caption{Tabella $K[j,w]$ per lo zaino $v=[6,13,4,4]$, $p=[3,13,5,3]$, $P=13$ (valore ottimo $14$).}
+\end{figure}
 
 % -------------------------------------------------------
 \subsection{Casi comuni di sottoproblemi}

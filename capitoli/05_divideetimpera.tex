@@ -66,6 +66,23 @@ Quindi le moltiplicazioni ricorsive diventano 3 (non 4):
 T(n)=3T(n/2)+\Theta(n)=\Theta(n^{\log_2 3}).
 \]
 
+\begin{algorithm}[H]
+	\caption{\textsc{Prodotto}$(x,y)$}
+	\KwIn{$x,y$ interi non negativi di $n=2^l$ bit}
+	\KwOut{Prodotto $xy$}
+	\If{$n\le 64$}{
+		\Return $xy$\tcp*{caso base $\Theta(1)$}
+	}
+	$x_L\gets$ $n/2$ bit più significativi di $x$;\;
+	$x_R\gets$ $n/2$ bit meno significativi di $x$\;
+	$y_L\gets$ $n/2$ bit più significativi di $y$;\;
+	$y_R\gets$ $n/2$ bit meno significativi di $y$\tcp*{Divide, $\Theta(n)$}
+	$P_1\gets\textsc{Prodotto}(x_L,y_L)$\;
+	$P_2\gets\textsc{Prodotto}(x_R,y_R)$\;
+	$P_3\gets\textsc{Prodotto}(x_L+x_R,y_L+y_R)$\tcp*{Impera, $3T(n/2)$}
+	\Return $(P_1\ll n)+((P_3-P_1-P_2)\ll n/2)+P_2$\tcp*{Combina, $\Theta(n)$}
+\end{algorithm}
+
 \paragraph{MergeSort.}
 \[
 T(n)=2T(n/2)+\Theta(n)=\Theta(n\log n).
@@ -82,6 +99,77 @@ Ricorrenza:
 \[
 T(n)=2T(n/2)+\Theta(n)=\Theta(n\log n).
 \]
+
+\begin{definizione}[Massimo sottoarray]
+	Dato $A[1:n]$, il \textbf{massimo sottoarray} è un sottoarray non vuoto
+	$A[i:j]$ ($1\le i\le j\le n$) la cui somma
+	\[
+	\sum_{t=i}^{j} A[t]
+	\]
+	è massima.
+\end{definizione}
+
+\begin{esempio}[Profitti annuali (slide)]
+	Profitti di una società negli anni 2001--2012:
+	\[
+	A=\langle 3,10,15,1,-25,32,-5,10,1,2,3,-2\rangle.
+	\]
+	Dal 2001 al 2003: $3+10+15=33$; dal 2006 al 2010: $1-25+32-5+10=13$;
+	dal 2008 al 2010: $32-5+10=37$, che è anche il massimo globale.
+\end{esempio}
+
+\begin{algorithm}[H]
+	\caption{\textsc{MassimoSottoarrayForzaBruta}$(A)$}
+	\KwIn{Array $A[1:n]$}
+	\KwOut{Coppia $(i,j)$ e somma massima}
+	$\mathit{somma}\gets-\infty$\;
+	\For{$i\gets 1$ \KwTo $n$}{
+		\For{$j\gets i$ \KwTo $n$}{
+			$s\gets 0$\;
+			\For{$t\gets i$ \KwTo $j$}{$s\gets s+A[t]$}
+			\If{$s>\mathit{somma}$}{
+				$\mathit{somma}\gets s$;\;
+				$\mathit{best}\gets(i,j)$\;
+			}
+		}
+	}
+	\Return $(\mathit{best},\mathit{somma})$\;
+\end{algorithm}
+Complessità: $\binom{n+1}{2}=\Theta(n^2)$ coppie $(i,j)$ e somma in $O(n)$ per coppia $\Rightarrow\Theta(n^3)$ nel caso peggiore (anche $\Omega(n^2)$).
+
+\begin{algorithm}[H]
+	\caption{\textsc{Find-Max-Crossing-Subarray}$(A,\mathit{low},\mathit{mid},\mathit{high})$}
+	\KwIn{Array $A$, indici $\mathit{low},\mathit{mid},\mathit{high}$}
+	\KwOut{Indici del massimo sottoarray che attraversa $\mathit{mid}$ e relativa somma}
+	$\mathit{left\_sum}\gets-\infty$;\; $s\gets 0$\;
+	$i\gets \mathit{mid}$\;
+	\While{$i\ge \mathit{low}$}{
+		$s\gets s+A[i]$\;
+		\If{$s>\mathit{left\_sum}$}{$\mathit{left\_sum}\gets s$;\; $\mathit{max\_left}\gets i$}
+		$i\gets i-1$\;
+	}
+	$\mathit{right\_sum}\gets-\infty$;\; $s\gets 0$\;
+	\For{$j\gets \mathit{mid}+1$ \KwTo $\mathit{high}$}{
+		$s\gets s+A[j]$\;
+		\If{$s>\mathit{right\_sum}$}{$\mathit{right\_sum}\gets s$;\; $\mathit{max\_right}\gets j$}
+	}
+	\Return $(\mathit{max\_left},\mathit{max\_right},\mathit{left\_sum}+\mathit{right\_sum})$\;
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Find-Maximum-Subarray}$(A,\mathit{low},\mathit{high})$}
+	\KwIn{Array $A$, estremi $\mathit{low},\mathit{high}$}
+	\KwOut{Massimo sottoarray in $A[\mathit{low}:\mathit{high}]$}
+	\If{$\mathit{low}=\mathit{high}$}{
+		\Return $(\mathit{low},\mathit{high},A[\mathit{low}])$\;
+	}
+	$\mathit{mid}\gets\lfloor(\mathit{low}+\mathit{high})/2\rfloor$\;
+	$(l_1,h_1,s_1)\gets\textsc{Find-Maximum-Subarray}(A,\mathit{low},\mathit{mid})$\;
+	$(l_2,h_2,s_2)\gets\textsc{Find-Maximum-Subarray}(A,\mathit{mid}+1,\mathit{high})$\;
+	$(l_c,h_c,s_c)\gets\textsc{Find-Max-Crossing-Subarray}(A,\mathit{low},\mathit{mid},\mathit{high})$\;
+	\Return il terzetto con somma massima tra $(l_1,h_1,s_1)$, $(l_2,h_2,s_2)$, $(l_c,h_c,s_c)$\;
+\end{algorithm}
+La chiamata iniziale è \textsc{Find-Maximum-Subarray}$(A,1,n)$.
 
 \subsection{Grafico o diagramma}
 \begin{center}
@@ -107,14 +195,92 @@ Livello i:
 \end{verbatim}
 \end{center}
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		level distance=11mm,
+		level 1/.style={sibling distance=42mm},
+		level 2/.style={sibling distance=21mm},
+		every node/.style={draw, primary, rounded corners, font=\small,
+			minimum width=1.1cm, inner sep=2pt}
+		]
+		\node {$T(n)$}
+		child { node {$T(n/2)$}
+			child { node {$T(n/4)$} }
+			child { node {$T(n/4)$} }
+		}
+		child { node {$T(n/2)$}
+			child { node {$T(n/4)$} }
+			child { node {$T(n/4)$} }
+		};
+	\end{tikzpicture}
+	\caption{Albero di ricorsione tipico per $T(n)=2T(n/2)+\Theta(n)$ (es.\ MergeSort, massimo sottoarray).}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		level distance=11mm,
+		level 1/.style={sibling distance=50mm},
+		level 2/.style={sibling distance=16mm},
+		every node/.style={draw, primary, rounded corners, font=\small,
+			minimum width=1.0cm, inner sep=2pt}
+		]
+		\node {$T(n)$}
+		child { node {$T(n/2)$}
+			child { node {$T(n/4)$} }
+			child { node {$T(n/4)$} }
+			child { node {$T(n/4)$} }
+		}
+		child { node {$T(n/2)$}
+			child { node {$T(n/4)$} }
+			child { node {$T(n/4)$} }
+			child { node {$T(n/4)$} }
+		};
+	\end{tikzpicture}
+	\caption{Albero di ricorsione per \textsc{Prodotto} (Karatsuba): $T(n)=3T(n/2)+\Theta(n)$.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		level distance=9mm,
+		level 1/.style={sibling distance=38mm},
+		level 2/.style={sibling distance=12mm},
+		every node/.style={draw, primary, font=\footnotesize,
+			minimum width=0.9cm, inner sep=1pt}
+		]
+		\node[align=center] {$T(n)$\\$\Theta(n^2)$}
+		child { node {$T(\lfloor n/4\rfloor)$}
+			child { node {$\cdots$} }
+			child { node {$\cdots$} }
+			child { node {$\cdots$} }
+		}
+		child { node {$T(\lfloor n/4\rfloor)$}
+			child { node {$\cdots$} }
+			child { node {$\cdots$} }
+			child { node {$\cdots$} }
+		}
+		child { node {$T(\lfloor n/4\rfloor)$}
+			child { node {$\cdots$} }
+			child { node {$\cdots$} }
+			child { node {$\cdots$} }
+		};
+		\node[font=\scriptsize, below=6mm of current bounding box.south]
+		{livello $i$: $3^i$ nodi, costo per nodo $\Theta\!\bigl((n/4^i)^2\bigr)$,
+			costo livello $\bigl(\frac{3}{16}\bigr)^i\Theta(n^2)$};
+	\end{tikzpicture}
+	\caption{Albero di ricorsione per $T(n)=3T(\lfloor n/4\rfloor)+\Theta(n^2)$: somma geometrica $\Rightarrow O(n^2)$.}
+\end{figure}
+
 \subsection{Dimostrazione}
-\paragraph{Metodo dell'esperto (teorema nelle slide).}
-Per
-\[
-T(n)=aT(n/b)+f(n),\quad a>0,\; b>1,
-\]
-con $f(n)$ asintoticamente positiva:
-\begin{enumerate}
+\begin{teorema}[Teorema dell'esperto]
+	Date costanti $a>0$, $b>1$ e una funzione $f(n)$ \emph{forzante} (asintoticamente positiva), per
+	\[
+	T(n)=aT(n/b)+f(n)
+	\]
+	vale:
+	\begin{enumerate}
 	\item Se $f(n)=O\!\left(n^{\log_b a-\varepsilon}\right)$, allora
 	\[
 	T(n)=\Theta\!\left(n^{\log_b a}\right).
@@ -132,6 +298,21 @@ con $f(n)$ asintoticamente positiva:
 	T(n)=\Theta(f(n)).
 	\]
 \end{enumerate}
+In particolare $n^{\log_b a}$ coincide con il numero di foglie dell'albero di ricorsione; si assume costo $\Theta(1)$ per le istanze foglia.
+\end{teorema}
+
+\paragraph{Metodo di sostituzione: esempio corretto.}
+Per $T(n)=2T(\lfloor n/2\rfloor)+n$ si ipotizza $T(n)=O(n\log n)$ e si dimostra $T(n)\le cn\log n$ per $c>0$, $n\ge n_0$.
+Nel passo induttivo, assumendo $T(\lfloor n/2\rfloor)\le c\lfloor n/2\rfloor\log\lfloor n/2\rfloor$:
+\[
+T(n)\le 2\bigl(c\lfloor n/2\rfloor\log\lfloor n/2\rfloor\bigr)+n
+\le cn\log(n/2)+n=cn\log n-cn\log 2+n\le cn\log n
+\]
+per $c\ge 1$. Si verificano poi i casi base $n_0\le n<2n_0$.
+
+\begin{hardnote}
+Errore tipico: ipotizzare $T(n)=O(n)$ e concludere da $T(n)\le cn+n=(c+1)n$ che $T(n)=O(n)$ --- si è dimostrato solo $T(n)\le (c+1)n$, non $T(n)\le cn$.
+\end{hardnote}
 
 Esempi espliciti dalle slide:
 \begin{itemize}

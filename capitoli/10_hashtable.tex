@@ -457,6 +457,26 @@ degradano le prestazioni).
 	ricerca con successo $\to \frac{4}{3}\ln 4 \approx 1.848$ ispezioni.
 \end{esempio}
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		slot/.style={draw, primary, minimum width=1.1cm, minimum height=0.65cm, font=\small},
+		probe/.style={-{Stealth[length=2mm]}, primary, thick, dashed}
+		]
+		\foreach \i in {0,...,6}{
+			\node[slot] (s\i) at (\i*1.35,0) {\i};
+		}
+		\node[font=\scriptsize, above=2mm of s2] {inserimento chiave $k$, $h_0(k)=2$};
+		\node[slot, fill=red!12] at (s2) {2};
+		\node[slot, fill=red!12] at (s3) {3};
+		\node[slot, fill=cyan!12] at (s4) {4};
+		\draw[probe] (s2.north) ++(0,4mm) -- ++(0,5mm) -| (s3.north);
+		\draw[probe] (s3.north) ++(0,4mm) -- ++(0,5mm) -| (s4.north);
+		\node[font=\scriptsize, below=3mm of s4] {ispezione lineare: $h(k,i)=(h_0(k)+i)\bmod m$};
+	\end{tikzpicture}
+	\caption{Schema di open addressing con ispezione lineare dopo collisione in cella $2$.}
+\end{figure}
+
 % ............................................................
 \subsubsection{Ispezione lineare}
 % ............................................................

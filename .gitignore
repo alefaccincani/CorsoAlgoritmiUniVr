@@ -34,6 +34,7 @@
 .DS_Store
 
 # Editor
+.venv
 *.swp
 *.swo
 ~*
