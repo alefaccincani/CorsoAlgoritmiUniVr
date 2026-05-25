@@ -1,0 +1,1728 @@
+\section{Algoritmi Avidi (Greedy)}
+
+\subsection{Paradigma greedy}
+
+\subsubsection{Definizione}
+Un algoritmo \textbf{greedy}, o algoritmo \textbf{avido}, risolve un problema di ottimizzazione costruendo la soluzione in modo incrementale. A ogni iterazione sceglie una componente che, secondo un criterio locale, risulta la migliore in quel momento; se tale componente puo' essere aggiunta senza violare i vincoli del problema, essa viene inserita nella soluzione.
+
+Formalmente, dato un insieme di candidati
+\[
+X=\{x_1,x_2,\ldots,x_n\},
+\]
+un criterio greedy ordina o seleziona i candidati in base alla loro appetibilita' locale. L'algoritmo mantiene un insieme parziale $S\subseteq X$ e aggiunge un candidato $x_i$ solo se $S\cup\{x_i\}$ resta ammissibile.
+
+Un algoritmo greedy determina una soluzione ottima quando il problema soddisfa le due proprieta' indicate nelle slide:
+\begin{enumerate}
+	\item \textbf{proprieta' della scelta greedy};
+	\item \textbf{proprieta' della sottostruttura ottima}.
+\end{enumerate}
+
+\subsubsection{Intuizione}
+Il punto centrale e' che l'algoritmo non esplora tutte le soluzioni possibili. Si comporta invece come segue: guarda lo stato corrente, sceglie il candidato localmente migliore, decide se inserirlo, e non torna indietro.
+
+Questa scelta e' potente ma pericolosa. Una scelta localmente buona non e' automaticamente una scelta globalmente buona. Per questo la correttezza di un algoritmo greedy non si dimostra mai dicendo soltanto che ``sceglie il migliore''. Si deve dimostrare che esiste una soluzione ottima compatibile con quella scelta locale e che, dopo aver fissato tale scelta, resta un sottoproblema della stessa natura.
+
+\subsubsection{Motivazione}
+Molti problemi di ottimizzazione hanno uno spazio di soluzioni enorme. Per esempio, nel problema dell'albero di ricoprimento minimo, le soluzioni ammissibili sono alberi di ricoprimento; enumerarle tutte non e' l'approccio seguito dal corso.
+
+Il paradigma greedy serve quando si riesce a sostituire l'enumerazione esaustiva con una regola locale corretta. Se la regola e' giustificata, l'algoritmo diventa semplice, efficiente e spesso implementabile con strutture dati come code di priorita'.
+
+\subsubsection{Proprieta' teoriche}
+\paragraph{Proprieta' della scelta greedy.}
+La scelta locale effettuata dall'algoritmo deve essere compatibile con almeno una soluzione ottima. In altre parole, se l'algoritmo sceglie un certo elemento $x$, bisogna poter dimostrare che esiste una soluzione ottima che contiene $x$.
+
+\paragraph{Proprieta' della sottostruttura ottima.}
+Dopo aver fissato una scelta greedy corretta, il problema residuo deve essere ancora un problema di ottimizzazione dello stesso tipo. Risolvendo ottimamente il sottoproblema residuo e aggiungendo la scelta fatta, si ottiene una soluzione ottima del problema originale.
+
+\paragraph{Attenzione logica.}
+Le due proprieta' sono condizioni da dimostrare nel problema specifico. Non sono conseguenze automatiche della parola ``greedy''.
+
+\subsubsection{Algoritmo}
+Lo schema generale riportato nelle slide e' il seguente.
+
+\begin{algorithm}[H]
+	\caption{\textsc{Greedy}$(X)$}
+	\KwIn{$X=\{x_1,x_2,\ldots,x_n\}$, criterio greedy di selezione, test di ammissibilita'}
+	\KwOut{Un sottoinsieme $S=\{x_{i_1},\ldots,x_{i_k}\}\subseteq X$ che ottimizza il valore obiettivo}
+	$S\gets\emptyset$\;
+	Ordina $X$ secondo il criterio greedy di selezione\;
+	\For{$i\gets 1$ \KwTo $n$}{
+		\If{$x_i$ puo' essere aggiunto a $S$}{
+			$S\gets S\cup\{x_i\}$\;
+		}
+	}
+	\Return $S$\;
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Si consideri un insieme astratto di candidati gia' ordinati per appetibilita':
+\[
+x_4,\ x_2,\ x_5,\ x_1,\ x_3.
+\]
+L'algoritmo procede cosi':
+\[
+S_0=\emptyset.
+\]
+Se $x_4$ e' ammissibile, allora
+\[
+S_1=\{x_4\}.
+\]
+Se $x_2$ e' ammissibile insieme a $x_4$, allora
+\[
+S_2=\{x_4,x_2\}.
+\]
+Se $x_5$ non e' ammissibile, viene scartato definitivamente:
+\[
+S_3=\{x_4,x_2\}.
+\]
+L'algoritmo continua fino all'esaurimento dei candidati.
+
+Il punto d'esame e' questo: lo scarto di $x_5$ e' definitivo. Quindi il test di ammissibilita' e la dimostrazione di correttezza devono garantire che non servira' recuperarlo piu' avanti.
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Candidati ordinati per appetibilita':
+
+x4   x2   x5   x1   x3
+ |    |    |    |    |
+ si   si   no   si   no
+ |    |         |
+ v    v         v
+
+S0 = {}
+S1 = {x4}
+S2 = {x4, x2}
+S3 = {x4, x2}       x5 scartato
+S4 = {x4, x2, x1}
+S5 = {x4, x2, x1}   x3 scartato
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+Le slide non danno una dimostrazione generale del paradigma astratto. La correttezza viene dimostrata nei casi specifici:
+\begin{itemize}
+	\item albero di ricoprimento minimo tramite tagli e archi leggeri;
+	\item Dijkstra tramite invariante sui nodi gia' fissati;
+	\item matroidi tramite proprieta' di scambio e sottostruttura ottima.
+\end{itemize}
+
+\subsubsection{Analisi della complessita'}
+Per lo schema generale, se $n=|X|$, il costo dipende da:
+\begin{itemize}
+	\item ordinamento dei candidati;
+	\item costo del test di ammissibilita';
+	\item costo dell'eventuale aggiornamento della soluzione parziale.
+\end{itemize}
+Se l'ordinamento costa $O(n\log n)$ e il test di ammissibilita' costa $f(n)$ per candidato, allora il costo e'
+\[
+O(n\log n+n f(n)).
+\]
+Le slide non fissano un costo unico per il paradigma astratto, perche' il costo dipende dal problema e dalla struttura dati usata.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Errore grave: affermare che un algoritmo e' corretto perche' ``a ogni passo prende il migliore''. Questo non dimostra nulla. Bisogna dimostrare che la scelta locale e' sicura rispetto a una soluzione ottima.
+\end{hardnote}
+
+\begin{hardnote}
+Errore frequente: confondere ammissibilita' con ottimalita'. Un candidato ammissibile puo' essere aggiunto senza violare i vincoli, ma cio' non significa automaticamente che porti a una soluzione ottima.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire il paradigma greedy.
+	\item Enunciare le due proprieta' che consentono a un algoritmo greedy di determinare una soluzione ottima.
+	\item Spiegare perche' una scelta localmente ottima non e' necessariamente globalmente ottima.
+	\item Scrivere lo schema generale di un algoritmo greedy.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Il paradigma greedy e' collegato a:
+\begin{itemize}
+	\item alberi di ricoprimento minimo, tramite archi sicuri;
+	\item cammini minimi da singola sorgente, tramite stime definitive;
+	\item matroidi, tramite indipendenza e proprieta' di scambio;
+	\item scheduling di attivita' unitarie con penalita', tramite massimizzazione delle penalita' evitate.
+\end{itemize}
+
+% ===============================================================
+\subsection{Albero di ricoprimento minimo e algoritmo di Prim}
+
+\subsubsection{Definizione}
+Il problema dell'\textbf{albero di ricoprimento minimo} e' definito nelle slide come segue.
+
+\textbf{Input:} un grafo
+\[
+G=(V,E)
+\]
+non orientato, connesso, di ordine $n$, e una funzione peso
+\[
+w:E\to\mathbb{R}.
+\]
+
+\textbf{Output:} un albero di ricoprimento minimo
+\[
+T=(V,E_T)
+\]
+tale che:
+\begin{itemize}
+	\item $T$ e' un albero con $n$ nodi;
+	\item $E_T\subseteq E$;
+	\item il peso totale
+	\[
+	w(T)=\sum_{e\in E_T} w(e)
+	\]
+	e' minimo tra tutti gli alberi di ricoprimento di $G$.
+\end{itemize}
+
+Un \textbf{albero di ricoprimento} e' quindi un sottografo che contiene tutti i vertici di $G$, e' connesso ed e' aciclico.
+
+\subsubsection{Intuizione}
+L'algoritmo di Prim costruisce progressivamente un albero. Parte da un nodo $r$ e, a ogni passo, aggiunge all'albero corrente un nuovo nodo tramite un arco di peso minimo tra quelli che collegano l'albero gia' costruito al resto del grafo.
+
+L'intuizione corretta non e': ``prendo l'arco piu' leggero del grafo''. L'intuizione corretta e': ``dato il taglio tra i nodi gia' raggiunti e quelli non ancora raggiunti, prendo un arco leggero che attraversa quel taglio''. Questa distinzione e' essenziale.
+
+\subsubsection{Motivazione}
+Enumerare tutti gli alberi di ricoprimento non e' l'approccio usato nelle slide. Si cerca invece una regola locale che permetta di aggiungere archi senza distruggere la possibilita' di completare la soluzione in un albero di ricoprimento minimo.
+
+Il Teorema dell'arco sicuro fornisce esattamente questa garanzia.
+
+\subsubsection{Proprieta' teoriche}
+Sia $A\subseteq E$ un insieme di archi che appartiene ad almeno un albero di ricoprimento minimo.
+
+\paragraph{Taglio.}
+Dato $S\subseteq V$, la coppia
+\[
+(S,V\setminus S)
+\]
+e' un \textbf{taglio} del grafo.
+
+\paragraph{Arco che attraversa un taglio.}
+Un arco $(u,v)\in E$ attraversa il taglio $(S,V\setminus S)$ se un suo estremo appartiene a $S$ e l'altro appartiene a $V\setminus S$.
+
+\paragraph{Taglio che rispetta $A$.}
+Un taglio rispetta $A$ se nessun arco di $A$ attraversa il taglio.
+
+\paragraph{Arco leggero.}
+Un arco che attraversa un taglio e ha peso minimo tra tutti gli archi che attraversano quel taglio e' detto \textbf{arco leggero}.
+
+\begin{teorema}[Arco sicuro]
+Sia $G=(V,E)$ un grafo pesato e connesso, sia $w$ la funzione peso, e sia $A\subseteq E$ un insieme di archi che appartiene a un albero di ricoprimento minimo.
+Sia $(S,V\setminus S)$ un taglio di $G$ che rispetta $A$ e sia $(u,v)$ un arco leggero del taglio. Allora $(u,v)$ e' un arco sicuro per $A$: si puo' aggiungere ad $A$ e $A\cup\{(u,v)\}$ rimane sottoinsieme di un albero di ricoprimento minimo.
+\end{teorema}
+
+\subsubsection{Algoritmo}
+Nell'algoritmo di Prim ogni nodo $v$ ha:
+\begin{itemize}
+	\item $v.key$, cioe' il peso minimo di un arco che collega $v$ all'albero corrente;
+	\item $v.\pi$, cioe' il predecessore di $v$ nell'albero costruito.
+\end{itemize}
+
+\begin{algorithm}[H]
+	\caption{\textsc{Prim}$(G,w,r)$}
+	\KwIn{$G=(V,E)$, funzione peso $w$, nodo di partenza $r\in V$}
+	\KwOut{Un albero di ricoprimento minimo con radice $r$, definito tramite $\pi$}
+	\ForEach{$v\in V$}{
+		$v.key\gets\infty$\;
+		$v.\pi\gets\textsc{Null}$\;
+	}
+	$r.key\gets 0$\;
+	$Q\gets V$\;
+	\textsc{BuildMinPriorityQueue}$(Q)$\tcp*{$Q$ e' ordinata rispetto a $key$}
+	\While{$Q\neq\emptyset$}{
+		$u\gets\textsc{ExtractMin}(Q)$\;
+		\ForEach{$v\in G.Adj[u]$}{
+			\If{$v\in Q$ e $w(u,v)<v.key$}{
+				$v.\pi\gets u$\;
+				\textsc{DecreaseKey}$(Q,v,w(u,v))$\tcp*{$v.key$ diventa $w(u,v)$}
+			}
+		}
+	}
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Consideriamo il seguente grafo non orientato, pesato, e scegliamo $A$ come radice.
+\[
+V=\{A,B,C,D\}.
+\]
+
+\begin{center}
+\begin{tabular}{c|c}
+Arco & Peso \\
+\hline
+$(A,B)$ & $1$ \\
+$(A,C)$ & $4$ \\
+$(B,D)$ & $2$ \\
+$(C,D)$ & $3$
+\end{tabular}
+\end{center}
+
+Stato iniziale:
+\[
+A.key=0,\qquad B.key=C.key=D.key=\infty.
+\]
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Passo & Nodo estratto & Aggiornamenti & Archi fissati tramite $\pi$ \\
+\hline
+$0$ & -- & $A.key=0$ & -- \\
+$1$ & $A$ & $B.key=1,\ B.\pi=A;\ C.key=4,\ C.\pi=A$ & -- \\
+$2$ & $B$ & $D.key=2,\ D.\pi=B$ & $(A,B)$ \\
+$3$ & $D$ & $C.key=3,\ C.\pi=D$ & $(A,B),(B,D)$ \\
+$4$ & $C$ & nessuno & $(A,B),(B,D),(D,C)$
+\end{tabular}
+\end{center}
+
+L'albero finale e'
+\[
+E_T=\{(A,B),(B,D),(D,C)\}
+\]
+e ha peso totale
+\[
+1+2+3=6.
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Grafo:
+
+    1
+A ----- B
+|       |
+4       2
+|       |
+C ----- D
+    3
+
+Prim da A:
+
+Q iniziale:
+A:0, B:inf, C:inf, D:inf
+
+Estrai A:
+B:1 tramite A
+C:4 tramite A
+D:inf
+
+Estrai B:
+D:2 tramite B
+C resta 4
+
+Estrai D:
+C:3 tramite D
+
+Estrai C:
+fine
+
+MST:
+A -- B -- D -- C
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+Dimostriamo il Teorema dell'arco sicuro secondo la dimostrazione ``taglia-e-cuci'' riportata nelle slide.
+
+Sia $T$ un albero di ricoprimento minimo che contiene $A$.
+
+Se $(u,v)\in T$, allora non c'e' nulla da dimostrare: l'arco e' gia' contenuto in un MST che contiene $A$.
+
+Supponiamo quindi che
+\[
+(u,v)\notin T.
+\]
+Poiche' $T$ e' un albero, tra $u$ e $v$ esiste in $T$ un unico cammino semplice. Aggiungendo l'arco $(u,v)$ a $T$, si forma un ciclo.
+
+Poiche' $u$ e $v$ stanno su lati opposti del taglio $(S,V\setminus S)$, il cammino in $T$ da $u$ a $v$ deve attraversare il taglio almeno una volta. Esiste quindi un arco $(x,y)$ del cammino che attraversa il taglio.
+
+Il taglio rispetta $A$, cioe' nessun arco di $A$ attraversa il taglio. Poiche' $(x,y)$ attraversa il taglio, segue che
+\[
+(x,y)\notin A.
+\]
+
+Rimuoviamo $(x,y)$ da $T$ e aggiungiamo $(u,v)$:
+\[
+T'=T-\{(x,y)\}+\{(u,v)\}.
+\]
+Togliere $(x,y)$ spezza $T$ in due componenti; aggiungere $(u,v)$ le ricongiunge. Quindi $T'$ e' ancora un albero di ricoprimento.
+
+Poiche' $(u,v)$ e' un arco leggero del taglio,
+\[
+w(u,v)\le w(x,y).
+\]
+Pertanto
+\[
+w(T')=w(T)-w(x,y)+w(u,v)\le w(T).
+\]
+Ma $T$ e' un albero di ricoprimento minimo, quindi nessun albero di ricoprimento puo' avere peso minore di $w(T)$:
+\[
+w(T)\le w(T').
+\]
+Dalle due disuguaglianze segue
+\[
+w(T')=w(T).
+\]
+Dunque $T'$ e' anch'esso un albero di ricoprimento minimo.
+
+Infine, $A\subseteq T$ per ipotesi e l'arco rimosso $(x,y)$ non appartiene ad $A$; quindi
+\[
+A\subseteq T'.
+\]
+Inoltre $(u,v)\in T'$. Dunque $A\cup\{(u,v)\}$ e' contenuto in un albero di ricoprimento minimo. L'arco $(u,v)$ e' sicuro per $A$.
+
+\paragraph{Correttezza di Prim.}
+Durante Prim, l'insieme dei nodi estratti dalla coda definisce un taglio tra nodi gia' raggiunti e nodi non ancora raggiunti. L'arco scelto per collegare il prossimo nodo e' leggero rispetto a tale taglio, perche' la coda di min-priorita' seleziona il nodo con chiave minima. Per il Teorema dell'arco sicuro, ogni arco aggiunto mantiene la possibilita' di completare la soluzione in un MST. Quando tutti i nodi sono stati estratti, gli archi definiti dai predecessori $\pi$ formano un albero di ricoprimento minimo.
+
+\subsubsection{Analisi della complessita'}
+Siano
+\[
+n=|V|,\qquad m=|E|.
+\]
+
+\paragraph{Coda di priorita' semplice con ricerca lineare del minimo.}
+\begin{itemize}
+	\item Inizializzazione dei nodi: $O(n)$.
+	\item Il ciclo \texttt{while} viene eseguito $n$ volte.
+	\item Ogni \textsc{ExtractMin} costa $O(n)$.
+	\item Tutti i cicli sugli adiacenti considerano complessivamente $2m$ occorrenze di archi.
+	\item Il test $v\in Q$ puo' essere fatto in tempo costante mantenendo un attributo booleano o equivalente.
+	\item Ogni \textsc{DecreaseKey} costa $O(1)$.
+\end{itemize}
+Quindi:
+\[
+O(n)+O(n^2)+O(m)=O(n^2+m)=O(n^2),
+\]
+poiche' in un grafo connesso $m\le n^2$.
+
+\paragraph{Coda di priorita' implementata con min-heap.}
+\begin{itemize}
+	\item Inizializzazione: $O(n)$.
+	\item \textsc{BuildMinHeap}: $O(n)$.
+	\item $n$ estrazioni, ciascuna $O(\log n)$: totale $O(n\log n)$.
+	\item Fino a $O(m)$ operazioni di aggiornamento, ciascuna $O(\log n)$: totale $O(m\log n)$.
+\end{itemize}
+Quindi:
+\[
+O(n+n\log n+m\log n)=O(m\log n).
+\]
+Le slide osservano che l'implementazione con heap conviene quando
+\[
+m=o\!\left(\frac{n^2}{\log n}\right).
+\]
+
+\paragraph{Spazio.}
+Oltre al grafo in input, Prim mantiene $key$, $\pi$ e la coda $Q$, quindi usa spazio aggiuntivo $O(n)$.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Confondere Prim con una scelta globale dell'arco piu' leggero del grafo. Prim sceglie un arco leggero rispetto al taglio indotto dall'albero corrente.
+\end{hardnote}
+
+\begin{hardnote}
+Confondere $v.key$ con una distanza dalla radice. In Prim, $v.key$ e' il peso del miglior arco attualmente noto per collegare $v$ all'albero corrente.
+\end{hardnote}
+
+\begin{hardnote}
+Dimenticare che il grafo in input deve essere non orientato e connesso, come indicato nella definizione del problema MST delle slide.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire taglio, arco che attraversa un taglio, taglio che rispetta $A$, arco leggero.
+	\item Enunciare e dimostrare il Teorema dell'arco sicuro.
+	\item Scrivere l'algoritmo di Prim.
+	\item Analizzare Prim con coda semplice e con min-heap.
+	\item Spiegare perche' l'arco scelto da Prim e' sicuro.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Prim e' un'applicazione diretta del paradigma greedy: la scelta locale e' l'arco leggero del taglio corrente; la correttezza e' garantita dal Teorema dell'arco sicuro.
+
+Il problema MST e' anche collegato ai matroidi grafici: gli insiemi indipendenti sono foreste, e i massimali sono alberi di ricoprimento.
+
+% ===============================================================
+\subsection{Cammini minimi da singola sorgente e algoritmo di Dijkstra}
+
+\subsubsection{Definizione}
+Il problema dei \textbf{cammini minimi da singola sorgente} e' indicato nelle slide come SSSP, \emph{Single-Source Shortest Paths}.
+
+\textbf{Input:}
+\begin{itemize}
+	\item un grafo orientato e connesso
+	\[
+	G=(V,E)
+	\]
+	di ordine $n$;
+	\item una funzione peso
+	\[
+	w:E\to\mathbb{R}_{\ge 0},
+	\]
+	nelle slide indicata come funzione a valori non negativi;
+	\item un nodo sorgente $s\in V$.
+\end{itemize}
+
+\textbf{Output:} determinare i cammini minimi da $s$ verso tutti gli altri nodi.
+
+Indichiamo con
+\[
+\delta(s,u)
+\]
+la distanza minima da $s$ a $u$.
+
+\subsubsection{Intuizione}
+Dijkstra mantiene, per ogni nodo $v$, una stima $v.d$ della distanza minima da $s$ a $v$. Tale stima e' sempre un limite superiore: inizialmente e' $+\infty$ per tutti i nodi diversi da $s$ e vale $0$ per $s$.
+
+A ogni passo l'algoritmo sceglie il nodo $u$ non ancora fissato con stima minima. Con pesi non negativi, tale stima non potra' piu' essere migliorata in futuro, quindi diventa definitiva.
+
+\subsubsection{Motivazione}
+Il problema richiede tutti i cammini minimi da una sorgente. La strategia greedy evita di provare tutti i cammini: usa la non negativita' dei pesi per rendere definitiva, passo dopo passo, la migliore stima corrente.
+
+La condizione sui pesi non negativi e' essenziale. Le slide affermano esplicitamente che l'algoritmo di Dijkstra funziona solo per grafi con pesi non negativi.
+
+\subsubsection{Proprieta' teoriche}
+\begin{teorema}[Sottostruttura ottima dei cammini minimi]
+Dato un cammino minimo
+\[
+p=[v_1,v_2,\ldots,v_k]
+\]
+dal vertice $v_1$ al vertice $v_k$, per qualsiasi $i,j$ con
+\[
+1\le i\le j\le k,
+\]
+il sottocammino
+\[
+p_{ij}=[v_i,v_{i+1},\ldots,v_j]
+\]
+e' un cammino minimo da $v_i$ a $v_j$.
+\end{teorema}
+
+\paragraph{Stima della distanza.}
+Per ogni nodo $v$, l'attributo $v.d$ mantiene una stima del cammino minimo da $s$ a $v$.
+
+\paragraph{Rilassamento.}
+Dato un arco $(u,v)\in E$, se passando per $u$ si migliora la stima di $v$, cioe' se
+\[
+v.d>u.d+w(u,v),
+\]
+allora si aggiorna:
+\[
+v.d\gets u.d+w(u,v),
+\qquad
+v.\pi\gets u.
+\]
+
+\paragraph{Insiemi usati dall'algoritmo.}
+\begin{itemize}
+	\item $S$ contiene i nodi per cui la distanza minima e' gia' stata determinata.
+	\item $Q$ contiene i nodi non ancora fissati, organizzati in coda di min-priorita' rispetto a $d$.
+\end{itemize}
+
+\subsubsection{Algoritmo}
+\begin{algorithm}[H]
+	\caption{\textsc{Dijkstra}$(G,s,w)$}
+	\KwIn{$G=(V,E)$, sorgente $s\in V$, funzione peso $w$}
+	\KwOut{Cammini minimi da $s$ rappresentati dagli attributi $d$ e $\pi$ dei nodi}
+	\ForEach{$v\in V$}{
+		$v.d\gets\infty$\;
+		$v.\pi\gets\textsc{Null}$\;
+	}
+	$s.d\gets 0$\;
+	$Q\gets V$\;
+	$S\gets\emptyset$\;
+	\textsc{BuildMinPriorityQueue}$(Q)$\tcp*{coda rispetto a $d$}
+	\While{$S\subset V$}{
+		$u\gets\textsc{ExtractMin}(Q)$\;
+		$S\gets S\cup\{u\}$\;
+		\ForEach{$v\in G.Adj[u]$}{
+			\If{$v\in Q$ e $v.d>u.d+w(u,v)$}{
+				$v.d\gets u.d+w(u,v)$\;
+				\textsc{DecreaseKey}$(Q,v,v.d)$\;
+				$v.\pi\gets u$\;
+			}
+		}
+	}
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Consideriamo il grafo orientato con sorgente $s$:
+\[
+(s,a)=1,\quad (s,b)=4,\quad (a,b)=2,\quad (a,c)=6,\quad (b,c)=3.
+\]
+
+Stato iniziale:
+\[
+s.d=0,\qquad a.d=b.d=c.d=\infty.
+\]
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Passo & Nodo estratto & Rilassamenti efficaci & Distanze dopo il passo \\
+\hline
+$0$ & -- & -- & $d(s)=0,\ d(a)=\infty,\ d(b)=\infty,\ d(c)=\infty$ \\
+$1$ & $s$ & $a.d=1,\ b.d=4$ & $0,1,4,\infty$ \\
+$2$ & $a$ & $b.d=3,\ c.d=7$ & $0,1,3,7$ \\
+$3$ & $b$ & $c.d=6$ & $0,1,3,6$ \\
+$4$ & $c$ & -- & $0,1,3,6$
+\end{tabular}
+\end{center}
+
+I predecessori finali sono:
+\[
+a.\pi=s,\qquad b.\pi=a,\qquad c.\pi=b.
+\]
+Quindi il cammino minimo da $s$ a $c$ e'
+\[
+s\to a\to b\to c
+\]
+di peso
+\[
+1+2+3=6.
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Grafo orientato:
+
+      1        2        3
+s --------> a -----> b -----> c
+ \          |
+  \         | 6
+   \ 4      v
+    ------> c
+
+Esecuzione:
+
+inizio:
+S = {}
+Q = {s:0, a:inf, b:inf, c:inf}
+
+estrai s:
+S = {s}
+Q = {a:1, b:4, c:inf}
+
+estrai a:
+S = {s,a}
+Q = {b:3, c:7}
+
+estrai b:
+S = {s,a,b}
+Q = {c:6}
+
+estrai c:
+S = {s,a,b,c}
+Q = {}
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+\begin{teorema}[Correttezza di Dijkstra]
+Dato un grafo $G=(V,E)$ con pesi non negativi $w$ e sorgente $s$, l'algoritmo di Dijkstra termina e, per ogni $u\in V$, restituisce
+\[
+u.d=\delta(s,u).
+\]
+\end{teorema}
+
+La dimostrazione delle slide usa il seguente invariante di ciclo:
+\[
+\text{all'inizio di ogni ciclo \texttt{while}, } v.d=\delta(s,v)
+\text{ per ciascun nodo } v\in S.
+\]
+
+\paragraph{Inizializzazione.}
+All'inizio
+\[
+S=\emptyset.
+\]
+L'invariante e' vero banalmente, perche' non esiste alcun nodo in $S$ per cui verificarlo.
+
+\paragraph{Mantenimento.}
+Assumiamo che all'inizio di una certa iterazione valga
+\[
+v.d=\delta(s,v)\qquad\forall v\in S.
+\]
+Sia $u$ il nodo estratto da $Q$ e aggiunto a $S$ in questa iterazione. Dobbiamo dimostrare che
+\[
+u.d=\delta(s,u).
+\]
+
+Sia $p$ un cammino minimo da $s$ a $u$. Sia $y$ il primo nodo di $p$ che non appartiene a $S$ e sia $x$ il suo predecessore in $p$. Allora $x\in S$.
+
+Poiche' $y$ precede $u$ lungo un cammino minimo e tutti i pesi sono non negativi,
+\[
+\delta(s,y)\le \delta(s,u).
+\]
+Poiche' $u$ viene scelto da \textsc{ExtractMin}, esso ha stima minima tra i nodi in $Q$; dato che $y\in Q$, vale
+\[
+u.d\le y.d.
+\]
+Inoltre $u.d$ e' una stima ottenuta tramite cammini effettivamente scoperti da $s$ a $u$, quindi non puo' essere minore della distanza minima:
+\[
+\delta(s,u)\le u.d.
+\]
+
+Per ipotesi induttiva,
+\[
+x.d=\delta(s,x).
+\]
+Quando $x$ e' stato aggiunto a $S$, l'arco $(x,y)$ e' stato rilassato. Poiche' il sottocammino da $s$ a $y$ lungo $p$ e' minimo, il rilassamento porta a
+\[
+y.d=\delta(s,y).
+\]
+
+Mettendo insieme le disuguaglianze:
+\[
+\delta(s,y)\le \delta(s,u)\le u.d\le y.d=\delta(s,y).
+\]
+La prima e l'ultima quantita' sono uguali, quindi tutte le quantita' intermedie sono uguali:
+\[
+u.d=\delta(s,u).
+\]
+L'invariante rimane vero dopo l'inserimento di $u$ in $S$.
+
+\paragraph{Conclusione.}
+Quando l'algoritmo termina, tutti i vertici appartengono a $S$. Per l'invariante, per ogni $u\in V$ vale
+\[
+u.d=\delta(s,u).
+\]
+Quindi l'algoritmo restituisce le distanze minime corrette.
+
+\subsubsection{Analisi della complessita'}
+Siano
+\[
+n=|V|,\qquad m=|E|.
+\]
+L'analisi e' analoga a quella di Prim.
+
+\begin{itemize}
+	\item Con coda di priorita' come lista semplice:
+	\[
+	O(n^2).
+	\]
+	\item Con coda di priorita' implementata tramite min-heap:
+	\[
+	O(m\log n).
+	\]
+	\item Con Fibonacci heap:
+	\[
+	O(m+n\log n).
+	\]
+\end{itemize}
+
+Lo spazio aggiuntivo, oltre alla rappresentazione del grafo, e' $O(n)$ per $d$, $\pi$, $S$ e $Q$.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Dimenticare l'ipotesi dei pesi non negativi. La catena di disuguaglianze nella dimostrazione usa il fatto che, se $y$ precede $u$ su un cammino minimo, allora $\delta(s,y)\le \delta(s,u)$.
+\end{hardnote}
+
+\begin{hardnote}
+Confondere $S$ e $Q$. $S$ contiene i nodi gia' definitivi; $Q$ contiene i nodi ancora da fissare.
+\end{hardnote}
+
+\begin{hardnote}
+Pensare che il rilassamento renda sempre definitiva una distanza. Il rilassamento migliora una stima; la stima diventa definitiva solo quando il nodo viene estratto come minimo e inserito in $S$.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire il problema SSSP.
+	\item Spiegare il rilassamento di un arco.
+	\item Scrivere l'algoritmo di Dijkstra.
+	\item Dimostrare la correttezza di Dijkstra tramite l'invariante su $S$.
+	\item Spiegare perche' l'algoritmo richiede pesi non negativi.
+	\item Confrontare le complessita' con lista semplice, min-heap e Fibonacci heap.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Dijkstra e' greedy perche' sceglie a ogni iterazione il nodo non ancora fissato con stima minima. La correttezza dipende dalla sottostruttura ottima dei cammini minimi e dalla non negativita' dei pesi.
+
+La struttura dati centrale e' la coda di min-priorita', come in Prim; tuttavia il significato della chiave e' diverso:
+\[
+\begin{array}{c|c}
+\text{Algoritmo} & \text{Significato della chiave} \\
+\hline
+\text{Prim} & \text{peso minimo per collegare il nodo all'albero corrente} \\
+\text{Dijkstra} & \text{stima della distanza minima dalla sorgente}
+\end{array}
+\]
+
+% ===============================================================
+\subsection{Matroidi}
+
+\subsubsection{Definizione}
+Un \textbf{matroide} e' una coppia ordinata
+\[
+M=(S,\mathcal{I})
+\]
+che soddisfa le seguenti condizioni:
+\begin{enumerate}
+	\item $S$ e' un insieme finito;
+	\item $\mathcal{I}$ e' un insieme non vuoto di sottoinsiemi di $S$ tale che
+	\[
+	B\in\mathcal{I}\ \land\ A\subseteq B \Longrightarrow A\in\mathcal{I};
+	\]
+	questa proprieta' e' detta \textbf{ereditaria}, e gli elementi di $\mathcal{I}$ sono detti \textbf{sottoinsiemi indipendenti};
+	\item vale la \textbf{proprieta' di scambio}:
+	\[
+	A\in\mathcal{I},\ B\in\mathcal{I},\ |A|<|B|
+	\Longrightarrow
+	\exists x\in B\setminus A:\ A\cup\{x\}\in\mathcal{I}.
+	\]
+\end{enumerate}
+
+\subsubsection{Intuizione}
+Un matroide astrae il concetto di indipendenza. In un grafo, per esempio, un insieme di archi e' indipendente se non crea cicli. In altri problemi, l'indipendenza puo' significare che un insieme di attivita' puo' essere schedulato senza ritardi.
+
+La proprieta' di scambio e' il cuore della teoria: se un insieme indipendente $B$ e' piu' grande di un altro insieme indipendente $A$, allora esiste almeno un elemento di $B$ che puo' essere aggiunto ad $A$ senza perdere indipendenza.
+
+\subsubsection{Motivazione}
+Le slide introducono i matroidi per stabilire condizioni sufficienti affinche' una soluzione greedy sia ottima. Se un problema puo' essere modellato come ricerca di un sottoinsieme ottimo in un matroide pesato, allora la procedura greedy ordinata per peso e' corretta.
+
+\subsubsection{Proprieta' teoriche}
+\paragraph{Estensione.}
+Un elemento $x\notin A$ e' un'\textbf{estensione} di $A\in\mathcal{I}$ se puo' essere aggiunto preservando l'indipendenza:
+\[
+A\cup\{x\}\in\mathcal{I}.
+\]
+
+\paragraph{Sottoinsieme massimale.}
+Un sottoinsieme $A\in\mathcal{I}$ e' \textbf{massimale} se non ammette estensioni.
+
+\paragraph{Cardinalita' dei massimali.}
+Tutti i sottoinsiemi massimali di un matroide hanno la stessa dimensione. Infatti, se $A$ e $B$ fossero massimali con $|A|<|B|$, la proprieta' di scambio garantirebbe l'esistenza di un elemento $x\in B\setminus A$ tale che $A\cup\{x\}\in\mathcal{I}$, contraddicendo la massimalita' di $A$.
+
+\paragraph{Matroide pesato.}
+Se un matroide ha una funzione peso
+\[
+w:S\to\mathbb{R}_{>0},
+\]
+allora e' detto \textbf{matroide pesato}. Il peso di un sottoinsieme $A\subseteq S$ e'
+\[
+w(A)=\sum_{x\in A} w(x).
+\]
+
+\paragraph{Matroide grafico.}
+Dato un grafo non orientato
+\[
+G=(V,E),
+\]
+il matroide grafico
+\[
+M_G=(S_G,\mathcal{I}_G)
+\]
+e' definito da:
+\[
+S_G=E,
+\]
+e, per $A\subseteq E$,
+\[
+A\in\mathcal{I}_G
+\quad\Longleftrightarrow\quad
+A\text{ e' aciclico}.
+\]
+In altre parole, $\mathcal{I}_G$ contiene tutti i sottoinsiemi di archi che inducono una foresta.
+
+\subsubsection{Algoritmo}
+Il problema del \textbf{massimo di un matroide pesato} e' il seguente.
+
+\textbf{Input:} un matroide pesato
+\[
+M=(S,\mathcal{I}).
+\]
+
+\textbf{Output:} un sottoinsieme indipendente
+\[
+A\in\mathcal{I}
+\]
+di peso massimo, detto anche sottoinsieme ottimo.
+
+La procedura greedy delle slide e' la seguente.
+
+\begin{algorithm}[H]
+	\caption{\textsc{Greedy}$(M,w)$}
+	\KwIn{Matroide pesato $M=(S,\mathcal{I})$, funzione peso $w$}
+	\KwOut{Sottoinsieme ottimo $A\in\mathcal{I}$}
+	$A\gets\emptyset$\tcp*{$A$ e' indipendente}
+	Ordina $S$ in ordine decrescente rispetto a $w$\;
+	\For{$i\gets 1$ \KwTo $|S|$}{
+		\If{$A\cup\{s_i\}\in\mathcal{I}$}{
+			$A\gets A\cup\{s_i\}$\;
+		}
+	}
+	\Return $A$\;
+\end{algorithm}
+
+L'invariante immediato e':
+\[
+A\in\mathcal{I}
+\]
+all'inizio di ogni iterazione.
+
+\subsubsection{Esempio guidato}
+Consideriamo il grafo triangolo con archi
+\[
+e_1=(a,b),\qquad e_2=(b,c),\qquad e_3=(a,c).
+\]
+Nel matroide grafico, gli insiemi indipendenti sono quelli aciclici:
+\[
+\emptyset,\ \{e_1\},\ \{e_2\},\ \{e_3\},\ \{e_1,e_2\},\ \{e_1,e_3\},\ \{e_2,e_3\}.
+\]
+L'insieme
+\[
+\{e_1,e_2,e_3\}
+\]
+non e' indipendente, perche' forma un ciclo.
+
+Supponiamo
+\[
+w(e_1)=5,\qquad w(e_2)=4,\qquad w(e_3)=3.
+\]
+L'ordine greedy e'
+\[
+e_1,\ e_2,\ e_3.
+\]
+L'algoritmo costruisce:
+\[
+A_0=\emptyset,
+\qquad
+A_1=\{e_1\},
+\qquad
+A_2=\{e_1,e_2\}.
+\]
+Quando considera $e_3$, l'insieme
+\[
+\{e_1,e_2,e_3\}
+\]
+forma un ciclo, quindi $e_3$ viene scartato. Il risultato e'
+\[
+A=\{e_1,e_2\}.
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Matroide grafico su un triangolo:
+
+      a
+     / \
+ e1 /   \ e3
+   /     \
+  b---e2--c
+
+Indipendenti:
+{}                 si
+{e1}, {e2}, {e3}   si
+{e1,e2}            si
+{e1,e3}            si
+{e2,e3}            si
+{e1,e2,e3}         no: ciclo
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+\paragraph{Il matroide grafico e' un matroide.}
+Verifichiamo le tre proprieta' indicate nella definizione.
+
+Primo, $S_G=E$ e' finito perche' si considerano grafi finiti.
+
+Secondo, $\mathcal{I}_G$ e' ereditario: ogni sottoinsieme di una foresta e' ancora una foresta. Infatti, togliere archi non puo' creare un ciclo.
+
+Terzo, dimostriamo la proprieta' di scambio. Siano
+\[
+A,B\in\mathcal{I}_G
+\]
+con
+\[
+|A|<|B|.
+\]
+Allora
+\[
+G_A=(V,A),\qquad G_B=(V,B)
+\]
+sono foreste. Una foresta con $|V|$ nodi e $k$ archi contiene esattamente $|V|-k$ alberi. Poiche'
+\[
+|A|<|B|,
+\]
+la foresta $G_B$ ha meno componenti connesse della foresta $G_A$.
+
+Quindi esiste un albero $T$ di $G_B$ che contiene vertici appartenenti a due alberi distinti di $G_A$. Consideriamo un arco $(u,v)$ di $T$ tale che $u$ e $v$ appartengano a due alberi distinti di $G_A$.
+
+Aggiungere $(u,v)$ ad $A$ fonde due alberi distinti di $G_A$ e non crea alcun ciclo. Pertanto
+\[
+A\cup\{(u,v)\}\in\mathcal{I}_G.
+\]
+La proprieta' di scambio e' verificata.
+
+\paragraph{Lemma 1: unicita' dell'estensione.}
+Se un elemento $x\in S$ non e' un'estensione di $\emptyset$, allora $x$ non e' un'estensione di nessun sottoinsieme indipendente $A$ di $S$.
+
+Dimostriamo la contronominale, come suggerito dalle slide. Supponiamo che $x$ sia estensione di qualche insieme indipendente $A$. Allora
+\[
+A\cup\{x\}\in\mathcal{I}.
+\]
+Poiche' $\{x\}\subseteq A\cup\{x\}$ e $\mathcal{I}$ e' ereditaria, segue
+\[
+\{x\}\in\mathcal{I}.
+\]
+Dunque $x$ e' estensione di $\emptyset$. La contronominale e' vera, quindi e' vero il lemma.
+
+\paragraph{Lemma 2: elemento massimo in una soluzione ottima.}
+Sia $S$ ordinato in modo decrescente rispetto al peso e sia $x$ il primo elemento con $\{x\}$ indipendente. Allora esiste un sottoinsieme ottimo che contiene $x$.
+
+Sia $B$ un sottoinsieme ottimo tale che $x\notin B$. Si costruisce un insieme indipendente $A$ partendo da
+\[
+A=\{x\}
+\]
+e usando la proprieta' di scambio con $B$ fino a ottenere un insieme della stessa cardinalita' di $B$. Alla fine, per qualche $y\in B$,
+\[
+A=B\setminus\{y\}\cup\{x\}.
+\]
+Poiche' $x$ e' il primo elemento aggiungibile nell'ordine decrescente dei pesi,
+\[
+w(y)\le w(x).
+\]
+Quindi
+\[
+w(A)=w(B)-w(y)+w(x)\ge w(B).
+\]
+Ma $B$ e' ottimo, quindi anche $A$ e' ottimo e contiene $x$.
+
+\paragraph{Teorema: sottostruttura ottima dei matroidi.}
+Sia $x$ il primo elemento scelto dalla procedura greedy su
+\[
+M=(S,\mathcal{I}).
+\]
+Il problema di trovare un sottoinsieme di peso massimo che contiene $x$ si riduce a trovare un sottoinsieme di peso massimo nel sottomatroide
+\[
+M'=(S',\mathcal{I}'),
+\]
+dove
+\[
+S'=\{y\in S\mid \{x,y\}\in\mathcal{I}\}
+\]
+e
+\[
+\mathcal{I}'=\{B\subseteq S'\mid B\cup\{x\}\in\mathcal{I}\}.
+\]
+
+Infatti, se $A$ e' un sottoinsieme indipendente di $M$ che contiene $x$, allora
+\[
+A'=A\setminus\{x\}
+\]
+e' indipendente in $M'$. Viceversa, se $A'$ e' indipendente in $M'$, allora
+\[
+A'\cup\{x\}
+\]
+e' indipendente in $M$. Inoltre
+\[
+w(A)=w(A')+w(x).
+\]
+Poiche' $w(x)$ e' costante, massimizzare $w(A)$ tra gli insiemi che contengono $x$ equivale a massimizzare $w(A')$ nel sottomatroide.
+
+\paragraph{Correttezza dell'algoritmo greedy sui matroidi.}
+Per il Lemma 1, quando un elemento non puo' essere aggiunto, non diventera' aggiungibile piu' avanti. Per il Lemma 2, il primo elemento aggiungibile di peso massimo appartiene ad almeno una soluzione ottima. Dopo averlo scelto, il Teorema di sottostruttura ottima riduce il problema a un sottomatroide. Ripetendo lo stesso ragionamento a ogni iterazione, l'algoritmo greedy determina un sottoinsieme ottimo.
+
+\subsubsection{Analisi della complessita'}
+Sia
+\[
+n=|S|.
+\]
+Il costo della procedura e':
+\begin{itemize}
+	\item ordinamento di $S$ in ordine decrescente:
+	\[
+	O(n\log n);
+	\]
+	\item $n$ verifiche di indipendenza.
+\end{itemize}
+Se il costo di una verifica
+\[
+A\cup\{s_i\}\in\mathcal{I}
+\]
+e' $f(n)$, allora il costo totale e'
+\[
+O(n\log n+n f(n)).
+\]
+
+Lo spazio aggiuntivo e' almeno $O(n)$ per rappresentare l'insieme corrente $A$ e l'ordine degli elementi, oltre alla rappresentazione del matroide e del test di indipendenza.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Applicare la proprieta' di scambio senza controllare l'ipotesi $|A|<|B|$. Senza questa disuguaglianza, la proprieta' non dice nulla.
+\end{hardnote}
+
+\begin{hardnote}
+Confondere massimale con massimo. Un insieme massimale non puo' essere esteso; un insieme massimo ha peso ottimo. Nei matroidi pesati, l'algoritmo greedy cerca un massimale di peso massimo.
+\end{hardnote}
+
+\begin{hardnote}
+Nel matroide grafico, dire che un insieme di archi e' indipendente perche' e' connesso e' sbagliato. L'indipendenza corrisponde all'assenza di cicli.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Dare la definizione formale di matroide.
+	\item Definire la proprieta' ereditaria e la proprieta' di scambio.
+	\item Dimostrare che il matroide grafico e' un matroide.
+	\item Definire estensione e sottoinsieme massimale.
+	\item Scrivere e analizzare la procedura greedy per un matroide pesato.
+	\item Dimostrare la correttezza dell'algoritmo greedy sui matroidi.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+I matroidi spiegano in forma generale perche' alcuni algoritmi greedy sono corretti. Il matroide grafico collega questa teoria agli alberi di ricoprimento: i sottoinsiemi indipendenti sono foreste e i sottoinsiemi massimali sono alberi di ricoprimento.
+
+Per problemi di minimizzazione su insiemi massimali, le slide propongono un esercizio sulla modifica della funzione peso. Una trasformazione deve convertire il confronto di minimo in un confronto di massimo preservando l'ordine tra insiemi massimali, che hanno tutti la stessa cardinalita'.
+
+% ===============================================================
+\subsection{Programmazione di attivita' unitarie con penalita'}
+
+\subsubsection{Definizione}
+Il problema ufficiale delle slide e' la \textbf{programmazione di attivita' di durata unitaria su singolo processore}.
+
+\textbf{Input:}
+\begin{itemize}
+	\item un insieme di attivita'
+	\[
+	S=\{a_1,a_2,\ldots,a_n\};
+	\]
+	\item scadenze
+	\[
+	D=\{d_1,\ldots,d_n\},\qquad 1\le d_i\le n;
+	\]
+	\item penalita'
+	\[
+	W=\{w_1,\ldots,w_n\},\qquad w_i\ge 0.
+	\]
+\end{itemize}
+
+Ogni attivita' ha durata unitaria. Se l'attivita' $a_i$ non termina entro il tempo $d_i$, si paga una penalita' $w_i$.
+
+\textbf{Output:} determinare un piano di programmazione su singolo processore che minimizza la somma delle penalita' pagate.
+
+\subsubsection{Intuizione}
+Un'attivita' puo' essere:
+\begin{itemize}
+	\item \textbf{in anticipo}, se termina entro la propria scadenza;
+	\item \textbf{in ritardo}, se termina dopo la propria scadenza.
+\end{itemize}
+
+Minimizzare le penalita' delle attivita' in ritardo equivale a massimizzare la somma delle penalita' delle attivita' in anticipo. Infatti, la somma totale delle penalita' e' fissa; scegliere quali attivita' salvare dal ritardo massimizza la penalita' non pagata.
+
+\subsubsection{Motivazione}
+Questo problema e' l'applicazione nelle slide della teoria dei matroidi. Si definisce un insieme indipendente come un insieme di attivita' che puo' essere schedulato senza ritardi. Poi si dimostra che tali insiemi indipendenti formano un matroide. A quel punto il greedy su matroide pesato fornisce una soluzione ottima.
+
+\subsubsection{Proprieta' teoriche}
+\paragraph{Forma canonica.}
+Un piano generico puo' essere riordinato mettendo prima le attivita' in anticipo e poi quelle in ritardo.
+
+Se le attivita' in anticipo sono ordinate per scadenza crescente, la programmazione e' in \textbf{forma canonica}.
+
+Perche' lo scambio e' lecito? Se due attivita' in anticipo $a_i$ e $a_j$ terminano agli istanti $k$ e $k+1$, e se $d_j<d_i$, allora $a_j$ puo' essere messa prima di $a_i$ senza creare ritardi: poiche' $a_j$ era in anticipo a tempo $k+1$, vale $k+1\le d_j$, quindi anche $a_i$, spostata a $k+1$, resta in anticipo perche' $d_j<d_i$.
+
+\paragraph{Indipendenza.}
+Un insieme di attivita' e' \textbf{indipendente} se nessuna attivita' dell'insieme e' in ritardo in una programmazione opportuna.
+
+Sia $\mathcal{I}$ l'insieme dei sottoinsiemi indipendenti.
+
+\paragraph{Funzione $N_t(A)$.}
+Per $A\subseteq S$ e $t=1,\ldots,n$, sia
+\[
+N_t(A)=|\{a_i\in A\mid d_i\le t\}|.
+\]
+Cioe' $N_t(A)$ conta quante attivita' di $A$ hanno scadenza al piu' $t$.
+
+Le slide affermano:
+\[
+A\text{ indipendente}
+\quad\Longleftrightarrow\quad
+N_t(A)\le t\quad\forall t=1,\ldots,n.
+\]
+
+\begin{teorema}
+Sia $S$ l'insieme delle attivita' unitarie con penalita' e sia $\mathcal{I}$ l'insieme di tutti gli insiemi indipendenti di attivita'. Allora
+\[
+M=(S,\mathcal{I})
+\]
+e' un matroide.
+\end{teorema}
+
+\subsubsection{Algoritmo}
+La soluzione applica il greedy su matroide pesato.
+
+\begin{algorithm}[H]
+	\caption{\textsc{UnitTaskGreedy}$(S,D,W)$}
+	\KwIn{Attivita' unitarie $S$, scadenze $D$, penalita' $W$}
+	\KwOut{Insieme di attivita' in anticipo di penalita' massima}
+	$A\gets\emptyset$\;
+	Ordina le attivita' in ordine decrescente rispetto alla penalita' $w_i$\;
+	\ForEach{attivita' $a_i$ in tale ordine}{
+		\If{$A\cup\{a_i\}$ e' indipendente}{
+			$A\gets A\cup\{a_i\}$\;
+		}
+	}
+	\Return $A$\;
+\end{algorithm}
+
+Una volta trovato $A$, si costruisce il piano canonico:
+\begin{itemize}
+	\item prima le attivita' in $A$, ordinate per scadenza crescente;
+	\item poi le attivita' non in $A$, che saranno in ritardo.
+\end{itemize}
+
+\subsubsection{Esempio guidato}
+L'esempio delle slide usa attivita' gia' ordinate per penalita' decrescente:
+\[
+\begin{array}{c|ccccccc}
+a_i & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+\hline
+d_i & 4 & 2 & 4 & 3 & 1 & 4 & 6 \\
+w_i & 70 & 60 & 50 & 40 & 30 & 20 & 10
+\end{array}
+\]
+
+Si mantiene un array $s$ di $n$ elementi, inizializzato con posizioni vuote. A partire da $a_1$, si analizza un'attivita' alla volta. L'attivita' $a_i$ viene collocata nella prima posizione libera di $s$ partendo da $d_i$ e scendendo verso $1$. Se non c'e' posizione libera, l'attivita' viene scartata.
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+Attivita' & Scadenza & Decisione & Stato degli slot utili \\
+\hline
+$a_1$ & $4$ & inserita in $4$ & $[-,-,-,a_1,-,-,-]$ \\
+$a_2$ & $2$ & inserita in $2$ & $[-,a_2,-,a_1,-,-,-]$ \\
+$a_3$ & $4$ & inserita in $3$ & $[-,a_2,a_3,a_1,-,-,-]$ \\
+$a_4$ & $3$ & inserita in $1$ & $[a_4,a_2,a_3,a_1,-,-,-]$ \\
+$a_5$ & $1$ & scartata & $[a_4,a_2,a_3,a_1,-,-,-]$ \\
+$a_6$ & $4$ & scartata & $[a_4,a_2,a_3,a_1,-,-,-]$ \\
+$a_7$ & $6$ & inserita in $6$ & $[a_4,a_2,a_3,a_1,-,a_7,-]$
+\end{tabular}
+\end{center}
+
+Il risultato riportato nelle slide e'
+\[
+s=[a_4,a_2,a_3,a_1,-,a_7,-].
+\]
+Poi si ordinano le attivita' in anticipo rispetto alla scadenza e si aggiungono le attivita' rimanenti per ottenere la soluzione canonica.
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Slot temporali:
+
+1    2    3    4    5    6    7
+--------------------------------
+a4   a2   a3   a1   -    a7   -
+
+Attivita' in anticipo:
+a4, a2, a3, a1, a7
+
+Attivita' in ritardo:
+a5, a6
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+\paragraph{Criterio $N_t(A)\le t$.}
+Se $A$ e' indipendente, allora le attivita' di $A$ possono essere schedulate senza ritardi. Entro il tempo $t$ esistono solo $t$ slot disponibili. Tutte le attivita' con scadenza al piu' $t$ devono essere completate entro tali $t$ slot. Quindi necessariamente
+\[
+N_t(A)\le t.
+\]
+
+Viceversa, se
+\[
+N_t(A)\le t\qquad\forall t=1,\ldots,n,
+\]
+ordinando le attivita' di $A$ per scadenza crescente, la $k$-esima attivita' nell'ordine ha scadenza almeno $k$. Infatti, se avesse scadenza minore di $k$, esisterebbero piu' di $d$ attivita' con scadenza al piu' $d$, violando $N_d(A)\le d$. Dunque ogni attivita' termina entro la propria scadenza e $A$ e' indipendente.
+
+\paragraph{Proprieta' di scambio.}
+Le slide dimostrano la proprieta' di scambio. Siano $B,A$ due sottoinsiemi indipendenti con
+\[
+|B|>|A|.
+\]
+Sia $k$ il piu' grande indice tale che
+\[
+N_k(B)\le N_k(A).
+\]
+Poiche'
+\[
+N_n(B)=|B|,\qquad N_n(A)=|A|
+\]
+e $|B|>|A|$, vale $k<n$ e, per ogni $j$ con $k+1\le j\le n$,
+\[
+N_j(B)>N_j(A).
+\]
+Quindi $B\setminus A$ contiene almeno un'attivita' con scadenza $k+1$; sia tale attivita' $a_i$.
+
+Definiamo
+\[
+A'=A\cup\{a_i\}.
+\]
+Per $k<t\le n$ vale
+\[
+N_t(A')\le N_t(B)\le t,
+\]
+perche' $B$ e' indipendente. Per $t\le k$, l'aggiunta di $a_i$, che ha scadenza $k+1$, non modifica $N_t(A)$. Quindi anche per $t\le k$ resta
+\[
+N_t(A')=N_t(A)\le t.
+\]
+Pertanto
+\[
+A'\in\mathcal{I}.
+\]
+La proprieta' di scambio e' dimostrata.
+
+Poiche' le altre proprieta' del matroide sono immediate:
+\begin{itemize}
+	\item $S$ e' finito;
+	\item ogni sottoinsieme di un insieme schedulabile senza ritardi e' schedulabile senza ritardi;
+\end{itemize}
+segue che $M=(S,\mathcal{I})$ e' un matroide.
+
+\subsubsection{Analisi della complessita'}
+Le slide danno il costo:
+\[
+O(n^2).
+\]
+In dettaglio:
+\begin{itemize}
+	\item ordinare le attivita' per penalita' decrescente costa
+	\[
+	O(n\log n);
+	\]
+	\item ci sono $n$ cicli;
+	\item in ciascun ciclo si decide se aggiungere l'attivita' alla soluzione;
+	\item la verifica di indipendenza costa $O(|A|)$.
+\end{itemize}
+Nel caso peggiore:
+\[
+\sum_{j=1}^{n} O(j)=O(n^2),
+\]
+quindi il costo complessivo e'
+\[
+O(n\log n+n^2)=O(n^2).
+\]
+
+Nell'implementazione con array di slot descritta nell'esempio, cercare una posizione libera partendo dalla scadenza puo' costare $O(d_i)$ nel caso peggiore, e quindi ancora $O(n)$ per attivita', cioe' $O(n^2)$ totale.
+
+Lo spazio aggiuntivo e' $O(n)$ per l'array degli slot e per rappresentare l'insieme scelto.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Minimizzare direttamente le penalita' in ritardo senza osservare l'equivalenza con la massimizzazione delle penalita' delle attivita' in anticipo. Il collegamento con il matroide passa da questa equivalenza.
+\end{hardnote}
+
+\begin{hardnote}
+Credere che la forma canonica cambi quali attivita' sono in ritardo. La forma canonica riordina il piano senza peggiorare la puntualita' delle attivita' in anticipo.
+\end{hardnote}
+
+\begin{hardnote}
+Usare il criterio $N_t(A)\le t$ solo per un valore di $t$. La condizione deve valere per ogni $t=1,\ldots,n$.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire il problema di scheduling di attivita' unitarie con penalita'.
+	\item Spiegare la forma canonica.
+	\item Dimostrare che $A$ e' indipendente se e solo se $N_t(A)\le t$ per ogni $t$.
+	\item Dimostrare la proprieta' di scambio del Teorema 6.
+	\item Applicare l'algoritmo all'esempio delle slide.
+	\item Analizzare il costo $O(n^2)$.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Questo problema mostra l'uso completo della catena teorica:
+\[
+\text{problema di ottimizzazione}
+\longrightarrow
+\text{insiemi indipendenti}
+\longrightarrow
+\text{matroide}
+\longrightarrow
+\text{greedy corretto}.
+\]
+
+% ===============================================================
+\subsection{Altri problemi greedy citati nelle slide}
+
+\subsubsection{Definizione}
+Le slide elencano altri problemi importanti che ammettono un buon algoritmo greedy di risoluzione:
+\[
+\begin{array}{c|c}
+\text{Problema} & \text{Costo greedy indicato nelle slide} \\
+\hline
+\text{Albero minimo di ricoprimento} & \text{Prim: } O(n^2) \\
+\text{Schedulazione su macchina singola con minimizzazione del numero di attivita' in ritardo} & \text{Moore-Hodgson: } O(n\log n) \\
+\text{Compressione di file} & \text{Codice di Huffman: } O(n\log n) \\
+\text{Soddisfacibilita' delle clausole di Horn} & O(n)
+\end{array}
+\]
+
+\subsubsection{Intuizione}
+La tabella serve a chiarire che la teoria dei matroidi non esaurisce tutti i problemi risolvibili con greedy. Esistono problemi greedy corretti la cui struttura non e' rappresentabile come matroide.
+
+\subsubsection{Motivazione}
+Questa osservazione evita un errore concettuale: i matroidi sono una condizione sufficiente potente per la correttezza greedy, ma non sono una caratterizzazione completa di tutti gli algoritmi greedy corretti trattabili.
+
+\subsubsection{Proprieta' teoriche}
+Le slide dichiarano esplicitamente che:
+\begin{itemize}
+	\item i problemi sui grafi visti precedentemente sono problemi su matroidi grafici pesati;
+	\item esistono problemi la cui struttura non e' rappresentabile da un matroide ma che ammettono soluzioni greedy;
+	\item l'esempio piu' interessante citato e' la compressione di file con algoritmo di Huffman.
+\end{itemize}
+
+\subsubsection{Algoritmo}
+Per Moore-Hodgson, Huffman e soddisfacibilita' delle clausole di Horn, in questa slide sono riportati soltanto i nomi dei problemi e i costi. Lo pseudocodice dettagliato non e' presente nel materiale ufficiale di questa lezione.
+
+\begin{hardnote}
+Contenuto non presente nel materiale ufficiale del corso.
+\end{hardnote}
+
+\subsubsection{Esempio guidato}
+La slide non contiene un'esecuzione guidata di Moore-Hodgson, Huffman o Horn-SAT.
+
+\begin{hardnote}
+Contenuto non presente nel materiale ufficiale del corso.
+\end{hardnote}
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Problemi greedy
+|
++-- modellabili con matroidi
+|   |
+|   +-- matroide grafico
+|   +-- scheduling attivita' unitarie con penalita'
+|
++-- non necessariamente modellabili con matroidi
+    |
+    +-- Huffman
+    +-- Moore-Hodgson
+    +-- clausole di Horn
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+Le dimostrazioni di correttezza di Moore-Hodgson, Huffman e dell'algoritmo per clausole di Horn non sono presenti nella slide Greedy.
+
+\begin{hardnote}
+Contenuto non presente nel materiale ufficiale del corso.
+\end{hardnote}
+
+\subsubsection{Analisi della complessita'}
+Le complessita' riportate ufficialmente sono:
+\[
+\begin{array}{c|c}
+\text{Algoritmo/problema} & \text{Costo} \\
+\hline
+\text{Prim} & O(n^2) \\
+\text{Moore-Hodgson} & O(n\log n) \\
+\text{Huffman} & O(n\log n) \\
+\text{Horn-SAT} & O(n)
+\end{array}
+\]
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Affermare che ogni algoritmo greedy corretto derivi necessariamente da un matroide. Le slide affermano esplicitamente che esistono problemi greedy non rappresentabili da matroidi.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Spiegare perche' i matroidi non esauriscono tutti i problemi greedy.
+	\item Riportare gli esempi della tabella finale delle slide.
+	\item Distinguere tra problemi greedy trattati in dettaglio e problemi solo citati.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Questa sezione collega la teoria generale dei matroidi ai limiti della teoria stessa: una struttura puo' non essere un matroide e tuttavia ammettere un algoritmo greedy corretto.
+
+% ===============================================================
+\subsection{Esercizi ufficiali della lezione}
+
+\subsubsection{Definizione}
+Le slide finali propongono quattro esercizi:
+\begin{enumerate}
+	\item completare Dijkstra in modo che restituisca anche i cammini minimi;
+	\item modificare la funzione peso di un matroide per trovare una soluzione di peso minimo tra gli insiemi massimali;
+	\item dimostrare il criterio $A$ indipendente se e solo se $N_t(A)\le t$ e verificare l'indipendenza in tempo $O(|A|)$;
+	\item studiare il problema del resto in monete.
+\end{enumerate}
+
+\subsubsection{Intuizione}
+Gli esercizi chiedono di applicare le idee centrali della lezione:
+\begin{itemize}
+	\item i predecessori $\pi$ in Dijkstra codificano i cammini;
+	\item un problema di minimo puo' essere trasformato in un problema di massimo quando tutti i massimali hanno la stessa cardinalita';
+	\item lo scheduling unitario si controlla contando le scadenze;
+	\item il resto in monete mostra che il greedy puo' essere corretto per alcuni sistemi di monete e scorretto per altri.
+\end{itemize}
+
+\subsubsection{Motivazione}
+Questi esercizi sono utili per l'esame perche' obbligano a distinguere tra:
+\begin{itemize}
+	\item scrivere un algoritmo;
+	\item dimostrarne la correttezza;
+	\item riconoscere quando una scelta greedy non basta.
+\end{itemize}
+
+\subsubsection{Proprieta' teoriche}
+\paragraph{Dijkstra e cammini.}
+Gli attributi $\pi$ permettono di ricostruire un cammino minimo risalendo dal nodo destinazione alla sorgente.
+
+\paragraph{Minimizzazione in un matroide.}
+Poiche' tutti gli insiemi massimali di un matroide hanno la stessa cardinalita', una trasformazione affine dei pesi che inverte l'ordine dei singoli elementi puo' trasformare la minimizzazione in massimizzazione sui massimali.
+
+\paragraph{Scheduling unitario.}
+Il criterio
+\[
+N_t(A)\le t\quad\forall t
+\]
+e' necessario e sufficiente per l'indipendenza.
+
+\paragraph{Resto in monete.}
+Il problema consiste nel formare il resto di $n$ centesimi usando il minor numero possibile di monete, assumendo valori interi delle monete.
+
+\subsubsection{Algoritmo}
+\paragraph{Ricostruzione dei cammini in Dijkstra.}
+Dopo l'esecuzione di Dijkstra, per stampare il cammino da $s$ a $v$ si usa il predecessore.
+
+\begin{algorithm}[H]
+	\caption{\textsc{PrintPath}$(s,v)$}
+	\KwIn{Sorgente $s$, vertice $v$, predecessori $\pi$ calcolati da Dijkstra}
+	\KwOut{Cammino da $s$ a $v$}
+	\If{$v=s$}{
+		stampa $s$\;
+	}
+	\Else{
+		\If{$v.\pi=\textsc{Null}$}{
+			stampa ``nessun cammino''\;
+		}
+		\Else{
+			\textsc{PrintPath}$(s,v.\pi)$\;
+			stampa $v$\;
+		}
+	}
+\end{algorithm}
+
+\paragraph{Minimizzazione su matroide.}
+Se si vuole trovare un massimale di peso minimo e i pesi sono $w(x)$, si puo' usare una funzione trasformata
+\[
+w'(x)=C-w(x),
+\]
+dove $C$ e' una costante maggiore del massimo peso degli elementi. Poiche' tutti i massimali hanno la stessa cardinalita', massimizzare
+\[
+\sum_{x\in A} w'(x)
+\]
+equivale a minimizzare
+\[
+\sum_{x\in A} w(x).
+\]
+
+\paragraph{Verifica di indipendenza nello scheduling.}
+Per verificare se $A$ e' indipendente:
+\begin{enumerate}
+	\item ordina le attivita' di $A$ per scadenza crescente;
+	\item controlla che la $i$-esima attivita' abbia scadenza almeno $i$.
+\end{enumerate}
+Questo e' equivalente al controllo $N_t(A)\le t$ per ogni $t$.
+
+\paragraph{Greedy per il resto in monete.}
+Dato un insieme di monete ordinato per valore decrescente, l'algoritmo greedy prende sempre il massimo numero possibile di monete del valore corrente e poi passa al valore successivo.
+
+\subsubsection{Esempio guidato}
+\paragraph{Resto con monete $\{1,5,10,20\}$.}
+Per formare $n=38$ centesimi, il greedy sceglie:
+\[
+20,\ 10,\ 5,\ 1,\ 1,\ 1.
+\]
+Totale:
+\[
+20+10+5+1+1+1=38,
+\]
+con $6$ monete.
+
+\paragraph{Sistema in cui il greedy fallisce.}
+Con monete
+\[
+\{1,3,4\}
+\]
+e resto
+\[
+n=6,
+\]
+il greedy sceglie
+\[
+4+1+1,
+\]
+cioe' $3$ monete. La soluzione ottima e'
+\[
+3+3,
+\]
+cioe' $2$ monete. Quindi il greedy non e' corretto per ogni insieme di monete.
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Esempio di fallimento del greedy:
+
+monete = {1, 3, 4}
+resto  = 6
+
+greedy:
+6 -> prende 4, resta 2
+2 -> prende 1, resta 1
+1 -> prende 1, resta 0
+soluzione greedy: 4 + 1 + 1  (3 monete)
+
+ottimo:
+6 = 3 + 3                 (2 monete)
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+\paragraph{Monete $\{1,5,10,20\}$.}
+In una soluzione ottima:
+\begin{itemize}
+	\item non possono comparire cinque monete da $1$, perche' si sostituirebbero con una moneta da $5$;
+	\item non possono comparire due monete da $5$, perche' si sostituirebbero con una moneta da $10$;
+	\item non possono comparire due monete da $10$, perche' si sostituirebbero con una moneta da $20$.
+\end{itemize}
+
+Quindi una soluzione ottima senza monete da $20$ puo' valere al massimo
+\[
+10+5+4\cdot 1=19.
+\]
+Se il resto e' almeno $20$, ogni soluzione ottima deve contenere una moneta da $20$; dunque la scelta greedy della moneta da $20$ e' sicura. Ripetendo l'argomento sul resto residuo si ottiene la correttezza del greedy.
+
+\paragraph{Monete $1,c,c^2,\ldots,c^k$ con $c>1$.}
+In una soluzione ottima non possono comparire $c$ monete di valore $c^i$, perche' esse possono essere sostituite da una moneta di valore
+\[
+c\cdot c^i=c^{i+1},
+\]
+riducendo il numero di monete da $c$ a $1$.
+
+Quindi, per ogni denominazione inferiore a $c^j$, una soluzione ottima contiene al piu' $c-1$ monete di ciascun valore. Il massimo valore ottenibile usando solo monete inferiori a $c^j$ e'
+\[
+(c-1)(1+c+c^2+\cdots+c^{j-1})
+=(c-1)\frac{c^j-1}{c-1}
+=c^j-1.
+\]
+Pertanto, se il valore residuo e' almeno $c^j$, una soluzione ottima deve usare una moneta da $c^j$. La scelta greedy e' quindi sicura a ogni passo.
+
+\paragraph{Fallimento generale.}
+L'esempio $\{1,3,4\}$ con $n=6$ dimostra che non basta la presenza della moneta da $1$ per garantire la correttezza del greedy. La moneta da $1$ garantisce l'esistenza di una soluzione, non l'ottimalita' della soluzione greedy.
+
+\subsubsection{Analisi della complessita'}
+\paragraph{PrintPath.}
+La procedura visita al piu' un predecessore per ogni vertice sul cammino. Nel caso peggiore il costo e' $O(n)$ e lo spazio di stack ricorsivo e' $O(n)$.
+
+\paragraph{Verifica di indipendenza.}
+Se le attivita' sono gia' mantenute ordinate per scadenza, la verifica richiede $O(|A|)$. In caso contrario, l'ordinamento aggiungerebbe un costo non indicato nell'esercizio.
+
+\paragraph{Resto in monete.}
+Se il numero di tipi di monete e' $k+1$, l'algoritmo greedy scorre le denominazioni una volta e costa $O(k)$, assumendo operazioni aritmetiche elementari a costo costante nel modello RAM.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Nel resto in monete, confondere esistenza della soluzione con ottimalita'. La moneta da $1$ assicura che un resto si possa sempre formare, ma non assicura che il greedy usi il numero minimo di monete.
+\end{hardnote}
+
+\begin{hardnote}
+Nella minimizzazione su matroide, dimenticare che la trasformazione dei pesi funziona sugli insiemi massimali perche' hanno tutti la stessa cardinalita'.
+\end{hardnote}
+
+\begin{hardnote}
+In Dijkstra, restituire soltanto le distanze $d$ e non i predecessori $\pi$ quando viene richiesto anche il cammino.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Scrivere la procedura per ricostruire un cammino minimo usando $\pi$.
+	\item Spiegare come trasformare un problema di minimo su massimali di un matroide in un problema di massimo.
+	\item Dimostrare il criterio $N_t(A)\le t$ per lo scheduling unitario.
+	\item Dimostrare la correttezza del greedy per le monete $\{1,5,10,20\}$.
+	\item Dimostrare la correttezza del greedy per monete $1,c,c^2,\ldots,c^k$.
+	\item Fornire un insieme di monete per cui il greedy fallisce.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Gli esercizi collegano tutti i temi della lezione:
+\begin{itemize}
+	\item Dijkstra mostra un greedy con coda di priorita';
+	\item i matroidi danno una struttura generale di correttezza;
+	\item lo scheduling unitario e' un'applicazione dei matroidi;
+	\item il resto in monete mostra che un algoritmo greedy richiede sempre una dimostrazione specifica.
+\end{itemize}
+
+% ===============================================================
+\subsection{Contenuti richiesti ma non presenti nella slide Greedy}
+
+\subsubsection{Definizione}
+Alcuni argomenti spesso associati agli algoritmi greedy non sono sviluppati nella slide ufficiale Greedy usata per questo capitolo.
+
+\subsubsection{Intuizione}
+Questa sezione serve a evitare inserimenti non autorizzati rispetto alla fonte ufficiale.
+
+\subsubsection{Motivazione}
+Il vincolo della dispensa e' che le slide prevalgano su ogni altra fonte. Quindi un argomento non presente nelle slide non deve essere ricostruito da materiale esterno.
+
+\subsubsection{Proprieta' teoriche}
+\begin{itemize}
+	\item Algoritmo di Kruskal: contenuto non presente nel materiale ufficiale della slide Greedy.
+	\item Dimostrazione dettagliata di Moore-Hodgson: contenuto non presente nel materiale ufficiale della slide Greedy.
+	\item Pseudocodice dettagliato di Huffman: contenuto non presente nel materiale ufficiale della slide Greedy.
+\end{itemize}
+
+\subsubsection{Algoritmo}
+\begin{hardnote}
+Contenuto non presente nel materiale ufficiale del corso.
+\end{hardnote}
+
+\subsubsection{Esempio guidato}
+\begin{hardnote}
+Contenuto non presente nel materiale ufficiale del corso.
+\end{hardnote}
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Nel capitolo Greedy ufficiale:
+
+MST  -> Prim
+SSSP -> Dijkstra
+Matroidi -> greedy su matroide pesato
+Scheduling unitario -> applicazione dei matroidi
+
+Non sviluppati nella slide Greedy:
+Kruskal
+pseudocodice Huffman
+dimostrazione Moore-Hodgson
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+\begin{hardnote}
+Contenuto non presente nel materiale ufficiale del corso.
+\end{hardnote}
+
+\subsubsection{Analisi della complessita'}
+Per gli argomenti non sviluppati nella slide Greedy non viene fornita un'analisi dettagliata, salvo i costi riportati nella tabella ufficiale per Moore-Hodgson, Huffman e Horn-SAT.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Attribuire alle slide un algoritmo non presente. Se una domanda chiede specificamente il materiale della lezione Greedy, bisogna attenersi a Prim, Dijkstra, matroidi e scheduling unitario, oltre agli esercizi finali.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Quali algoritmi greedy sono sviluppati esplicitamente nella slide Greedy?
+	\item Quali problemi sono solo citati nella tabella finale?
+	\item Perche' non si puo' sostituire Prim con Kruskal se Kruskal non e' stato introdotto nel materiale ufficiale?
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Gli argomenti non presenti in questa slide possono appartenere ad altri corsi o ad altre trattazioni, ma non vengono usati come fonte teorica per questo capitolo.

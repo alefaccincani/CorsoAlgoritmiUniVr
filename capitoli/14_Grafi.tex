@@ -1,0 +1,1472 @@
+\section{Grafi}
+
+\subsection{Rappresentazione dei grafi}
+
+\subsubsection{Definizione}
+In questa parte del corso si assume che i concetti matematici di base sui grafi siano gia' noti. Si richiamano pero' le due rappresentazioni fondamentali usate dagli algoritmi:
+\begin{itemize}
+	\item \textbf{matrice di adiacenza};
+	\item \textbf{liste di adiacenza}.
+\end{itemize}
+
+Sia
+\[
+G=(V,E)
+\]
+un grafo, orientato o non orientato. Indichiamo con
+\[
+n=|V|,\qquad m=|E|
+\]
+il numero di vertici e di archi.
+
+\paragraph{Matrice di adiacenza.}
+Dato un grafo di $n$ nodi, la matrice di adiacenza e' una matrice $n\times n$ in cui righe e colonne sono etichettate con i nomi dei nodi. La cella di coordinate $(i,j)$ indica se esiste l'arco dal nodo $i$ al nodo $j$:
+\[
+A[i,j]=
+\begin{cases}
+1 & \text{se } (i,j)\in E,\\
+0 & \text{altrimenti.}
+\end{cases}
+\]
+Nel caso di grafo non orientato, la matrice e' simmetrica.
+
+\paragraph{Liste di adiacenza.}
+La rappresentazione con liste di adiacenza mantiene una lista principale dei nodi e, per ciascun nodo $v$, una lista
+\[
+Adj[v]
+\]
+contenente tutti i vertici $u$ tali che
+\[
+(v,u)\in E.
+\]
+Se il numero di nodi e' fisso, la lista principale puo' essere implementata come un array di riferimenti a liste.
+
+\subsubsection{Intuizione}
+La matrice di adiacenza risponde molto velocemente alla domanda:
+\[
+\text{``l'arco }(u,v)\text{ esiste?''}
+\]
+perche' basta leggere una cella. Tuttavia usa sempre spazio quadratico, anche se il grafo ha pochi archi.
+
+Le liste di adiacenza, invece, memorizzano soltanto gli archi presenti. Sono quindi piu' adatte per grafi sparsi, cioe' grafi in cui $m$ e' molto piu' piccolo di $n^2$.
+
+\subsubsection{Motivazione}
+La scelta della rappresentazione incide direttamente sulla complessita' degli algoritmi. BFS, DFS, ordinamento topologico e componenti fortemente connesse vengono analizzati nelle slide con liste di adiacenza, perche' in tale rappresentazione l'esplorazione di tutti gli archi costa
+\[
+\Theta(|V|+|E|).
+\]
+
+\subsubsection{Proprieta' teoriche}
+\[
+\begin{array}{c|c|c}
+\text{Operazione} & \text{Matrice di adiacenza} & \text{Liste di adiacenza} \\
+\hline
+\text{Memoria} & \Theta(n^2) & \Theta(n+m) \\
+\text{Verificare se }(u,v)\in E & \Theta(1) & \Theta(d(u)) \\
+\text{Accedere agli adiacenti di }u & \Theta(n) & \Theta(d(u)) \\
+\text{Identificare tutti gli archi} & \Theta(n^2) & \Theta(n+m)
+\end{array}
+\]
+
+Nel caso di grafi non orientati, ogni arco $\{u,v\}$ compare due volte nelle liste di adiacenza: una volta in $Adj[u]$ e una volta in $Adj[v]$.
+
+\subsubsection{Algoritmo}
+Per costruire una matrice di adiacenza da una lista di archi:
+\begin{algorithm}[H]
+	\caption{\textsc{CostruisciMatriceAdiacenza}$(V,E)$}
+	\KwIn{Insieme di vertici $V=\{1,\ldots,n\}$, insieme di archi $E$}
+	\KwOut{Matrice di adiacenza $A$}
+	\For{$i\gets 1$ \KwTo $n$}{
+		\For{$j\gets 1$ \KwTo $n$}{
+			$A[i,j]\gets 0$\;
+		}
+	}
+	\ForEach{$(u,v)\in E$}{
+		$A[u,v]\gets 1$\;
+	}
+	\Return $A$\;
+\end{algorithm}
+
+Per un grafo non orientato, quando si incontra l'arco $\{u,v\}$ si impostano entrambe le celle:
+\[
+A[u,v]\gets 1,\qquad A[v,u]\gets 1.
+\]
+
+\subsubsection{Esempio guidato}
+Consideriamo il grafo non orientato
+\[
+V=\{1,2,4,5\},\qquad
+E=\{\{1,2\},\{1,4\},\{2,4\},\{4,5\}\}.
+\]
+Con ordine dei vertici $1,2,4,5$, la matrice di adiacenza e':
+\[
+\begin{array}{c|cccc}
+ & 1 & 2 & 4 & 5 \\
+\hline
+1 & 0 & 1 & 1 & 0 \\
+2 & 1 & 0 & 1 & 0 \\
+4 & 1 & 1 & 0 & 1 \\
+5 & 0 & 0 & 1 & 0
+\end{array}
+\]
+La stessa informazione con liste di adiacenza e':
+\[
+\begin{array}{c|l}
+1 & 2,4 \\
+2 & 1,4 \\
+4 & 1,2,5 \\
+5 & 4
+\end{array}
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Grafo non orientato:
+
+1 ----- 2
+ \     /
+  \   /
+    4 ----- 5
+
+Liste di adiacenza:
+
+Adj[1] = <2,4>
+Adj[2] = <1,4>
+Adj[4] = <1,2,5>
+Adj[5] = <4>
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+Le slide non presentano una dimostrazione formale delle rappresentazioni; forniscono definizioni e costi. I costi seguono direttamente dalla struttura dati:
+\begin{itemize}
+	\item una matrice $n\times n$ contiene sempre $n^2$ celle;
+	\item una lista di adiacenza contiene un riferimento per ogni nodo e un elemento di lista per ogni arco orientato;
+	\item in un grafo non orientato ogni arco compare in due liste.
+\end{itemize}
+
+\subsubsection{Analisi della complessita'}
+La matrice richiede memoria $\Theta(n^2)$, indipendentemente dal numero di archi.
+
+Le liste richiedono memoria $\Theta(n+m)$, perche' servono $n$ riferimenti principali e spazio proporzionale agli archi memorizzati.
+
+Se si accetta di usare piu' memoria del necessario, e' possibile implementare le liste di adiacenza in modo da ridurre quasi a tempo costante la verifica di esistenza di un nodo o di un arco. Le slide pongono questa osservazione come domanda; il contenuto implementativo dettagliato non viene sviluppato nel materiale ufficiale.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Confondere il costo di verificare un arco con il costo di scandire tutti gli adiacenti. Nella matrice il primo e' $\Theta(1)$, il secondo e' $\Theta(n)$.
+\end{hardnote}
+
+\begin{hardnote}
+Dimenticare che, nei grafi non orientati rappresentati con liste di adiacenza, ogni arco compare due volte.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire matrice di adiacenza e liste di adiacenza.
+	\item Confrontare i costi delle due rappresentazioni.
+	\item Spiegare perche' la matrice di un grafo non orientato e' simmetrica.
+	\item Dire quale rappresentazione conviene per grafi sparsi.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+BFS, DFS, ordinamento topologico e componenti fortemente connesse sono analizzati sulle liste di adiacenza. Per questo la complessita' tipica sara'
+\[
+\Theta(|V|+|E|).
+\]
+
+% ===============================================================
+\subsection{Visita in ampiezza}
+
+\subsubsection{Definizione}
+La \textbf{visita in ampiezza}, o \textbf{BFS} (\emph{breadth-first search}), e' un algoritmo di ricerca su grafi.
+
+Dato un grafo
+\[
+G=(V,E)
+\]
+e un nodo sorgente
+\[
+s\in V,
+\]
+BFS ispeziona gli archi di $G$ per scoprire tutti i nodi raggiungibili da $s$.
+
+La visita procede per livelli: per
+\[
+k=1,2,\ldots,n-1,
+\]
+scopre i nodi a distanza $k$ a partire dai nodi a distanza $k-1$.
+
+L'algoritmo:
+\begin{itemize}
+	\item calcola la distanza minima da $s$ a ciascun nodo raggiungibile;
+	\item genera un albero, detto \textbf{albero BF} o \textbf{breadth-first tree}, con radice $s$ e contenente tutti i nodi raggiungibili da $s$.
+\end{itemize}
+
+\subsubsection{Intuizione}
+BFS usa una coda FIFO. La coda contiene i nodi scoperti ma non ancora completamente esaminati. Questo garantisce che i nodi scoperti prima vengano espansi prima.
+
+Di conseguenza, prima vengono visitati tutti i nodi a distanza $0$, poi quelli a distanza $1$, poi quelli a distanza $2$, e cosi' via. Questa e' la ragione per cui BFS calcola cammini minimi nei grafi non pesati.
+
+\subsubsection{Motivazione}
+BFS e' uno schema di base per molti algoritmi importanti sui grafi. Le slide citano esplicitamente:
+\begin{itemize}
+	\item algoritmo di Prim per l'albero di connessione minimo;
+	\item algoritmo di Dijkstra per i cammini minimi da sorgente unica.
+\end{itemize}
+
+In questa lezione BFS viene usata soprattutto per mostrare come si esplora un grafo per livelli e come si dimostra formalmente la correttezza delle distanze calcolate.
+
+\subsubsection{Proprieta' teoriche}
+Ogni nodo ha tre attributi:
+\[
+u.color,\qquad u.d,\qquad u.\pi.
+\]
+
+\begin{itemize}
+	\item $u.color$ indica lo stato del nodo.
+	\item $u.d$ e' la distanza stimata da $s$.
+	\item $u.\pi$ e' il predecessore di $u$ nel cammino da $s$ a $u$.
+\end{itemize}
+
+I colori hanno il seguente significato:
+\[
+\begin{array}{c|l}
+\text{Colore} & \text{Significato} \\
+\hline
+\textsc{White} & \text{nodo non ancora scoperto} \\
+\textsc{Gray} & \text{nodo scoperto ma non ancora completato} \\
+\textsc{Black} & \text{nodo completato: tutti i suoi vicini sono stati scoperti}
+\end{array}
+\]
+
+L'invariante di ciclo indicato nelle slide per il ciclo \texttt{while} e':
+\[
+\text{quando viene eseguito il test del ciclo \texttt{while}, la coda }Q
+\text{ contiene solo nodi grigi.}
+\]
+
+\subsubsection{Algoritmo}
+\begin{algorithm}[H]
+	\caption{\textsc{BFS}$(G,s)$}
+	\KwIn{$G=(V,E)$, sorgente $s\in V$}
+	\ForEach{$u\in V\setminus\{s\}$}{
+		$u.color\gets\textsc{White}$\;
+		$u.d\gets\infty$\tcp*{$d$ e' la distanza da $s$}
+		$u.\pi\gets\textsc{Null}$\tcp*{$\pi$ e' il predecessore}
+	}
+	$s.color\gets\textsc{Gray}$\;
+	$s.d\gets 0$\;
+	$s.\pi\gets\textsc{Null}$\;
+	$Q\gets\emptyset$\tcp*{coda FIFO dei nodi grigi}
+	$Q.\textsc{Enqueue}(s)$\;
+	\While{$Q\neq\emptyset$}{
+		$u\gets Q.\textsc{Dequeue}()$\;
+		\ForEach{$v\in G.Adj[u]$}{
+			\If{$v.color=\textsc{White}$}{
+				$v.color\gets\textsc{Gray}$\;
+				$v.d\gets u.d+1$\;
+				$v.\pi\gets u$\;
+				$Q.\textsc{Enqueue}(v)$\;
+			}
+		}
+		$u.color\gets\textsc{Black}$\;
+	}
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Usiamo l'esempio coerente con la visita mostrata nelle slide, con sorgente $2$.
+Le liste di adiacenza rilevanti sono:
+\[
+\begin{array}{c|l}
+1 & 2,4 \\
+2 & 1,4 \\
+3 & 6 \\
+4 & 2,1,5 \\
+5 & 4 \\
+6 & 3
+\end{array}
+\]
+
+La componente raggiungibile da $2$ contiene i nodi $2,1,4,5$. I nodi $3$ e $6$ non sono raggiungibili da $2$.
+
+\begin{center}
+\begin{tabular}{c|c|c|c|c}
+Passo & Operazione & Coda $Q$ & Distanze finite & Predecessori nuovi \\
+\hline
+$0$ & inizializza $s=2$ & $\langle 2\rangle$ & $2.d=0$ & -- \\
+$1$ & esamina $2$, scopre $1$ & $\langle 1\rangle$ & $1.d=1$ & $1.\pi=2$ \\
+$2$ & esamina $2$, scopre $4$ & $\langle 1,4\rangle$ & $4.d=1$ & $4.\pi=2$ \\
+$3$ & completa $2$ & $\langle 1,4\rangle$ & -- & -- \\
+$4$ & esamina $1$ & $\langle 4\rangle$ & -- & -- \\
+$5$ & esamina $4$, scopre $5$ & $\langle 5\rangle$ & $5.d=2$ & $5.\pi=4$ \\
+$6$ & completa $5$ & $\langle\rangle$ & -- & --
+\end{tabular}
+\end{center}
+
+Al termine:
+\[
+2.d=0,\qquad 1.d=1,\qquad 4.d=1,\qquad 5.d=2,
+\]
+mentre
+\[
+3.d=6.d=\infty.
+\]
+
+L'albero BF e':
+\[
+2\to 1,\qquad 2\to 4,\qquad 4\to 5.
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Grafo dell'esempio:
+
+1 ----- 2
+ \     /
+  \   /
+    4 ----- 5
+
+3 ----- 6
+
+BFS(G,2):
+
+inizio:
+Q = <2>
+colori: 2 grigio, altri bianchi
+d: 2=0
+
+dopo scansione di 2:
+Q = <1,4>
+colori: 1,4 grigi; 2 nero
+d: 1=1, 4=1
+pi: 1<-2, 4<-2
+
+dopo scansione di 1:
+Q = <4>
+nessun nuovo nodo
+
+dopo scansione di 4:
+Q = <5>
+d: 5=2
+pi: 5<-4
+
+dopo scansione di 5:
+Q = <>
+fine
+
+Albero BF:
+
+    2
+   / \
+  1   4
+       \
+        5
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+La correttezza di BFS rispetto ai cammini minimi nei grafi non pesati viene dimostrata nelle slide tramite tre lemmi, un corollario e un teorema.
+
+\begin{definizione}[Grafo pesato]
+Un grafo $G=(V,E)$ si dice pesato quando esiste una funzione peso
+\[
+\omega:E\to\mathbb{R}
+\]
+che associa a ogni arco un valore detto peso o valore dell'arco. Un grafo non pesato puo' essere visto come un grafo pesato in cui
+\[
+\omega(e)=1\qquad \forall e\in E.
+\]
+\end{definizione}
+
+\begin{definizione}[Distanza di cammino minimo]
+Si definisce distanza di cammino minimo da $s$ a $v$ il valore
+\[
+\delta(s,v)=
+\min_{P\,:\,s\overset{P}{\leadsto} v}
+\sum_{e\in P}\omega(e).
+\]
+Se non esiste un cammino da $s$ a $v$, allora
+\[
+\delta(s,v)=\infty.
+\]
+Un cammino da $s$ a $v$ di lunghezza $\delta(s,v)$ e' detto cammino minimo.
+\end{definizione}
+
+\begin{lemma}
+Se $G=(V,E)$ e' un grafo non pesato e $s\in V$, allora per qualsiasi arco $(u,v)\in E$ vale
+\[
+\delta(s,v)\le \delta(s,u)+1.
+\]
+\end{lemma}
+
+\begin{proof}
+Se $u$ e' raggiungibile da $s$, sia
+\[
+s\overset{P'}{\leadsto} u
+\]
+un cammino minimo da $s$ a $u$. Allora concatenando $P'$ con l'arco $(u,v)$ si ottiene un cammino da $s$ a $v$ di lunghezza
+\[
+\delta(s,u)+1.
+\]
+Il cammino minimo da $s$ a $v$ non puo' essere piu' lungo di un cammino specifico da $s$ a $v$, quindi
+\[
+\delta(s,v)\le \delta(s,u)+1.
+\]
+Se $u$ non e' raggiungibile da $s$, allora $\delta(s,u)=\infty$ e la disuguaglianza e' ancora vera.
+\end{proof}
+
+\begin{lemma}
+Sia $G=(V,E)$ un grafo non pesato e sia $s\in V$. Se si esegue \textsc{BFS}$(G,s)$, al termine vale
+\[
+v.d\ge \delta(s,v)\qquad\forall v\in V.
+\]
+\end{lemma}
+
+\begin{proof}
+La dimostrazione e' per induzione sul numero di operazioni \textsc{Enqueue}.
+
+\textbf{Caso base.}
+All'inizio solo $s$ e' inserito in $Q$:
+\[
+s.d=0=\delta(s,s).
+\]
+Per ogni altro nodo $v$,
+\[
+v.d=\infty\ge \delta(s,v).
+\]
+
+\textbf{Passo induttivo.}
+Supponiamo che la proprieta' valga prima di una nuova operazione \textsc{Enqueue}. Un nodo bianco $v$ viene scoperto durante la visita di un nodo $u$. Per ipotesi induttiva:
+\[
+u.d\ge \delta(s,u).
+\]
+L'algoritmo assegna:
+\[
+v.d\gets u.d+1.
+\]
+Quindi:
+\[
+v.d=u.d+1\ge \delta(s,u)+1\ge \delta(s,v),
+\]
+dove l'ultima disuguaglianza segue dal lemma precedente. Dopo questa assegnazione, $v.d$ non viene piu' modificato, perche' $v$ non sara' piu' bianco.
+\end{proof}
+
+\begin{lemma}
+Si assuma che durante BFS la coda contenga
+\[
+Q=\langle v_1,v_2,\ldots,v_r\rangle.
+\]
+Allora:
+\[
+v_r.d\le v_1.d+1
+\]
+e
+\[
+v_i.d\le v_{i+1}.d\qquad\text{per }i=1,2,\ldots,r-1.
+\]
+\end{lemma}
+
+\begin{proof}
+La dimostrazione e' per induzione sulle operazioni possibili sulla coda $Q$.
+
+\textbf{Base.}
+Quando
+\[
+Q=\langle s\rangle,
+\]
+la tesi e' immediata.
+
+\textbf{Passo induttivo: estrazione.}
+Se si estrae $v_1$, la coda diventa
+\[
+\langle v_2,\ldots,v_r\rangle.
+\]
+Per ipotesi induttiva valevano
+\[
+v_r.d\le v_1.d+1
+\]
+e
+\[
+v_1.d\le v_2.d.
+\]
+Da queste due relazioni segue
+\[
+v_r.d\le v_2.d+1.
+\]
+L'ordine non decrescente delle distanze nella coda rimane quindi valido.
+
+\textbf{Passo induttivo: inserimento.}
+Se durante l'esame di $u=v_1$ si inserisce un nuovo nodo $v$ in coda, allora
+\[
+v.d=u.d+1=v_1.d+1.
+\]
+Dopo l'estrazione di $u$, il nuovo primo elemento della coda ha distanza almeno $v_1.d$. Pertanto il nuovo ultimo elemento soddisfa ancora la proprieta' di stare a distanza al piu' uno dal primo elemento della coda.
+\end{proof}
+
+\begin{corollario}
+Se $v_i$ e $v_j$ sono inseriti in coda durante l'esecuzione di BFS, e $v_i$ viene inserito prima di $v_j$, allora
+\[
+v_i.d\le v_j.d.
+\]
+\end{corollario}
+
+\begin{teorema}[Correttezza di BFS]
+\textsc{BFS} scopre tutti i nodi $v\in V$ raggiungibili da $s$ e, alla fine,
+\[
+v.d=\delta(s,v)\qquad\forall v\in V.
+\]
+Inoltre, per qualsiasi nodo $v$ raggiungibile da $s$, un cammino minimo da $s$ a $v$ si ottiene prendendo un cammino minimo da $s$ a $v.\pi$ e aggiungendo l'arco $(v.\pi,v)$.
+\end{teorema}
+
+\begin{proof}
+La dimostrazione procede per assurdo, come nelle slide.
+
+Supponiamo che esista almeno un vertice raggiungibile per cui la distanza calcolata non e' minima. Tra tutti questi vertici, scegliamo $v$ con distanza minima $\delta(s,v)$.
+
+Dal lemma precedente sappiamo che
+\[
+v.d\ge \delta(s,v).
+\]
+Poiche' per ipotesi $v.d\neq \delta(s,v)$, deve valere
+\[
+v.d>\delta(s,v).
+\]
+Il nodo $v$ e' diverso da $s$, perche'
+\[
+s.d=0=\delta(s,s).
+\]
+
+Sia $u$ il vertice che precede immediatamente $v$ in un cammino minimo
+\[
+s\overset{P}{\leadsto}v.
+\]
+Allora:
+\[
+\delta(s,v)=\delta(s,u)+1.
+\]
+Poiche' $u$ precede $v$ nel cammino minimo, vale
+\[
+\delta(s,u)<\delta(s,v).
+\]
+Per la scelta di $v$ come vertice errato di minima distanza, $u$ non puo' essere errato. Quindi:
+\[
+u.d=\delta(s,u).
+\]
+Ne segue:
+\[
+v.d>\delta(s,v)=\delta(s,u)+1=u.d+1.
+\]
+
+Consideriamo il momento in cui BFS esamina $v$ come adiacente di $u$.
+
+\textbf{Caso 1: $v$ e' bianco.}
+L'algoritmo assegna
+\[
+v.d\gets u.d+1,
+\]
+in contraddizione con
+\[
+v.d>u.d+1.
+\]
+
+\textbf{Caso 2: $v$ e' nero.}
+Allora $v$ e' gia' stato rimosso dalla coda prima di $u$. Per il corollario sull'ordine di inserimento e sulle distanze:
+\[
+v.d\le u.d.
+\]
+Quindi:
+\[
+v.d\le u.d<u.d+1<v.d,
+\]
+contraddizione.
+
+\textbf{Caso 3: $v$ e' grigio.}
+Allora $v$ e' stato colorato grigio durante la visita di un nodo $w$, rimosso dalla coda prima di $u$, e
+\[
+v.d=w.d+1.
+\]
+Per il corollario:
+\[
+w.d\le u.d.
+\]
+Quindi:
+\[
+v.d=w.d+1\le u.d+1,
+\]
+in contraddizione con
+\[
+v.d>u.d+1.
+\]
+
+Tutti i casi portano a contraddizione. Dunque per ogni nodo raggiungibile $v$ vale
+\[
+v.d=\delta(s,v).
+\]
+
+Quando un nodo $v$ viene scoperto, l'algoritmo assegna $v.\pi=u$ e $v.d=u.d+1$. Per quanto dimostrato, $u.d=\delta(s,u)$ e $v.d=\delta(s,v)$, quindi il cammino minimo verso $v$ si ottiene ricorsivamente dal cammino minimo verso $v.\pi$ seguito dall'arco $(v.\pi,v)$.
+\end{proof}
+
+\subsubsection{Analisi della complessita'}
+Il primo ciclo \texttt{for} e le inizializzazioni della sorgente preparano i nodi:
+\[
+O(|V|).
+\]
+Le slide precisano che si scrive $O$ e non necessariamente $\Theta$, perche' l'inizializzazione puo' essere effettuata in modo pigro in $O(1)$.
+
+Il ciclo \texttt{while} continua finche' ci sono nodi grigi. Ogni nodo diventa grigio una sola volta, quindi viene inserito in coda una sola volta e rimosso una sola volta. Le operazioni \textsc{Enqueue} e \textsc{Dequeue} costano $O(1)$.
+
+Per ciascun nodo $u$, il ciclo sugli adiacenti esamina tutta la lista $Adj[u]$. Sommando su tutti i nodi:
+\[
+\sum_{u\in V}|Adj[u]|=\Theta(|E|)
+\]
+nei grafi orientati; nei grafi non orientati ogni arco e' contato due volte, ma il costo resta $\Theta(|E|)$.
+
+La complessita' finale e':
+\[
+O(|V|+|E|).
+\]
+Lo spazio aggiuntivo e' $O(|V|)$ per colori, distanze, predecessori e coda.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Dire che BFS calcola cammini minimi in qualunque grafo pesato. Nelle slide la correttezza dei cammini minimi e' dimostrata per grafi non pesati, equivalenti a grafi con peso unitario su ogni arco.
+\end{hardnote}
+
+\begin{hardnote}
+Confondere nodo grigio e nodo nero. Un nodo grigio e' stato scoperto ma non completato; un nodo nero ha gia' avuto tutti i vicini esaminati.
+\end{hardnote}
+
+\begin{hardnote}
+Dimenticare che la coda e' FIFO. Senza FIFO, l'esplorazione per livelli e la dimostrazione sulle distanze non valgono.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Scrivere lo pseudocodice di BFS.
+	\item Spiegare il ruolo dei colori.
+	\item Dimostrare l'invariante sulla coda dei nodi grigi.
+	\item Dimostrare che BFS calcola le distanze minime nei grafi non pesati.
+	\item Simulare BFS mostrando coda, colori, distanze e predecessori.
+	\item Analizzare la complessita' $O(|V|+|E|)$.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+BFS e' la base per ragionare su:
+\begin{itemize}
+	\item cammini minimi in grafi non pesati;
+	\item costruzione di alberi di visita;
+	\item algoritmi che usano code o code di priorita' per espandere nodi in un ordine controllato.
+\end{itemize}
+
+% ===============================================================
+\subsection{Visita in profondita'}
+
+\subsubsection{Definizione}
+La \textbf{visita in profondita'}, o \textbf{DFS} (\emph{depth-first search}), visita un grafo andando il piu' possibile in profondita'.
+
+Dato un grafo
+\[
+G=(V,E),
+\]
+DFS:
+\begin{itemize}
+	\item ispeziona gli archi a partire dall'ultimo nodo scoperto che ha ancora archi non ispezionati;
+	\item quando tutti gli archi di un nodo $v$ sono stati ispezionati, ritorna al nodo da cui $v$ e' stato scoperto;
+	\item continua finche' esistono nodi da ispezionare.
+\end{itemize}
+
+La visita puo' generare piu' alberi: il risultato e' una \textbf{foresta DF}, cioe' una \emph{depth-first forest}.
+
+\subsubsection{Intuizione}
+DFS si comporta come una pila ricorsiva. Appena scopre un nuovo nodo, sospende temporaneamente l'esame del nodo corrente e scende sul nuovo nodo. Solo quando non puo' piu' scendere, torna indietro.
+
+Questa differenza e' centrale:
+\[
+\begin{array}{c|c}
+\text{BFS} & \text{DFS} \\
+\hline
+\text{esplora per livelli} & \text{esplora andando in profondita'} \\
+\text{usa una coda FIFO} & \text{usa ricorsione, cioe' una pila implicita} \\
+\text{calcola distanze minime non pesate} & \text{calcola tempi di scoperta e completamento}
+\end{array}
+\]
+
+\subsubsection{Motivazione}
+DFS e' usata nelle slide come base per:
+\begin{itemize}
+	\item classificazione degli archi;
+	\item proprieta' a parentesi dei tempi;
+	\item ordinamento topologico;
+	\item componenti fortemente connesse.
+\end{itemize}
+
+\subsubsection{Proprieta' teoriche}
+Per ogni nodo $v$, DFS mantiene:
+\[
+v.color,\qquad v.\pi,\qquad v.d,\qquad v.f.
+\]
+
+\begin{itemize}
+	\item $v.d$ e' l'istante in cui $v$ viene scoperto, cioe' diventa grigio.
+	\item $v.f$ e' l'istante in cui $v$ viene completato, cioe' diventa nero.
+	\item $v.\pi$ e' il predecessore di $v$ nella foresta DF.
+\end{itemize}
+
+L'algoritmo usa una variabile globale
+\[
+time
+\]
+che viene incrementata ogni volta che un nodo cambia colore per scoperta o completamento.
+
+\paragraph{Classificazione degli archi.}
+Le slide riportano la seguente classificazione degli archi ispezionati da DFS:
+\[
+\begin{array}{c|l}
+\text{Tipo} & \text{Condizione} \\
+\hline
+T\ \text{(tree)} & \text{l'arco }(u,v)\text{ e' ispezionato e }v\text{ e' bianco} \\
+B\ \text{(backward)} & \text{l'arco }(u,v)\text{ e' ispezionato e }v\text{ e' grigio} \\
+F\ \text{(forward)} & \text{l'arco }(u,v)\text{ e' ispezionato, }v\text{ e' nero e }u.d<v.d \\
+C\ \text{(cross)} & \text{l'arco }(u,v)\text{ e' ispezionato, }v\text{ e' nero e }u.d>v.f
+\end{array}
+\]
+
+Per un arco backward, il nodo $v$ e' un antenato di $u$. Per un arco forward, $v$ e' un discendente di $u$. Per un arco cross, $u$ e $v$ non sono in relazione di discendenza, oppure appartengono a due alberi distinti della foresta DF.
+
+\subsubsection{Algoritmo}
+\begin{algorithm}[H]
+	\caption{\textsc{DFS}$(G)$}
+	\KwIn{$G=(V,E)$}
+	\ForEach{$u\in V$}{
+		$u.color\gets\textsc{White}$\;
+		$u.\pi\gets\textsc{Null}$\;
+	}
+	$time\gets 0$\tcp*{variabile globale}
+	\ForEach{$u\in V$}{
+		\If{$u.color=\textsc{White}$}{
+			\textsc{DFS-Visit}$(G,u)$\;
+		}
+	}
+\end{algorithm}
+
+\begin{algorithm}[H]
+	\caption{\textsc{DFS-Visit}$(G,u)$}
+	\KwIn{$G=(V,E)$, nodo $u\in V$}
+	$time\gets time+1$\;
+	$u.d\gets time$\;
+	$u.color\gets\textsc{Gray}$\;
+	\ForEach{$v\in G.Adj[u]$}{
+		\If{$v.color=\textsc{White}$}{
+			$v.\pi\gets u$\;
+			\textsc{DFS-Visit}$(G,v)$\;
+		}
+	}
+	$time\gets time+1$\;
+	$u.f\gets time$\;
+	$u.color\gets\textsc{Black}$\;
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+L'esecuzione mostrata nelle slide produce la foresta:
+\[
+2\to 1\to 4\to 5,
+\qquad
+3\to 6.
+\]
+I tempi sono:
+\[
+\begin{array}{c|cc}
+\text{Nodo} & d & f \\
+\hline
+2 & 1 & 8 \\
+1 & 2 & 7 \\
+4 & 3 & 6 \\
+5 & 4 & 5 \\
+3 & 9 & 12 \\
+6 & 10 & 11
+\end{array}
+\]
+
+Evoluzione della pila ricorsiva:
+\[
+\begin{array}{c|c|c}
+\text{Evento} & time & \text{Stack chiamate DFS-Visit} \\
+\hline
+\text{scopri }2 & 1 & \langle 2\rangle \\
+\text{scopri }1 & 2 & \langle 1,2\rangle \\
+\text{scopri }4 & 3 & \langle 4,1,2\rangle \\
+\text{scopri }5 & 4 & \langle 5,4,1,2\rangle \\
+\text{completa }5 & 5 & \langle 5,4,1,2\rangle \\
+\text{completa }4 & 6 & \langle 4,1,2\rangle \\
+\text{completa }1 & 7 & \langle 1,2\rangle \\
+\text{completa }2 & 8 & \langle 2\rangle \\
+\text{scopri }3 & 9 & \langle 3\rangle \\
+\text{scopri }6 & 10 & \langle 6,3\rangle \\
+\text{completa }6 & 11 & \langle 6,3\rangle \\
+\text{completa }3 & 12 & \langle 3\rangle
+\end{array}
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Foresta DF dell'esempio:
+
+2
+|
+1
+|
+4
+|
+5
+
+3
+|
+6
+
+Tempi:
+
+2: d=1,  f=8
+1: d=2,  f=7
+4: d=3,  f=6
+5: d=4,  f=5
+3: d=9,  f=12
+6: d=10, f=11
+
+Espressione a parentesi:
+
+(2 (1 (4 (5 5) 4) 1) 2)(3 (6 6) 3)
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+Le slide non richiedono le dimostrazioni dei teoremi 20.7, 20.9 e 20.10. Si esplicita pero' la proprieta' a parentesi indicata nel materiale.
+
+\paragraph{Struttura a parentesi.}
+La scoperta di un nodo $u$ si rappresenta con una parentesi aperta $(u$, mentre il completamento di $u$ si rappresenta con una parentesi chiusa $u)$.
+
+Ogni chiamata ricorsiva \textsc{DFS-Visit}$(G,u)$:
+\begin{itemize}
+	\item apre la parentesi di $u$ quando assegna $u.d$;
+	\item completa interamente tutte le chiamate ricorsive dei discendenti;
+	\item chiude la parentesi di $u$ quando assegna $u.f$.
+\end{itemize}
+Quindi non e' possibile chiudere un nodo prima di aver chiuso tutti i suoi discendenti. L'espressione prodotta e' ben formata.
+
+Nell'esempio delle slide:
+\[
+(2\ (1\ (4\ (5\ 5)\ 4)\ 1)\ 2)(3\ (6\ 6)\ 3)
+\]
+mostra esattamente che l'intervallo temporale di un discendente e' contenuto nell'intervallo temporale del suo antenato.
+
+\subsubsection{Analisi della complessita'}
+L'algoritmo \textsc{DFS} richiede tempo $\Theta(|V|)$ escluso il tempo delle chiamate a \textsc{DFS-Visit}.
+
+\textsc{DFS-Visit} viene eseguito esattamente una volta per ciascun nodo, quindi ci sono $|V|$ chiamate.
+
+In ogni chiamata \textsc{DFS-Visit}$(G,u)$, il ciclo \texttt{foreach} viene eseguito
+\[
+|Adj[u]|
+\]
+volte. Sommando su tutti i nodi:
+\[
+\sum_{u\in V}|Adj[u]|=\Theta(|E|).
+\]
+
+Il costo totale e':
+\[
+\Theta(|V|+|E|).
+\]
+Lo spazio aggiuntivo e' $O(|V|)$ per colori, predecessori, tempi e stack ricorsivo.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Confondere $v.d$ con una distanza. In DFS, $v.d$ e' un tempo di scoperta, non una distanza dalla sorgente.
+\end{hardnote}
+
+\begin{hardnote}
+Pensare che DFS produca sempre un solo albero. Se il grafo non e' tutto raggiungibile dal primo nodo esaminato, DFS produce una foresta.
+\end{hardnote}
+
+\begin{hardnote}
+Dimenticare che l'ordine di ispezione dei vertici puo' cambiare la foresta DF e i tempi, anche se le applicazioni dell'algoritmo restano corrette.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Scrivere \textsc{DFS} e \textsc{DFS-Visit}.
+	\item Simulare DFS mostrando stack ricorsivo, colori, tempi $d$ e $f$.
+	\item Spiegare la differenza tra BFS e DFS.
+	\item Definire archi tree, backward, forward e cross.
+	\item Spiegare la struttura a parentesi.
+	\item Analizzare la complessita' $\Theta(|V|+|E|)$.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+DFS e' la base per:
+\begin{itemize}
+	\item ordinamento topologico dei DAG;
+	\item componenti fortemente connesse;
+	\item ragionamenti sui tempi di scoperta e completamento.
+\end{itemize}
+
+% ===============================================================
+\subsection{Ordinamento topologico}
+
+\subsubsection{Definizione}
+Un \textbf{DAG} e' un grafo diretto aciclico, cioe' un \emph{directed acyclic graph}.
+
+Un \textbf{ordinamento topologico} di un DAG
+\[
+G=(V,E)
+\]
+e' un ordinamento lineare dei nodi tale che, per ogni arco
+\[
+(u,v)\in E,
+\]
+il nodo $u$ compare prima del nodo $v$ nell'ordinamento.
+
+\subsubsection{Intuizione}
+Un ordinamento topologico dispone i nodi su una linea in modo che tutti gli archi vadano da sinistra verso destra.
+
+Se un arco $(u,v)$ rappresenta il vincolo ``$u$ deve avvenire prima di $v$'', allora un ordinamento topologico e' una lista che rispetta tutte le precedenze.
+
+\subsubsection{Motivazione}
+Le slide indicano che gli ordinamenti topologici sono usati in molti contesti per rappresentare precedenze fra eventi. L'algoritmo proposto usa i tempi di completamento calcolati da DFS.
+
+\subsubsection{Proprieta' teoriche}
+La proprieta' fondamentale riportata nelle slide e':
+\[
+\text{in un DAG, per ogni arco }(u,v)\in E,\quad u.f>v.f.
+\]
+Quindi, se i nodi sono inseriti in testa a una lista al momento del completamento, il nodo con tempo di completamento maggiore finisce prima nella lista.
+
+Poiche' un DAG non contiene cicli, durante DFS non possono comparire archi all'indietro che chiuderebbero un ciclo.
+
+\subsubsection{Algoritmo}
+\begin{algorithm}[H]
+	\caption{\textsc{Topological-Sort}$(G)$}
+	\KwIn{DAG $G=(V,E)$}
+	\KwOut{Un ordinamento topologico dei nodi}
+	$lista\gets\langle\rangle$\;
+	Esegui \textsc{DFS}$(G)$ e, ogni volta che un valore $u.f$ viene calcolato, inserisci $u$ in testa a $lista$\;
+	\Return $lista$\;
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Consideriamo il DAG:
+\[
+a\to b,\qquad a\to c,\qquad b\to d,\qquad c\to d.
+\]
+Un'esecuzione DFS puo' completare i nodi nell'ordine:
+\[
+d,\ b,\ c,\ a.
+\]
+Inserendo ogni nodo in testa alla lista al momento del completamento:
+\[
+\begin{array}{c|c}
+\text{Nodo completato} & \text{Lista} \\
+\hline
+d & \langle d\rangle \\
+b & \langle b,d\rangle \\
+c & \langle c,b,d\rangle \\
+a & \langle a,c,b,d\rangle
+\end{array}
+\]
+La lista
+\[
+\langle a,c,b,d\rangle
+\]
+e' un ordinamento topologico: $a$ precede $b$ e $c$, e sia $b$ sia $c$ precedono $d$.
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+DAG:
+
+    a
+   / \
+  v   v
+  b   c
+   \ /
+    v
+    d
+
+Ordinamento topologico possibile:
+
+a  c  b  d
+
+Tutti gli archi vanno da sinistra verso destra.
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+La correttezza si basa sul fatto indicato nelle slide:
+\[
+(u,v)\in E \Longrightarrow u.f>v.f
+\]
+in un DAG.
+
+Consideriamo un arco $(u,v)$ durante DFS.
+
+Se $v$ e' bianco quando l'arco viene esaminato, allora $v$ diventa discendente di $u$ nella foresta DFS. Un discendente viene completato prima dell'antenato, quindi
+\[
+v.f<u.f.
+\]
+
+Se $v$ e' nero, allora $v$ e' gia' stato completato prima del completamento di $u$, quindi ancora
+\[
+v.f<u.f.
+\]
+
+Il caso in cui $v$ sia grigio corrisponderebbe a un arco all'indietro verso un antenato. Questo produrrebbe un ciclo, impossibile in un DAG.
+
+Quindi per ogni arco $(u,v)$ vale
+\[
+u.f>v.f.
+\]
+L'algoritmo inserisce ogni nodo in testa alla lista quando viene completato. Di conseguenza, i nodi con tempo di completamento maggiore compaiono prima. Pertanto, per ogni arco $(u,v)$, $u$ compare prima di $v$. Questa e' esattamente la definizione di ordinamento topologico.
+
+\subsubsection{Analisi della complessita'}
+L'algoritmo esegue DFS e inserisce ogni nodo una volta in lista. Quindi:
+\[
+\Theta(|V|+|E|)
+\]
+per la DFS, piu' $O(|V|)$ per gli inserimenti in testa.
+
+La complessita' finale e':
+\[
+\Theta(|V|+|E|).
+\]
+Lo spazio aggiuntivo e' $O(|V|)$ per la lista e per gli attributi di DFS.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Applicare l'ordinamento topologico a un grafo diretto con cicli. La definizione usata nelle slide richiede un DAG.
+\end{hardnote}
+
+\begin{hardnote}
+Ordinare i nodi per tempo di scoperta invece che per tempo di completamento. L'algoritmo usa i tempi $f$, non i tempi $d$.
+\end{hardnote}
+
+\begin{hardnote}
+Inserire il nodo in coda invece che in testa al completamento. L'inserimento in testa realizza l'ordine decrescente dei tempi di completamento.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire DAG e ordinamento topologico.
+	\item Scrivere l'algoritmo \textsc{Topological-Sort}.
+	\item Dimostrare che in un DAG, per ogni arco $(u,v)$, vale $u.f>v.f$.
+	\item Simulare l'algoritmo su un piccolo DAG.
+	\item Analizzare la complessita'.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+L'ordinamento topologico e' un'applicazione diretta di DFS. Usa i tempi di completamento e il fatto che un DAG non contiene archi all'indietro.
+
+% ===============================================================
+\subsection{Componenti fortemente connesse}
+
+\subsubsection{Definizione}
+In un grafo diretto
+\[
+G=(V,E),
+\]
+una \textbf{componente fortemente connessa} e' un insieme massimale di nodi
+\[
+C\subseteq V
+\]
+tale che, per ogni coppia $u,v\in C$, vale:
+\[
+u\leadsto v
+\qquad\text{e}\qquad
+v\leadsto u.
+\]
+
+Il termine \textbf{massimale} significa che non e' possibile aggiungere a $C$ un altro nodo preservando la proprieta' di mutua raggiungibilita'.
+
+\paragraph{Grafo trasposto.}
+Dato un grafo diretto
+\[
+G=(V,E),
+\]
+il suo grafo trasposto e'
+\[
+G^T=(V,E^T),
+\]
+dove
+\[
+E^T=\{(v,u)\mid (u,v)\in E\}.
+\]
+Il grafo trasposto inverte il verso di tutti gli archi.
+
+\subsubsection{Intuizione}
+Una componente fortemente connessa e' una regione del grafo in cui tutti i nodi sono raggiungibili reciprocamente. Se si contraggono le componenti in singoli nodi, si ottiene una struttura senza cicli tra componenti.
+
+L'algoritmo delle slide usa due visite DFS:
+\begin{enumerate}
+	\item una DFS su $G$ per calcolare i tempi di completamento;
+	\item una DFS su $G^T$, scegliendo i nodi in ordine decrescente rispetto ai tempi di completamento calcolati in $G$.
+\end{enumerate}
+
+\subsubsection{Motivazione}
+DFS da sola non basta a separare direttamente le componenti fortemente connesse in un grafo diretto arbitrario. I tempi di completamento della prima DFS indicano l'ordine corretto in cui esplorare il grafo trasposto.
+
+\subsubsection{Proprieta' teoriche}
+\paragraph{Stesse componenti in $G$ e $G^T$.}
+I grafi $G$ e $G^T$ hanno le stesse componenti fortemente connesse. Infatti, se in $G$ esiste un cammino $u\leadsto v$, allora in $G^T$ esiste il cammino inverso $v\leadsto u$. La mutua raggiungibilita' e' quindi preservata invertendo tutti gli archi.
+
+\paragraph{Tempi di componente.}
+Per una componente $U$, definiamo:
+\[
+d(U)=\min\{u.d\mid u\in U\},
+\]
+cioe' il primo tempo di scoperta di un vertice della componente, e
+\[
+f(U)=\max\{u.f\mid u\in U\},
+\]
+cioe' l'ultimo tempo di completamento di un vertice della componente.
+
+\begin{lemma}
+Si considerino due componenti fortemente connesse distinte $C$ e $C'$ di $G=(V,E)$. Se
+\[
+(u,v)\in E,\qquad u\in C',\qquad v\in C,
+\]
+allora
+\[
+f(C')>f(C).
+\]
+\end{lemma}
+
+\begin{corollario}
+Si considerino due componenti fortemente connesse distinte $C$ e $C'$ di $G=(V,E)$. Se
+\[
+f(C')<f(C),
+\]
+allora $E^T$ non contiene nessun arco $(v,u)$ tale che
+\[
+v\in C,\qquad u\in C'.
+\]
+\end{corollario}
+
+\subsubsection{Algoritmo}
+\begin{algorithm}[H]
+	\caption{\textsc{Strongly-Connected-Components}$(G)$}
+	\KwIn{$G=(V,E)$}
+	\KwOut{Componenti fortemente connesse di $G$}
+	\textsc{DFS}$(G)$\tcp*{determina i tempi di completamento $u.f$}
+	Determina $G^T$\;
+	Esegui \textsc{DFS}$(G^T)$ esaminando i nodi in ordine decrescente rispetto al tempo di completamento calcolato in $G$\;
+	$C\gets[\,]$\;
+	$i\gets 0$\;
+	\ForEach{albero DFS $T$ in $G^T$}{
+		$C[i]\gets$ sottografo indotto dai nodi dell'albero $T$\;
+		$i\gets i+1$\;
+	}
+	\Return $C$\;
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Consideriamo il grafo diretto:
+\[
+a\to b,\quad b\to a,\quad b\to c,\quad c\to d,\quad d\to c.
+\]
+Le componenti fortemente connesse sono:
+\[
+C_1=\{a,b\},\qquad C_2=\{c,d\}.
+\]
+Infatti $a$ e $b$ si raggiungono reciprocamente, e anche $c$ e $d$ si raggiungono reciprocamente. Inoltre esiste un arco da $C_1$ a $C_2$, ma non un cammino di ritorno da $C_2$ a $C_1$.
+
+La prima DFS su $G$ calcola i tempi $f$. Poi si costruisce $G^T$, invertendo tutti gli archi:
+\[
+b\to a,\quad a\to b,\quad c\to b,\quad d\to c,\quad c\to d.
+\]
+La seconda DFS su $G^T$, usando l'ordine decrescente dei tempi $f$ della prima DFS, produce alberi DFS che coincidono con le componenti fortemente connesse.
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+G:
+
+a <----> b ----> c <----> d
+
+Componenti fortemente connesse:
+
+{a,b} ----> {c,d}
+
+G^T:
+
+a <----> b <---- c <----> d
+
+La seconda DFS su G^T, nell'ordine corretto,
+estrae un albero per ciascuna componente.
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+\paragraph{Dimostrazione del lemma.}
+Siano $C$ e $C'$ due componenti fortemente connesse distinte e sia
+\[
+(u,v)\in E
+\]
+con
+\[
+u\in C',\qquad v\in C.
+\]
+
+Ci sono due casi.
+
+\textbf{Caso 1: $d(C')<d(C)$.}
+Sia $y\in C'$ tale che
+\[
+y.d=d(C').
+\]
+Al tempo $y.d$, i nodi di $C'$ e di $C$ rilevanti per il cammino sono ancora bianchi, e da $y$ si possono raggiungere:
+\begin{itemize}
+	\item tutti i nodi di $C'$, per forte connessione;
+	\item il nodo $u$, quindi tramite l'arco $(u,v)$ il nodo $v$;
+	\item tutti i nodi di $C$, per forte connessione di $C$.
+\end{itemize}
+Quindi i nodi di $C'$ e $C$ diventano discendenti di $y$ nella DFS. Ne segue:
+\[
+y.f=f(C')>f(C).
+\]
+
+\textbf{Caso 2: $d(C')>d(C)$.}
+Sia $y\in C$ tale che
+\[
+y.d=d(C).
+\]
+All'inizio della visita da $y$, i nodi di $C'$ sono ancora bianchi. Non puo' esistere un cammino da $y$ a un nodo di $C'$, perche' altrimenti, usando l'arco da $C'$ a $C$ e la forte connessione interna delle due componenti, $C$ e $C'$ non sarebbero due componenti distinte.
+
+Dunque la DFS partita da $y$ completa i nodi di $C$ senza scoprire i nodi di $C'$. Al tempo
+\[
+y.f=f(C),
+\]
+i nodi di $C'$ sono ancora bianchi. Essi saranno scoperti e completati solo dopo. Quindi:
+\[
+f(C')>f(C).
+\]
+
+In entrambi i casi vale
+\[
+f(C')>f(C).
+\]
+
+\paragraph{Dimostrazione del corollario.}
+La contronominale del lemma dice: se
+\[
+f(C')<f(C),
+\]
+allora non esiste alcun arco
+\[
+(u,v)\in E
+\]
+con
+\[
+u\in C',\qquad v\in C.
+\]
+Nel grafo trasposto, un arco $(u,v)$ di $G$ diventa $(v,u)$ in $G^T$. Quindi $G^T$ non contiene archi da $C$ verso $C'$.
+
+\paragraph{Correttezza dell'algoritmo SCC.}
+La prima DFS su $G$ calcola i tempi di completamento. La seconda DFS viene eseguita su $G^T$ in ordine decrescente di tali tempi.
+
+Sia $x$ il primo nodo scelto nella seconda DFS, cioe' quello con tempo $x.f$ massimo. Sia $C$ la componente fortemente connessa che contiene $x$. Allora $f(C)$ e' massimo tra le componenti.
+
+Per il corollario, in $G^T$ non esistono archi da $C$ verso componenti con tempo di completamento minore ancora bianche. Quindi la visita DFS da $x$ in $G^T$ non puo' uscire da $C$ verso una nuova componente bianca. Poiche' $G$ e $G^T$ hanno le stesse componenti fortemente connesse, la DFS da $x$ raggiunge tutti e soli i nodi di $C$. Il primo albero DFS della seconda visita determina quindi una componente fortemente connessa.
+
+Nel passo successivo, il ciclo principale di DFS su $G^T$ sceglie tra i nodi ancora bianchi un nodo $y$ con tempo di completamento massimo. Lo stesso ragionamento vale per la componente di $y$: eventuali archi verso componenti gia' trovate portano a nodi neri, mentre non esistono archi verso componenti bianche con tempo minore che possano far uscire la visita dalla componente corrente.
+
+Ripetendo il ragionamento, ogni albero DFS della seconda visita identifica esattamente una componente fortemente connessa. Quindi l'algoritmo calcola correttamente tutte le componenti fortemente connesse di un grafo orientato.
+
+\subsubsection{Analisi della complessita'}
+L'algoritmo esegue:
+\begin{itemize}
+	\item una DFS su $G$:
+	\[
+	\Theta(|V|+|E|);
+	\]
+	\item la costruzione di $G^T$:
+	\[
+	\Theta(|V|+|E|)
+	\]
+	se $G$ e' rappresentato con liste di adiacenza;
+	\item una DFS su $G^T$:
+	\[
+	\Theta(|V|+|E|).
+	\]
+\end{itemize}
+
+La complessita' totale e':
+\[
+\Theta(|V|+|E|).
+\]
+
+Le slide osservano che ciascun $C[i]$ puo' essere determinato durante la seconda visita DFS; il ciclo che raccoglie gli alberi e' scritto nell'algoritmo per chiarezza.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Eseguire la seconda DFS su $G$ invece che su $G^T$. L'inversione degli archi e' essenziale.
+\end{hardnote}
+
+\begin{hardnote}
+Usare nella seconda DFS un ordine qualunque dei nodi. L'ordine deve essere decrescente rispetto ai tempi di completamento calcolati nella prima DFS su $G$.
+\end{hardnote}
+
+\begin{hardnote}
+Confondere componente connessa e componente fortemente connessa. Nei grafi diretti serve raggiungibilita' in entrambe le direzioni per ogni coppia di nodi della componente.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Definire una componente fortemente connessa.
+	\item Definire il grafo trasposto.
+	\item Dimostrare che $G$ e $G^T$ hanno le stesse componenti fortemente connesse.
+	\item Enunciare e dimostrare il lemma sui tempi $f(C')>f(C)$.
+	\item Scrivere l'algoritmo \textsc{Strongly-Connected-Components}.
+	\item Dimostrare la correttezza dell'algoritmo.
+	\item Analizzare la complessita' $\Theta(|V|+|E|)$.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+Le componenti fortemente connesse sono un'applicazione avanzata di DFS. L'algoritmo usa:
+\begin{itemize}
+	\item tempi di completamento;
+	\item grafo trasposto;
+	\item seconda DFS ordinata per tempi decrescenti.
+\end{itemize}
+
+% ===============================================================
+\subsection{Procedura per stampare un cammino minimo}
+
+\subsubsection{Definizione}
+Tra gli esercizi ufficiali delle slide compare la richiesta di scrivere la procedura che stampa il cammino minimo dalla sorgente a un nodo dato, se esiste.
+
+Dopo BFS, per ogni nodo raggiungibile $v$, il predecessore $v.\pi$ permette di risalire da $v$ verso la sorgente $s$ lungo l'albero BF.
+
+\subsubsection{Intuizione}
+Il cammino viene ricostruito all'indietro:
+\[
+v,\ v.\pi,\ v.\pi.\pi,\ \ldots,\ s.
+\]
+Per stamparlo nell'ordine corretto da $s$ a $v$, si usa una procedura ricorsiva: prima stampa il cammino fino al predecessore, poi stampa $v$.
+
+\subsubsection{Motivazione}
+BFS non restituisce solo le distanze. Gli attributi $\pi$ codificano anche un cammino minimo effettivo, come affermato dal teorema di correttezza.
+
+\subsubsection{Proprieta' teoriche}
+Se $v$ e' raggiungibile da $s$, allora la catena dei predecessori termina in $s$:
+\[
+v,\ v.\pi,\ v.\pi.\pi,\ldots,s.
+\]
+Se $v$ non e' raggiungibile, allora
+\[
+v.\pi=\textsc{Null}
+\]
+e $v\neq s$.
+
+\subsubsection{Algoritmo}
+\begin{algorithm}[H]
+	\caption{\textsc{Print-Path}$(s,v)$}
+	\KwIn{Sorgente $s$, nodo destinazione $v$, predecessori $\pi$ calcolati da BFS}
+	\KwOut{Cammino minimo da $s$ a $v$, se esiste}
+	\If{$v=s$}{
+		stampa $s$\;
+	}
+	\Else{
+		\If{$v.\pi=\textsc{Null}$}{
+			stampa ``nessun cammino da $s$ a $v$''\;
+		}
+		\Else{
+			\textsc{Print-Path}$(s,v.\pi)$\;
+			stampa $v$\;
+		}
+	}
+\end{algorithm}
+
+\subsubsection{Esempio guidato}
+Nell'esempio BFS con sorgente $2$:
+\[
+5.\pi=4,\qquad 4.\pi=2,\qquad 2.\pi=\textsc{Null}.
+\]
+La chiamata
+\[
+\textsc{Print-Path}(2,5)
+\]
+esegue:
+\[
+\textsc{Print-Path}(2,4),
+\]
+che esegue:
+\[
+\textsc{Print-Path}(2,2).
+\]
+Stampa quindi:
+\[
+2,\ 4,\ 5.
+\]
+
+\subsubsection{Grafico o diagramma}
+\begin{center}
+\begin{verbatim}
+Catena dei predecessori:
+
+5.pi = 4
+4.pi = 2
+2.pi = NULL
+
+Risalita:
+
+5 -> 4 -> 2
+
+Stampa ricorsiva:
+
+2 -> 4 -> 5
+\end{verbatim}
+\end{center}
+
+\subsubsection{Dimostrazione}
+La procedura e' corretta per induzione sulla lunghezza del cammino.
+
+\textbf{Caso base.}
+Se $v=s$, il cammino da $s$ a $s$ contiene solo $s$, e la procedura stampa $s$.
+
+\textbf{Passo induttivo.}
+Se $v\neq s$ e $v.\pi\neq\textsc{Null}$, per il teorema di correttezza di BFS un cammino minimo da $s$ a $v$ e' formato da un cammino minimo da $s$ a $v.\pi$ seguito dall'arco $(v.\pi,v)$. Per ipotesi induttiva, la chiamata ricorsiva stampa correttamente il cammino da $s$ a $v.\pi$; stampando poi $v$, si ottiene il cammino da $s$ a $v$.
+
+Se $v.\pi=\textsc{Null}$ e $v\neq s$, non esiste cammino da $s$ a $v$ registrato da BFS, quindi la procedura segnala correttamente l'assenza del cammino.
+
+\subsubsection{Analisi della complessita'}
+La procedura segue al piu' un predecessore per ogni nodo del cammino. Nel caso peggiore:
+\[
+O(|V|)
+\]
+tempo e
+\[
+O(|V|)
+\]
+spazio sullo stack ricorsivo.
+
+\subsubsection{Errori tipici d'esame}
+\begin{hardnote}
+Stampare prima $v$ e poi il predecessore produce il cammino al contrario. La procedura ricorsiva deve stampare prima il cammino verso $v.\pi$ e poi $v$.
+\end{hardnote}
+
+\begin{hardnote}
+Non gestire il caso $v.\pi=\textsc{Null}$ quando $v\neq s$. In quel caso il cammino non esiste.
+\end{hardnote}
+
+\subsubsection{Possibili domande d'esame}
+\begin{itemize}
+	\item Scrivere \textsc{Print-Path}.
+	\item Spiegare perche' usa i predecessori $\pi$.
+	\item Dimostrare la correttezza per induzione.
+	\item Analizzare tempo e spazio.
+\end{itemize}
+
+\subsubsection{Collegamenti teorici}
+La procedura e' collegata direttamente al teorema di correttezza di BFS: le distanze $d$ danno la lunghezza minima, mentre i predecessori $\pi$ permettono di ricostruire un cammino minimo.
