@@ -1,0 +1,309 @@
+% ============================================================
+\section{Esercizi per l'esame}
+\label{sec:esercizi-esame}
+% ============================================================
+
+\begin{softnote}
+	Questa sezione raccoglie esercizi tipici d'esame con soluzione completa:
+	inserimento in ABR, analisi di complessità su grafi sparsi, valutazione di polinomi
+	e ricerca binaria ricorsiva con modelli di costo diversi per il passaggio dei parametri.
+\end{softnote}
+
+% ------------------------------------------------------------
+\subsection{Esercizio 1 --- Inserimento in ABR con chiavi duplicate}
+\label{sub:es1-abr-insert}
+% ------------------------------------------------------------
+
+Si considerino gli alberi binari di ricerca e la seguente procedura \textsc{Insert}.
+
+\begin{algorithm}[H]
+	\caption{\textsc{Insert}$(t,\, z)$ --- versione standard (riferimento)}
+	\KwIn{Un ABR $t$ e un nodo $z \notin t$}
+	$y \leftarrow \textsc{null}$\;
+	$x \leftarrow t.\mathit{root}$\;
+	\While{$x \neq \textsc{null}$}{
+		$y \leftarrow x$\;
+		$x \leftarrow (z.\mathit{key} < x.\mathit{key})$
+		\textbf{ ? } $x.\mathit{left}$ \textbf{ : } $x.\mathit{right}$\;
+	}
+	$z.p \leftarrow y$\;
+	\eIf{$y = \textsc{null}$}{
+		$t.\mathit{root} \leftarrow z$\;
+	}{
+		\eIf{$z.\mathit{key} < y.\mathit{key}$}{
+			$y.\mathit{left} \leftarrow z$\;
+		}{
+			$y.\mathit{right} \leftarrow z$\;
+		}
+	}
+\end{algorithm}
+
+\paragraph{Domanda.}
+Si determinino le prestazioni asintotiche della procedura \textsc{Insert} quando si
+inseriscono $n$ chiavi \emph{identiche} in un ABR inizialmente vuoto, per ciascuna delle
+tre varianti seguenti.
+
+\paragraph{Variante A (standard).}
+Come nella procedura sopra: chiavi uguali vanno sempre a destra.
+
+\paragraph{Variante B (flag booleano).}
+In ogni nodo $x$ è presente un flag booleano $b[x]$. La riga di discesa diventa:
+\begin{enumerate}
+	\item $b[x] \leftarrow \lnot b[x]$;
+	\item se $z.\mathit{key} = x.\mathit{key}$, allora
+	$x \leftarrow b[x]\ \textbf{?}\ x.\mathit{left}\ \textbf{:}\ x.\mathit{right}$;
+	\item altrimenti $x \leftarrow (z.\mathit{key} < x.\mathit{key})\ \textbf{?}\ x.\mathit{left}\ \textbf{:}\ x.\mathit{right}$.
+\end{enumerate}
+Le righe di inserimento (11--12) vanno modificate in modo coerente: quando
+$z.\mathit{key} = y.\mathit{key}$, il nuovo nodo $z$ deve essere inserito nel figlio
+scelto nell'ultima iterazione del ciclo, \emph{senza} modificare nuovamente $b[y]$.
+
+\paragraph{Variante C (lista di duplicati).}
+Ogni nodo mantiene una lista delle chiavi uguali alla propria. Se $z.\mathit{key} = x.\mathit{key}$,
+$z$ non diventa un nuovo nodo dell'albero ma viene aggiunto alla lista di $x$.
+
+\subsubsection*{Soluzione}
+
+\paragraph{1. Procedura \textsc{Insert} standard.}
+Il test alla riga di discesa è $z.\mathit{key} < x.\mathit{key}$. Se le due chiavi sono
+uguali, il test è falso e la discesa prosegue sempre verso destra. Ogni nuova chiave viene
+inserita come figlio destro del nodo più a destra: l'albero degenera in una lista.
+
+L'$i$-esimo inserimento percorre una catena di lunghezza $i-1$, quindi costa $\Theta(i)$.
+Il costo totale per inserire $n$ chiavi identiche è
+\[
+\sum_{i=1}^{n} \Theta(i) = \Theta(n^2).
+\]
+L'albero finale ha altezza $\Theta(n)$.
+
+\paragraph{2. Procedura \textsc{Insert} con flag booleano.}
+Quando si incontra una chiave uguale a quella del nodo corrente $x$, il flag $b[x]$ viene
+invertito e la discesa alterna tra sottoalbero sinistro e destro. Questo avviene in ogni
+nodo visitato con chiave uguale, quindi le chiavi duplicate si distribuiscono in modo
+bilanciato tra i due sottoalberi.
+
+Per induzione, l'albero costruito inserendo $n$ chiavi identiche ha altezza $\Theta(\log n)$.
+Il costo dell'$i$-esimo inserimento è $\Theta(\log i)$. Il costo totale è
+\[
+\sum_{i=1}^{n} \Theta(\log i) = \Theta(n \log n).
+\]
+L'albero finale ha altezza $\Theta(\log n)$.
+
+\paragraph{3. Procedura \textsc{Insert} con lista di duplicati.}
+La prima chiave diventa la radice. Tutte le successive sono uguali alla chiave della radice:
+non si prosegue la discesa e ogni inserimento aggiorna solo la lista associata alla radice.
+
+Se l'inserimento nella lista avviene in testa, ogni inserimento nella lista costa $\Theta(1)$
+e il costo totale è $\Theta(n)$. L'albero finale contiene un solo nodo (la radice) con una
+lista di $n-1$ elementi.
+
+\begin{osservazione}
+	Se invece si inserisse in coda alla lista senza un puntatore all'ultimo elemento, il
+	costo totale potrebbe diventare $\Theta(n^2)$.
+\end{osservazione}
+
+% ------------------------------------------------------------
+\subsection{Esercizio 2 --- \texttt{edges()} in \texttt{SparseWeightedGraph}}
+\label{sub:es2-sparse-graph}
+% ------------------------------------------------------------
+
+Si consideri il seguente metodo della classe \texttt{SparseWeightedGraph}:
+
+\begin{lstlisting}[language=Java, caption={Versione originale di \texttt{edges()}}]
+public List<E> edges() {
+  List<E> edges = new ArrayList<>(size());
+  for (MainEntry nodeE : nodes) {
+    for (AdjacentEntry pair : nodeE.adjacent) {
+      if (edges.contains(pair.edge.getName())) {
+        continue;
+      }
+      edges.add(pair.edge);
+    }
+  }
+  return edges;
+}
+\end{lstlisting}
+
+La classe rappresenta il grafo con liste di adiacenza. I nodi hanno nomi di tipo
+\texttt{String} che sono identificatori nel grafo. Il metodo \texttt{List.contains} scorre
+tutta la lista per la ricerca.
+
+\paragraph{Domanda.}
+\begin{enumerate}
+	\item Determinare la complessità in tempo rispetto al numero di nodi $n$ e di archi $m$.
+	\item Modificare la procedura in modo che la complessità in tempo sia $O(n+m)$.
+\end{enumerate}
+
+\subsubsection*{Soluzione}
+
+Il ciclo esterno (riga 3) esegue $n$ iterazioni. Il ciclo interno (riga 4), sommando gli
+adiacenti di tutti i nodi, visita in totale $2m$ coppie (ogni arco non orientato compare
+in due liste). Senza la riga 5 il costo sarebbe $O(n+m)$.
+
+L'istruzione \texttt{edges.contains(...)} obbliga a verificare che l'arco non sia già stato
+inserito. Se alla fine della lista ci sono $k$ archi, ogni \texttt{contains} costa $\Theta(k)$.
+Nel caso peggiore si ottiene
+\[
+\sum_{i=1}^{m} i + \sum_{i=m+1}^{2m} m = O(m^2),
+\]
+quindi il costo finale è $O(n + m^2)$.
+
+\paragraph{Modifica in $O(n+m)$.}
+Un arco non orientato tra $A$ e $B$ compare in entrambe le liste di adiacenza. Poiché i nomi
+sono confrontabili (\texttt{String}), si inserisce l'arco solo quando il nome del primo
+estremo precede (lessicograficamente) l'altro:
+
+\begin{lstlisting}[language=Java, caption={Versione ottimizzata di \texttt{edges()}}]
+public List<E> edges() {
+  List<E> edges = new ArrayList<>(size());
+  for (MainEntry nodeE : nodes) {
+    for (AdjacentEntry pair : nodeE.adjacent) {
+      if (pair.node.getName().compareTo(nodeE.node.getName()) <= 0) {
+        continue;
+      }
+      edges.add(pair.edge);
+    }
+  }
+  return edges;
+}
+\end{lstlisting}
+
+Ogni arco viene considerato esattamente una volta: costo $O(n+m)$.
+
+% ------------------------------------------------------------
+\subsection{Esercizio 3 --- Valutazione di polinomi (Horner vs sommatoria)}
+\label{sub:es3-horner}
+% ------------------------------------------------------------
+
+Si vuole determinare il valore del polinomio
+\[
+P(x) = \sum_{k=0}^{n} a_k x^k
+\]
+usando la regola di Horner:
+\[
+P(x) = a_0 + x\bigl(a_1 + x(a_2 + \cdots + x(a_{n-1} + x a_n)\cdots)\bigr).
+\]
+I coefficienti $a_0,\ldots,a_n$ e un valore di $x$ sono forniti come input.
+
+\paragraph{Domanda.}
+\begin{enumerate}
+	\item Scrivere un metodo Java che calcoli $P(x)$ con la regola di Horner e determinare
+	il tempo asintotico in $\Theta$.
+	\item Scrivere un metodo Java che calcoli $P(x)$ dalla sommatoria, calcolando ciascun
+	termine $a_i x^i$ separatamente. Per ogni $i$, la potenza $x^i$ deve essere calcolata
+	da zero, senza riusare valori intermedi. Determinare il tempo asintotico in $\Theta$.
+\end{enumerate}
+
+\subsubsection*{Soluzione}
+
+\paragraph{a) Regola di Horner.}
+Il calcolo parte dal coefficiente di grado massimo $a_n$ e procede verso $a_0$.
+
+\begin{lstlisting}[language=Java, caption={Valutazione con la regola di Horner}]
+public static double horner(double[] a, double x) {
+    double p = a[a.length - 1];
+    for (int i = a.length - 2; i >= 0; i--) {
+        p = a[i] + x * p;
+    }
+    return p;
+}
+\end{lstlisting}
+
+Se il vettore \texttt{a} contiene $n+1$ coefficienti, il ciclo viene eseguito $n$ volte con
+un numero costante di operazioni aritmetiche per iterazione. Il tempo di computazione è
+$\Theta(n)$.
+
+\paragraph{b) Sommatoria diretta senza riuso delle potenze.}
+
+\begin{lstlisting}[language=Java, caption={Valutazione diretta senza riuso}]
+public static double diretto(double[] a, double x) {
+    double p = 0.0;
+    for (int i = 0; i < a.length; i++) {
+        double potenza = 1.0;
+        for (int j = 0; j < i; j++) {
+            potenza = potenza * x;
+        }
+        p = p + a[i] * potenza;
+    }
+    return p;
+}
+\end{lstlisting}
+
+Per calcolare $a_i x^i$, il ciclo interno esegue $i$ moltiplicazioni. Il costo totale è
+\[
+\sum_{i=0}^{n} \Theta(i) = \Theta\!\left(\sum_{i=0}^{n} i\right) = \Theta\!\left(\frac{n(n+1)}{2}\right) = \Theta(n^2).
+\]
+
+\paragraph{Confronto.}
+\begin{itemize}
+	\item Horner: $\Theta(n)$.
+	\item Metodo diretto senza riuso: $\Theta(n^2)$.
+\end{itemize}
+La regola di Horner è asintoticamente più efficiente.
+
+% ------------------------------------------------------------
+\subsection{Esercizio 4 --- Ricerca binaria ricorsiva e costo del passaggio parametri}
+\label{sub:es4-binsearch-params}
+% ------------------------------------------------------------
+
+Normalmente si assume che il passaggio di un array di $n$ elementi a una procedura costi
+$\Theta(1)$ (riferimento). Si considerino tre ipotesi alternative:
+
+\begin{enumerate}
+	\item L'array viene passato tramite \textbf{riferimento}: costo $\Theta(1)$.
+	\item L'array viene passato con \textbf{copia completa}: costo $\Theta(n)$.
+	\item Viene passato solo il \textbf{sottoarray} $A[p..q]$ corrente: costo $\Theta(q-p+1)$.
+\end{enumerate}
+
+Si consideri la ricerca binaria ricorsiva su un array ordinato di dimensione $n$. Al livello
+$i$ della ricorsione il sottoproblema ha dimensione circa $n/2^i$. Escludendo il passaggio,
+il lavoro a ogni chiamata è $\Theta(1)$.
+
+\paragraph{Domanda.}
+Per ciascuna ipotesi, determinare l'equazione di ricorrenza del tempo nel caso peggiore e
+una soluzione asintotica stretta in $\Theta$.
+
+\subsubsection*{Soluzione}
+
+A ogni chiamata la ricerca prosegue su una sola metà: la dimensione del sottoproblema si dimezza.
+
+\paragraph{a) Passaggio per riferimento.}
+Il costo di passaggio è $\Theta(1)$. Ricorrenza:
+\[
+T(n) = T(n/2) + \Theta(1), \qquad T(1) = \Theta(1).
+\]
+Profondità $\Theta(\log n)$ con costo $\Theta(1)$ per livello. Quindi $T(n) = \Theta(\log n)$.
+
+\paragraph{b) Copia completa dell'array a ogni chiamata.}
+A ogni livello si copia l'intero array iniziale di dimensione $n$, anche se il sottoproblema
+logico ha dimensione $n/2^i$. Indicando con $T_i(n)$ il tempo residuo dal livello $i$:
+\[
+T_i(n) = T_{i+1}(n) + \Theta(n),
+\]
+con profondità $\Theta(\log n)$. Ci sono $\Theta(\log n)$ livelli, ciascuno con costo
+$\Theta(n)$. Quindi $T(n) = \Theta(n \log n)$.
+
+\paragraph{c) Passaggio del solo sottoarray $A[p..q]$.}
+Se il sottoproblema corrente ha dimensione $n$, il costo di passaggio del sottoarray è
+$\Theta(n)$. Ricorrenza:
+\[
+T(n) = T(n/2) + \Theta(n), \qquad T(1) = \Theta(1).
+\]
+Sviluppando:
+\[
+T(n) = \Theta(n) + \Theta(n/2) + \Theta(n/4) + \cdots + \Theta(1).
+\]
+La somma $n + n/2 + n/4 + \cdots + 1$ è una serie geometrica di ragione $1/2$:
+\[
+n \leq n + \frac{n}{2} + \frac{n}{4} + \cdots + 1 < 2n,
+\]
+quindi la somma è $\Theta(n)$ e $T(n) = \Theta(n)$.
+
+\paragraph{Confronto finale.}
+\begin{itemize}
+	\item Riferimento: $T(n) = \Theta(\log n)$.
+	\item Copia completa a ogni chiamata: $T(n) = \Theta(n \log n)$.
+	\item Solo sottoarray corrente: $T(n) = \Theta(n)$.
+\end{itemize}
+Il modello di costo per il passaggio dei parametri può modificare in modo significativo il
+tempo asintotico di una procedura ricorsiva apparentemente identica.
