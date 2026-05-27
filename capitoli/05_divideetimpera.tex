@@ -8,7 +8,7 @@ Il paradigma \textbf{divide et impera} risolve un problema tramite tre passi:
 	\item \textbf{Combina}: comporre le soluzioni parziali nella soluzione finale.
 \end{enumerate}
 
-Schema generale (coerente con le slide):
+Schema generale (coerente con le slide): \newline
 \begin{algorithm}[H]
 	\caption{DivideEtImpera$(X)$}
 	\KwIn{$X$ istanza di dimensione $|X|=n$}
@@ -333,6 +333,200 @@ Nel caso
 T(n)=3T(\lfloor n/4\rfloor)+\Theta(n^2),
 \]
 si ottiene costo totale $O(n^2)$ dalla somma geometrica dei livelli.
+
+% === INSERIRE DOPO \subsection{Analisi} (dopo l'elenco puntato e l'esempio T(n)=3T(n/4)+Theta(n^2)) ===
+
+\subsection{Metodo di Sostituzione}
+
+\begin{softnote}
+	L'idea è semplice: \emph{ipotizziamo} una soluzione (ad esempio $T(n) = O(n \log n)$)
+	e poi la \emph{verifichiamo formalmente} per induzione matematica.
+	Se la verifica regge, la soluzione è corretta.
+\end{softnote}
+
+Il metodo si articola in due fasi:
+\begin{enumerate}
+	\item \textbf{Ipotesi}: si propone una forma per $T(n)$, tipicamente ispirata dall'intuizione o dall'albero di ricorsione.
+	\item \textbf{Induzione}: si dimostra che la forma ipotizzata vale per il caso base e che, assumendola vera per valori più piccoli, vale anche per $n$.
+\end{enumerate}
+
+\begin{esempio}[Sostituzione su $T(n) = 2T(\lfloor n/2 \rfloor) + n$]
+	Si ipotizza $T(n) = O(n \log n)$, ovvero che esista $c > 0$ tale che $T(n) \leq cn \log n$ per $n \geq n_0$.
+	
+	\textbf{Passo induttivo}: si assume $T(\lfloor n/2 \rfloor) \leq c \lfloor n/2 \rfloor \log \lfloor n/2 \rfloor$. Allora:
+	\[
+	T(n) \leq 2 \cdot c \left\lfloor \frac{n}{2} \right\rfloor \log \left\lfloor \frac{n}{2} \right\rfloor + n
+	\leq cn \log\!\left(\frac{n}{2}\right) + n
+	= cn \log n - cn \log 2 + n
+	\leq cn \log n
+	\]
+	dove l'ultimo passo vale per $c \geq 1$. Il caso base $T(2) = 4 \leq c \cdot 2 \log 2$ è soddisfatto per $c \geq 2$.
+\end{esempio}
+
+\begin{hardnote}
+	Errore comune: ipotizzare $T(n) = O(n)$ per la stessa ricorrenza porta a
+	\[
+	T(n) \leq cn + n = (c+1)n,
+	\]
+	che \textbf{non} dimostra $T(n) \leq cn$. La costante deve rimanere esattamente $c$, non $c+1$.
+\end{hardnote}
+
+\subsection{Metodo dell'Albero di Ricorsione}
+
+\begin{softnote}
+	Visualizziamo la ricorrenza come un albero: ogni nodo rappresenta una sottoistanza e
+	contiene il costo \emph{non ricorsivo} di quel livello. Sommare tutti i nodi livello per livello
+	ci dà il costo totale. È il metodo più intuitivo e visivo.
+\end{softnote}
+
+Il procedimento è il seguente:
+\begin{enumerate}
+	\item Si disegna l'albero delle chiamate ricorsive.
+	\item Si calcola il costo di ogni nodo al livello $i$.
+	\item Si somma il costo totale di ciascun livello.
+	\item Si sommano i costi di tutti i livelli (spesso con una serie geometrica).
+\end{enumerate}
+
+\begin{nota}
+	Questo metodo fornisce solitamente un'\emph{ipotesi} di soluzione, che va poi confermata
+	con il metodo di sostituzione. Se però i costi sono calcolati con precisione, la soluzione
+	è già dimostrata direttamente dall'albero.
+\end{nota}
+
+\begin{esempio}[Albero di ricorsione per $T(n) = 3T(\lfloor n/4 \rfloor) + \Theta(n^2)$]
+	Analizziamo la struttura dell'albero:
+	\begin{itemize}
+		\item Al livello $i$ la dimensione di ogni sottoistanza è $n/4^i$.
+		\item Il numero di nodi al livello $i$ è $3^i$.
+		\item Il costo di ciascun nodo al livello $i$ è $c(n/4^i)^2$.
+		\item Il costo totale del livello $i$ è quindi $3^i \cdot c(n/4^i)^2 = \left(\frac{3}{16}\right)^i cn^2$.
+		\item La profondità dell'albero è $\log_4 n$ (quando $n/4^i = 1$).
+		\item All'ultimo livello ci sono $3^{\log_4 n} = n^{\log_4 3}$ foglie, ciascuna con costo costante $\Theta(1)$.
+	\end{itemize}
+	
+	Sommando i costi di tutti i livelli con la serie geometrica di ragione $3/16 < 1$:
+	\[
+	T(n) = \sum_{i=0}^{\log_4 n - 1} \left(\frac{3}{16}\right)^i cn^2 + \Theta(n^{\log_4 3})
+	< \frac{1}{1 - \frac{3}{16}} \cdot cn^2 + \Theta(n^{\log_4 3})
+	= \frac{16}{13} cn^2 + \Theta(n^{\log_4 3})
+	= O(n^2).
+	\]
+	
+	Poiché $\log_4 3 \approx 0.79 < 2$, il termine dominante è $n^2$ e si conclude $T(n) = O(n^2)$.
+\end{esempio}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		level distance=1.7cm,
+		level 1/.style={sibling distance=5.2cm},
+		level 2/.style={sibling distance=1.8cm},
+		every node/.style={draw, rounded corners, fill=blue!8, font=\small, minimum width=1.4cm, minimum height=0.7cm, align=center},
+		edge from parent/.style={draw, ->, >=stealth, gray},
+		]
+		\node {$cn^2$}
+		child { node {$c\!\left(\frac{n}{4}\right)^2$}
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+		}
+		child { node {$c\!\left(\frac{n}{4}\right)^2$}
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+		}
+		child { node {$c\!\left(\frac{n}{4}\right)^2$}
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+			child { node {$c\!\left(\frac{n}{16}\right)^2$} }
+		};
+	\end{tikzpicture}
+	\caption{Albero di ricorsione per $T(n)=3T(\lfloor n/4\rfloor)+\Theta(n^2)$.}
+\end{figure}
+
+\subsection{Metodo dell'Esperto}
+
+\begin{softnote}
+	Il metodo dell'esperto (o \emph{Master Theorem}) è una \emph{ricetta} diretta: dati i parametri
+	$a$, $b$ e la funzione $f(n)$, si confronta $f(n)$ con $n^{\log_b a}$ (il numero di foglie dell'albero)
+	e si ottiene la soluzione senza fare conti espliciti sull'albero.
+\end{softnote}
+
+\begin{teorema}[Teorema dell'Esperto]
+	Date le costanti $a > 0$, $b > 1$ e la funzione $f(n)$ asintoticamente positiva, la ricorrenza
+	\[
+	T(n) = aT(n/b) + f(n)
+	\]
+	si risolve come:
+	\begin{enumerate}
+		\item Se $\exists\,\varepsilon > 0$ t.c.\ $f(n) = O\!\left(n^{\log_b a - \varepsilon}\right)$, allora $T(n) = \Theta(n^{\log_b a})$.
+		\item Se $\exists\,k \geq 0$ t.c.\ $f(n) = \Theta\!\left(n^{\log_b a} \lg^k n\right)$, allora $T(n) = \Theta(n^{\log_b a} \lg^{k+1} n)$.
+		\item Se $\exists\,\varepsilon > 0$ t.c.\ $f(n) = \Omega\!\left(n^{\log_b a + \varepsilon}\right)$ e $af(n/b) \leq cf(n)$ per qualche $c < 1$ e $n$ sufficientemente grande, allora $T(n) = \Theta(f(n))$.
+	\end{enumerate}
+\end{teorema}
+
+\begin{hardnote}
+	Il teorema \textbf{non si applica} nei casi in cui $f(n)$ non è polinomialmente più grande o più piccola di $n^{\log_b a}$, ad esempio $f(n) = n^{\log_b a} / \log n$: in questo caso nessuno dei tre casi è soddisfatto.
+\end{hardnote}
+
+La tabella seguente riassume l'applicazione del teorema ai casi più comuni:
+
+\begin{center}
+	\begin{tabular}{llllll}
+		\toprule
+		\textbf{Ricorrenza} & $a$ & $b$ & $n^{\log_b a}$ & \textbf{Caso} & \textbf{Soluzione} \\
+		\midrule
+		$T(n) = 9T(n/3) + n$         & 9 & 3 & $n^2$   & 1 & $\Theta(n^2)$          \\
+		$T(n) = T(n/2) + \Theta(1)$  & 1 & 2 & $n^0=1$ & 2 ($k=0$) & $\Theta(\log n)$ \\
+		$T(n) = 2T(n/2) + n\log n$   & 2 & 2 & $n$     & 2 ($k=1$) & $\Theta(n\log^2 n)$ \\
+		$T(n) = 3T(n/4) + n^2$       & 3 & 4 & $n^{\log_4 3} \approx n^{0.79}$ & 3 & $\Theta(n^2)$ \\
+		$T(n) = 3T(n/2) + n$         & 3 & 2 & $n^{\log_2 3} \approx n^{1.58}$ & 1 & $\Theta(n^{\log_2 3})$ \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		node distance=1.6cm and 3.8cm,
+		box/.style={draw, rounded corners, minimum width=5.2cm, minimum height=1.1cm, align=center, font=\small, fill=gray!10},
+		yes/.style={draw, rounded corners, minimum width=4.9cm, minimum height=1.1cm, align=center, font=\small, fill=green!12},
+		no/.style={draw, rounded corners, minimum width=4.9cm, minimum height=1.1cm, align=center, font=\small, fill=red!10},
+		arrow/.style={->, >=stealth, thick}
+		]
+		\node[box] (start) {Ricorrenza $T(n)=aT(n/b)+f(n)$\\Calcola $n^{\log_b a}$};
+		
+		\node[box, below=of start] (c1) {$f(n)=O\!\left(n^{\log_b a-\varepsilon}\right)$?};
+		\node[yes, right=of c1] (r1) {Caso 1\\$T(n)=\Theta\!\left(n^{\log_b a}\right)$};
+		
+		\node[box, below=of c1] (c2) {$f(n)=\Theta\!\left(n^{\log_b a}\lg^k n\right)$?};
+		\node[yes, right=of c2] (r2) {Caso 2\\$T(n)=\Theta\!\left(n^{\log_b a}\lg^{k+1}n\right)$};
+		
+		\node[box, below=of c2] (c3) {$f(n)=\Omega\!\left(n^{\log_b a+\varepsilon}\right)$\\e regolarità?};
+		\node[yes, right=of c3] (r3) {Caso 3\\$T(n)=\Theta(f(n))$};
+		
+		\node[no, below=of c3] (none) {Nessun caso standard\\usa sostituzione o albero};
+		
+		\draw[arrow] (start) -- (c1);
+		\draw[arrow] (c1) -- node[above, font=\scriptsize]{sì} (r1);
+		\draw[arrow] (c1) -- node[right, font=\scriptsize]{no} (c2);
+		\draw[arrow] (c2) -- node[above, font=\scriptsize]{sì} (r2);
+		\draw[arrow] (c2) -- node[right, font=\scriptsize]{no} (c3);
+		\draw[arrow] (c3) -- node[above, font=\scriptsize]{sì} (r3);
+		\draw[arrow] (c3) -- node[right, font=\scriptsize]{no} (none);
+	\end{tikzpicture}
+	\caption{Diagramma di flusso per l'applicazione del Teorema dell'Esperto.}
+\end{figure}
+
+\begin{nota}
+	Un modo intuitivo per ricordare i tre casi: si confronta la \emph{funzione forzante} $f(n)$ con
+	il numero di foglie $n^{\log_b a}$.
+	\begin{itemize}
+		\item \textbf{Caso 1}: le foglie dominano $\Rightarrow$ il costo totale è determinato dalle foglie.
+		\item \textbf{Caso 2}: foglie e radice sono bilanciate $\Rightarrow$ ogni livello costa uguale, si moltiplica per $\log n$.
+		\item \textbf{Caso 3}: la radice domina $\Rightarrow$ il costo totale è determinato dal livello più alto.
+	\end{itemize}
+\end{nota}
 
 \subsection{Errori tipici d'esame}
 \begin{hardnote}
