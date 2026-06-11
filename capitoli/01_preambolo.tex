@@ -1,10 +1,17 @@
+% ============================================================
+% PREAMBOLO — Algoritmi per Bioinformatica
+% Università di Verona, A.A. 2025/2026
+% ============================================================
+
 % --- ENCODING ---
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[italian]{babel}
+\usepackage{slantsc}   % abilita \textscsl (small caps slanted)
 
 % --- FONT E MICRO-TIPOGRAFIA ---
 \usepackage{lmodern}
+\usepackage{fix-cm}
 \usepackage{microtype}
 \tolerance=1000
 \emergencystretch=2em
@@ -29,7 +36,6 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{colortbl}
-% \usepackage{tikz}  <-- rimosso: duplicato
 \usepackage{pgfplots}
 \usepackage{multirow}
 \pgfplotsset{compat=1.18}
@@ -47,19 +53,20 @@
 \usepackage{enumitem}
 
 % --- AMBIENTI COLORATI ---
-% tcolorbox dopo amsthm per evitare conflitti
+% tcolorbox caricato dopo amsthm per evitare conflitti
+\usepackage{mdframed} 
 \usepackage{tcolorbox}
 \tcbuselibrary{theorems, skins, breakable}
 
 % --- HYPERREF SEMPRE PER ULTIMO ---
 \usepackage[hidelinks, plainpages=false, pdfpagelabels]{hyperref}
-
-% FIX r.258 — math in titoli PDF (token not allowed in PDF string)
-% \texorpdfstring{$...$}{testo} va usato nei titoli sezione.
-% Questa riga disabilita i comandi math più comuni nelle stringhe PDF:
 \hypersetup{
 	pdfencoding=auto,
 }
+
+% ============================================================
+% CONFIGURAZIONE
+% ============================================================
 
 % --- PROFONDITÀ INDICE ---
 \setcounter{tocdepth}{3}
@@ -71,6 +78,8 @@
 \definecolor{codegray}{RGB}{120, 120, 120}
 \definecolor{codered}{RGB}{160, 0, 0}
 \definecolor{codebg}{RGB}{248, 248, 248}
+\definecolor{correctgreen}{RGB}{0, 140, 0}
+\definecolor{qbg}{RGB}{245, 248, 255}
 
 % --- GEOMETRIA ---
 \geometry{
@@ -80,7 +89,7 @@
 	headheight=24.02pt
 }
 
-% --- INTERLINEA ---
+% --- INTERLINEA E PARAGRAFI ---
 \onehalfspacing
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.5em}
@@ -122,7 +131,7 @@
 \renewcommand{\cftsubsubsecfont}{\color{primary}}
 \renewcommand{\cftsubsubsecpagefont}{\color{primary}}
 
-% --- TEOREMI ---
+% --- TEOREMI (amsthm) ---
 \newtheorem{teorema}{Teorema}[section]
 \newtheorem{lemma}[teorema]{Lemma}
 \newtheorem{corollario}[teorema]{Corollario}
@@ -134,6 +143,8 @@
 \newtheorem{esempio}{Esempio}[section]
 
 % --- AMBIENTI TCOLORBOX ---
+
+% Approfondimenti tecnici / dettagli implementativi
 \newenvironment{nota}{%
 	\begin{tcolorbox}[
 		colback=codebg,
@@ -147,6 +158,7 @@
 	\end{tcolorbox}
 }
 
+% Intuizioni e spiegazioni introduttive
 \newtcolorbox{softnote}{
 	colback=cyan!5,
 	colframe=cyan!40!black,
@@ -154,6 +166,7 @@
 	breakable
 }
 
+% Punti critici, errori comuni, caveat da ricordare all'esame
 \newtcolorbox{hardnote}{
 	colback=red!15,
 	colframe=red!70!black,
@@ -166,35 +179,32 @@
 % --- KW PERSONALIZZATI PER algorithm2e ---
 \SetKw{KwAnd}{and}
 \SetKw{KwOr}{or}
-% FIX r.347: con [onelanguage], \KwRet è già definito internamente.
-% Usare \renewcommand invece di \newcommand per evitare "already defined":
+% Con [onelanguage], \KwRet è già definito internamente;
+% \providecommand evita "already defined":
 \providecommand{\KwRet}[1]{\Return{#1}}
 
-% --- FONT SHAPE FIX ---
-% FIX r.570, r.281, r.425: T1/lmr/bx/sc e T1/lmr/m/scit non esistono
-% in Latin Modern. La sintassi corretta per \DeclareFontShape è DOPO
-% \begin{document}, oppure va usato il pacchetto mfirstuc. La soluzione
-	% più sicura con lmodern è usare il pacchetto substitute direttamente:
-	\usepackage{fix-cm}
-	
-	% --- LISTINGS ---
-	\lstset{
-		language=Java,
-		basicstyle=\ttfamily\small\color{black},
-		keywordstyle=\color{primary}\bfseries,
-		commentstyle=\color{codegreen}\itshape,
-		stringstyle=\color{codered},
-		numberstyle=\tiny\color{codegray},
-		numbers=left,
-		frame=single,
-		rulecolor=\color{primary},
-		backgroundcolor=\color{codebg},
-		breaklines=true,
-		breakatwhitespace=false,
-		captionpos=b,
-		showstringspaces=false,
-		tabsize=4
-	}
-	
-	% --- CAPTION ---
-	\captionsetup{font=small, labelfont={bf, color=primary}, labelsep=period}
+% --- LISTINGS ---
+\lstset{
+	language=Java,
+	basicstyle=\ttfamily\small\color{black},
+	keywordstyle=\color{primary}\bfseries,
+	commentstyle=\color{codegreen}\itshape,
+	stringstyle=\color{codered},
+	numberstyle=\tiny\color{codegray},
+	numbers=left,
+	frame=single,
+	rulecolor=\color{primary},
+	backgroundcolor=\color{codebg},
+	breaklines=true,
+	breakatwhitespace=false,
+	captionpos=b,
+	showstringspaces=false,
+	tabsize=4
+}
+
+% --- CAPTION ---
+\captionsetup{
+	font=small,
+	labelfont={bf, color=primary},
+	labelsep=period
+}

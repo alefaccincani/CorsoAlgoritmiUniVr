@@ -808,3 +808,543 @@ nell'ausiliaria, scambia. Costo: $O(i)$. Totale $n$ push: $O(n^2)$.\\
 	}
 \end{lstlisting}
 
+
+% ================================================================
+\subsection{Quiz di Teoria -- Raccolta per Settimane}
+% ================================================================
+
+\begin{softnote}
+	Le seguenti domande provengono dai quiz settimanali del corso.
+	La risposta corretta è evidenziata in \textcolor{correctgreen}{\textbf{verde}}.
+\end{softnote}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 01}
+% -------------------------------------------------------
+
+\paragraph{D1.} Cos'\`e un problema computazionale?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Una relazione input-output che deve essere determinata da un algoritmo.
+	\item \textcolor{correctgreen}{\textbf{Una rappresentazione discorsiva di una relazione input-output desiderata che pu\`o essere determinata da un algoritmo.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Una domanda che richiede l'esecuzione di un algoritmo.
+	\item Un problema che deve essere risolto da un algoritmo.
+\end{enumerate}
+
+\paragraph{D2.} Minimo $n$ tale che $100n^2 < 2^n$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Non esiste un metodo per risolvere la diseguaglianza.
+	\item Si deve determinare $n$ per il quale $100n^2 > 2^n$. Risultato: $n \ge 15$.
+	\item Si deve determinare $n$ per il quale $\frac{100n^2}{2^n} < 0$. Risultato: $n \ge 15$.
+	\item \textcolor{correctgreen}{\textbf{Si deve determinare $n$ per il quale $100n^2 < 2^n$. Risultato: $n \ge 15$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D3.} InsSort $= 10n^2$, MergeSort $= 32n\log_2 n$. Per quali $n$ InsSort esegue meno passi?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Si deve risolvere $\frac{10n^2}{32n\log_2 n} < 0$.
+	\item Si deve risolvere $32n\log_2 n - 10n^2 < 0$.
+	\item \textcolor{correctgreen}{\textbf{Si deve risolvere $10n^2 - 32n\log_2 n < 0$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $n > 11$.
+\end{enumerate}
+
+\paragraph{D4.} Definizione sufficiente di algoritmo.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Procedura di calcolo ben definita che prende un input e genera un valore come output.
+	\item L'astrazione di un programma compilato.
+	\item Procedura che prende un insieme di valori come input e genera un valore o un insieme di valori come output.
+	\item \textcolor{correctgreen}{\textbf{Procedura di calcolo ben definita che prende un insieme di valori come input e genera un valore, o un insieme di valori, come output in un tempo finito.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D5.} Differenza tra percorso minimo e TSP.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Il primo chiede percorso minimo, il secondo lo stesso visitando tutte le citt\`a una volta.
+	\item Il primo chiede percorso minimo, il secondo un circuito da una citt\`a.
+	\item Il primo chiede percorso minimo, il secondo un circuito con partenza $=$ arrivo, visitando tutte le citt\`a.
+	\item \textcolor{correctgreen}{\textbf{Il primo chiede percorso minimo tra partenza e arrivo; il secondo lo stesso ma partenza deve essere uguale ad arrivo e si devono visitare tutte le citt\`a una volta sola.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D6.} Cosa si intende per efficienza di un algoritmo?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{La capacit\`a di risolvere istanze di problemi al crescere della dimensione di quest'ultime.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Numero di secondi per risolvere un problema.
+	\item Il tempo di esecuzione al crescere della dimensione dell'istanza.
+	\item La quantit\`a di un'istanza risolvibile nell'unit\`a di tempo.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 02}
+% -------------------------------------------------------
+
+\paragraph{D1.} Come migliorare il tempo su istanze note?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Calcolare le soluzioni del caso peggiore e memorizzarle in un file.
+	\item \`E impossibile: non si possono determinare tutte le istanze.
+	\item \textcolor{correctgreen}{\textbf{Precomputare le soluzioni per le istanze desiderate; quando arriva quella istanza, l'algoritmo ritorna subito la risposta.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Determinare e memorizzare le soluzioni di tutte le istanze possibili.
+\end{enumerate}
+
+\paragraph{D2.} Corrette relazioni tra $2^{n+1}$, $2^{2n}$ e $O(2^n)$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $2^{n+1} \neq O(2^n)$, $2^{2n} = O(2^n)$.
+	\item $2^{n+1} \neq O(2^n)$, $2^{2n} \neq O(2^n)$.
+	\item \textcolor{correctgreen}{\textbf{$2^{n+1} = O(2^n)$, $2^{2n} \neq O(2^n)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $2^{n+1} = O(2^n)$, $2^{2n} = O(2^n)$.
+\end{enumerate}
+
+\paragraph{D3.} Vale $\max(f(n), g(n)) = \Theta(f(n) + g(n))$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{S\`i: valgono $f+g = \Theta(\max(f,g))$ e la propriet\`a riflessiva di $\Theta$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item No: $f+g$ potrebbe essere minore di $\max(f,g)$.
+	\item No: $\max()$ potrebbe restituire valori diversi per diversi $n$.
+	\item S\`i: $\max(f,g)$ \`e sempre minore della somma.
+\end{enumerate}
+
+\paragraph{D4.} Cos'\`e un'invariante di ciclo?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Propriet\`a vera all'inizio di ogni iterazione, usata per dimostrare la correttezza al termine del ciclo.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Propriet\`a vera in qualche iterazione, usata per dimostrare la correttezza.
+	\item Propriet\`a che non varia mai nel ciclo ma solo al termine.
+	\item Propriet\`a vera all'inizio del ciclo che dimostra la correttezza dell'algoritmo.
+\end{enumerate}
+
+\paragraph{D5.} In una RAM, il costo di un'istruzione \`e costante se\ldots
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item No, anche con parola di memoria fissa alcune operazioni costano proporzionalmente.
+	\item \ldots le operazioni sono solo elementari ($+$, $-$, $*$, $/$).
+	\item \ldots ogni operando ha dimensione proporzionale alle parole di memoria.
+	\item \textcolor{correctgreen}{\textbf{\ldots la parola di memoria degli operandi ha dimensione fissa.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 03--04 (Divide et Impera)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Soluzione di $T(n) = T(n-1) + n^c$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $T(n) = \Theta(n^c)$.
+	\item $T(n) \leq n^c$.
+	\item \textcolor{correctgreen}{\textbf{$T(n) = \Theta(n^{c+1})$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $T(n) = \Theta(n \lg n^c)$.
+\end{enumerate}
+
+\paragraph{D2.} Soluzione di $T(n) = 2T(n/3) + 1$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $T(n) = \Theta(n^{\log_2 3})$.
+	\item \textcolor{correctgreen}{\textbf{$T(n) = \Theta(n^{\log_3 2})$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $T(n) = \Theta(n^{\lg 2})$.
+	\item $T(n) \leq n^{0.61}$.
+\end{enumerate}
+
+\paragraph{D3.} Classe di problemi a cui si applica divide et impera efficientemente.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Problemi in cui un'istanza si divide in 2+ sotto-istanze e la combinazione delle soluzioni richiede costo al pi\`u polinomiale.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Problemi in cui la combinazione ha costo costante.
+	\item Problemi in cui le sotto-istanze siano il pi\`u disgiunte possibile.
+	\item Problemi divisibili in 1+ sotto-istanze con combinazione polinomiale.
+\end{enumerate}
+
+\paragraph{D4.} \textsc{FindMaximumSubarray} su $A = [-10, -2, -4, -11, -6]$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Tutti negativi: restituisce l'elemento meno negativo, cio\`e $-2$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item L'algoritmo non si applica con tutti valori negativi.
+	\item Restituisce $0$.
+	\item Restituisce $-2 + (-4) = -6$.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 03--04 (Analisi Probabilistica)}
+% -------------------------------------------------------
+
+\paragraph{D1.} \textsc{Hire-Assistant}: probabilit\`a di esattamente 1 assunzione? Di esattamente $n$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $\frac{1}{n!}$ e $\frac{1}{n!}$.
+	\item $\frac{1}{n}$ e $n\frac{1}{n!}$.
+	\item \textcolor{correctgreen}{\textbf{$\frac{1}{n}$ e $\frac{1}{n!}$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $\frac{1}{n}$ e $\frac{1}{n}$.
+\end{enumerate}
+
+\paragraph{D2.} Con analisi probabilistica si intende\ldots
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \ldots uso della probabilit\`a solo quando la distribuzione dell'input \`e nota.
+	\item \ldots uso della probabilit\`a nell'analisi del caso medio.
+	\item \textcolor{correctgreen}{\textbf{\ldots uso del calcolo della probabilit\`a nell'analisi dei problemi.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item \ldots uso della probabilit\`a nell'analisi degli algoritmi.
+\end{enumerate}
+
+\paragraph{D3.} Un algoritmo \`e randomizzato quando\ldots
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \ldots il comportamento \`e determinato solo da numeri casuali.
+	\item \ldots il comportamento non \`e determinabile.
+	\item \ldots i numeri casuali servono solo a velocizzare la computazione.
+	\item \textcolor{correctgreen}{\textbf{\ldots il comportamento \`e determinato dall'input \emph{e} da valori prodotti da un generatore casuale.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D4.} Un generatore di numeri casuali\ldots
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \ldots produce un valore di probabilit\`a (tra 0 e 1) con distribuzione uniforme.
+	\item \ldots produce un intero diverso dai precedenti in un dato intervallo.
+	\item \textcolor{correctgreen}{\textbf{\ldots produce un intero in un dato intervallo con probabilit\`a uniforme sull'intervallo.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item \ldots produce un intero con probabilit\`a fissata all'attivazione.
+\end{enumerate}
+
+\paragraph{D5.} \textsc{Permute-Without-Identity} genera tutte le permutazioni tranne l'identit\`a con probabilit\`a uniforme?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item S\`i: non genera l'identit\`a e le altre sono equiprobabili.
+	\item S\`i: non genera l'identit\`a e le altre significative sono equiprobabili.
+	\item No: con $n=3$ genera 4 permutazioni invece di 5.
+	\item \textcolor{correctgreen}{\textbf{No: con $n=3$ genera solo 2 permutazioni distinte invece di 5.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 05 (QuickSort)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Tempo di \textsc{QuickSort} con tutti elementi uguali.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $O(n\log n) + \Theta(n)$.
+	\item \textcolor{correctgreen}{\textbf{$O(n^2)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $O(n\lg n)$.
+	\item $O(n)$.
+\end{enumerate}
+
+\paragraph{D2.} \textsc{Partition} con tutti elementi uguali: quale $q$ restituisce? Come fixare?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Restituisce l'indice massimo. Fix: flag booleano inizializzato a \texttt{true}; se tutti uguali al pivot, restituire $\lfloor(p+r)/2\rfloor$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Restituisce l'indice massimo. Fix: ciclo aggiuntivo di verifica.
+	\item Restituisce l'indice minimo. Fix: flag booleano.
+	\item Restituisce l'indice minimo. Fix: ciclo aggiuntivo.
+\end{enumerate}
+
+\paragraph{D3.} Come modificare \textsc{QuickSort} per ordinare in senso non crescente?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Invertire le due chiamate ricorsive.
+	\item \textcolor{correctgreen}{\textbf{Invertire il confronto con il pivot in \textsc{Partition}.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Aggiungere un ciclo che inverte gli elementi.
+	\item Ripensare completamente \textsc{Partition}.
+\end{enumerate}
+
+\paragraph{D4.} Soluzione di $T(n) \leq T\!\left(\tfrac{10}{11}n\right) + T\!\left(\tfrac{1}{11}n\right) + O(n)$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $T(n) = O(n\lg n) + O(n)$.
+	\item \textcolor{correctgreen}{\textbf{$T(n) = O(n\lg n)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $T(n) = O(n^2)$.
+	\item $T(n) = \Omega(n\lg n)$.
+\end{enumerate}
+
+\paragraph{D5.} Confronti di \textsc{QuickSort} su $A=[1,2,3,4,5,6,7,8]$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{$7+6+5+4+3+2+1 = 28$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $8+7+6+5+4+3+2+1 = 36$.
+	\item Dipende dall'implementazione.
+	\item $2^8 - 1 = 255$.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 05--06 (Selezione)}
+% -------------------------------------------------------
+
+\paragraph{D1.} \textsc{Select}$'$ con mediana garantisce $T(n)=O(n)$: come funziona?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Calcola $x=\textsc{Mediana}(A,p,r)$; usa \textsc{Partition} a 3 parti; ricorre su sottoarray di dimensione $\le n/2$. Ricorrenza: $T(n)\le T(n/2)+O(n)=O(n)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Usa \textsc{Partition} a 2 parti; ricorrenza $T(n)\le T(n/2)+O(n)=O(n)$.
+\end{enumerate}
+
+\paragraph{D2.} Eliminazione duplicati in $\Theta(n\lg n)$: metodo corretto?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Ordina e scorre con un ciclo \texttt{for}: $\Theta(n\lg n)+\Theta(n)$.
+	\item Ordina e usa doppio ciclo \texttt{for}: $\Theta(n\log n)$.
+	\item \textcolor{correctgreen}{\textbf{Cerca la mediana ricorsivamente ed elimina $A_v$: $T(n)=2T(n/2)+O(n)=\Theta(n\log n)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Cerca la mediana: $T(n)=T(n/2)+O(n)=\Theta(\log n)$.
+\end{enumerate}
+
+\paragraph{D3.} \textsc{Partition}$(A,0,7)$ su $A=[1,2,3,4,5,6,7,8]$: quanti scambi?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item 4. \quad\textbf{B.} \textcolor{correctgreen}{\textbf{8.}} \hfill\textcolor{correctgreen}{$\checkmark$} \quad\textbf{C.} 0. \quad\textbf{D.} 1.
+\end{enumerate}
+
+\paragraph{D4.} \textsc{RandSelect} per il minimo di $A=[3,2,9,0,7,5,4,8,6,1]$: caso peggiore?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item L'ultimo elemento \`e sempre il pi\`u piccolo.
+	\item L'elemento casuale \`e sempre il pi\`u piccolo.
+	\item \textcolor{correctgreen}{\textbf{L'elemento casuale \`e sempre il massimo: la procedura ricorre sempre sul sottoarray di $n-1$ elementi.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item L'ultimo elemento \`e sempre il massimo.
+\end{enumerate}
+
+\paragraph{D5.} IV statistica d'ordine di $A=[8,4,8,3,4,2,3,2]$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item 2. \quad\textbf{B.} 8. \quad\textbf{C.} \textcolor{correctgreen}{\textbf{3.}} \hfill\textcolor{correctgreen}{$\checkmark$} \quad\textbf{D.} 4.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 06--07 (HeapSort)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Perch\'e l'indice in \textsc{BuildMaxHeap} decresce da $\lfloor n/2\rfloor$ a $1$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Gli elementi con indice $> \lfloor n/2\rfloor$ sono foglie; \textsc{MaxHeapify} fa scendere la radice.
+	\item Si fanno meno cicli.
+	\item \textcolor{correctgreen}{\textbf{Gli elementi con indice $> \lfloor n/2\rfloor$ sono foglie (gi\`a max-heap). \textsc{MaxHeapify} richiede sottoalberi gi\`a sistemati: si parte dal basso.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Non c'\`e una ragione specifica.
+\end{enumerate}
+
+\paragraph{D2.} Dimostrate che il caso peggiore di \textsc{MaxHeapify} \`e $\Omega(\lg n)$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Heap con radice $=0$ e tutti gli altri $=0$: il valore scende a sinistra in $\lfloor\lg n\rfloor$ passi.
+	\item Heap con radice $=1$ e tutti gli altri $=0$: il valore scende a sinistra.
+	\item \textcolor{correctgreen}{\textbf{Heap con radice $=0$ e tutti gli altri $=1$: l'altezza \`e $\lfloor\lg n\rfloor$; la radice deve scendere fino a una foglia, richiedendo $\lfloor\lg n\rfloor$ chiamate. Caso peggiore $\Omega(\lg n)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Come sopra ma il valore scende a destra.
+\end{enumerate}
+
+\paragraph{D3.} Cos'\`e uno heap binario come struttura dati?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Struttura dati basata su un array che rappresenta un albero binario quasi completo.
+	\item Un array che rappresenta un albero binario quasi completo.
+	\item Struttura composta da un array che rappresenta un albero binario \emph{completo} in modo compatto.
+	\item \textcolor{correctgreen}{\textbf{Struttura dati basata su un array che rappresenta un albero binario quasi completo in modo compatto.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D4.} $2i > A.\mathit{heapSize}$: cosa significa?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $i$ non ha figlio destro.
+	\item $i$ non ha figlio sinistro; forse ha figlio destro.
+	\item \textcolor{correctgreen}{\textbf{$i$ non ha figlio sinistro, quindi nemmeno destro: \`e una foglia.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $i$ non ha padre.
+\end{enumerate}
+
+\paragraph{D5.} Min e max di elementi in uno heap di altezza $h$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Minimo $2^h$, massimo $2^{h+1}-1$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Minimo $2^h$, massimo $2^{h+1}$.
+	\item Minimo $2^h-1$, massimo $2^{h+1}-1$.
+	\item Minimo $2^h-1$, massimo $2^{h+1}$.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 06--07 (Ordinamento Lineare)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Risposta in $O(1)$ a ``quanti elementi in $[a,b]$'' con preprocessing $\Theta(n+k)$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textsc{CountingSort}, poi $C[a-1]-C[b]$.
+	\item \textcolor{correctgreen}{\textbf{\textsc{CountingSort} in $\Theta(k+n)$; risposta: $C[b]-C[a-1]$, con $C[-1]=0$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item \textsc{CountingSort}, poi $C[a]-C[b]$.
+	\item \textsc{CountingSort} in $\Theta(n)$; risposta: $C[b]-C[a-1]$.
+\end{enumerate}
+
+\paragraph{D2.} Per quali interi \textsc{BucketSort} \`e conveniente?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Interi a 8 bit quando $n > 50$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Interi a 32 bit con $n \approx 10000$.
+	\item Interi a 16 bit con $n \approx 50$.
+	\item Interi a 8 bit con $n < 50$.
+\end{enumerate}
+
+\paragraph{D3.} \textsc{CountingSort} con ciclo da $1$ a $A.\mathit{length}$: corretto? Stabile?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Corretto: elementi in posizioni $C[k]$ fino a $C[k-1]+1$ nell'ordine dell'input.
+	\item Corretto: posizioni da $C[k-1]$ a $C[k-2]+1$.
+	\item \textcolor{correctgreen}{\textbf{Corretto: posizioni da $C[k-1]+1$ a $C[k]$, ma in ordine \emph{inverso}: non stabile.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Corretto: posizioni da $C[k-1]$ a $C[k-2]+1$ in ordine inverso.
+\end{enumerate}
+
+\paragraph{D4.} Profondit\`a minima di una foglia in un albero di decisione per $n$ elementi.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{$n-1$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $n$. \quad\textbf{C.} $n\lg n$. \quad\textbf{D.} $n-2$.
+\end{enumerate}
+
+\paragraph{D5.} Perch\'e il caso peggiore di \textsc{BucketSort} \`e $\Theta(n^2)$? Come portarlo a $O(n\lg n)$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Input non uniforme $\Rightarrow$ tutti in un bucket $\Rightarrow$ \textsc{InsertionSort} a $O(n^2)$. Fix: usare \textsc{MergeSort} invece di \textsc{InsertionSort}.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Input uniforme $\Rightarrow$ tutti in un bucket; fix: \textsc{MergeSort}.
+	\item Input non uniforme; fix: randomizzare l'input.
+	\item Quasi tutti in un bucket; fix: randomizzare.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 08--09 (Hash Table)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Inserire $5,28,19,15,20,33,12,17,10$ in tabella hash con $m=9$, $h(k)=k\bmod 9$, concatenamento.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $0{\to}\emptyset$; $1{\to}10$; $2{\to}20$; $3{\to}12$; $5{\to}5$; $6{\to}33$; $8{\to}17$.
+	\item $0{\to}19$; $1{\to}10$; $2{\to}20$; $3{\to}12$; $4{\to}28$; $5{\to}5$; $6{\to}33$; $7{\to}15$; $8{\to}17$.
+	\item \textcolor{correctgreen}{\textbf{$0{\to}\emptyset$; $1{\to}10{\to}19{\to}28$; $2{\to}20$; $3{\to}12$; $4{\to}\emptyset$; $5{\to}5$; $6{\to}33{\to}15$; $7{\to}\emptyset$; $8{\to}17$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $1{\to}10{\to}19$; $2{\to}20{\to}19$; $3{\to}12$; $6{\to}33{\to}15$; $8{\to}17$.
+\end{enumerate}
+
+\paragraph{D2.} Cardinalit\`a attesa di $\{\{k,l\}\mid k\neq l,\, h(k)=h(l)\}$ con hashing uniforme.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Definire $X_{kl}=\mathbf{1}\{h(k)=h(l)\}$; $\Pr\{X_{kl}=1\}=1/m$. Per linearit\`a: $E[Y]=\binom{n}{2}\frac{1}{m}=\frac{n(n-1)}{2m}$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Nessuna risposta \`e corretta.
+	\item $\Theta(n(1+\alpha))$.
+	\item $\sum_{i=1}^n \alpha(n-i)$.
+\end{enumerate}
+
+\paragraph{D3.} Trovare il massimo in una tabella a indirizzamento diretto $T[0..m-1]$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Scorrere $T$ dalla fine verso l'inizio; restituire la chiave del primo slot non NULL. Caso peggiore $O(m)$ (nessuna chiave).}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Come sopra ma caso peggiore $O(k)$.
+	\item Come sopra ma slot nullo restituisce $T[h(k)]$.
+	\item Come sopra ma si scorre dall'inizio.
+\end{enumerate}
+
+\paragraph{D4.} Con $m=1000$ e $h(k)=\lfloor m(kA\bmod 1)\rfloor$, $A=(\sqrt{5}-1)/2$: calcolare $h(61),\ldots,h(65)$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{$h(61)=700$, $h(62)=318$, $h(63)=936$, $h(64)=554$, $h(65)=172$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Nessuna risposta \`e corretta.
+	\item $h(61)=3$, $h(62)=1$, $h(63)=4$, $h(64)=2$, $h(65)=0$.
+	\item La funzione non \`e ben definita perch\'e non restituisce un intero.
+\end{enumerate}
+
+\paragraph{D5.} Liste ordinate nel concatenamento: come cambiano le prestazioni?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Ricerca con successo invariata; ricerca senza successo invariata; inserimento pi\`u lento; cancellazione $\Theta(1)$.
+	\item \textcolor{correctgreen}{\textbf{Ricerca con successo invariata (no ricerca binaria su lista). Ricerca senza successo migliore (ci si ferma alla prima chiave maggiore). Inserimento $O(n_i)$. Cancellazione $\Theta(1)$ con lista doppiamente concatenata.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Nessuna risposta \`e esatta.
+	\item Ricerca con successo $\Theta(1+\alpha/2)$; ricerca senza successo $\Theta(1+\alpha)$.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 09--10 (Alberi Binari di Ricerca)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Versione ricorsiva corretta di \textsc{Tree-Maximum}.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \texttt{if (x.right != null) \{ Tree-Maximum(x) \} else \{ return x.key \}}
+	\item \texttt{if (x.right != null) \{ Tree-Maximum(x.right) \} else \{ return x.key \}} (manca \texttt{return})
+	\item \textcolor{correctgreen}{\textbf{Nessuno degli algoritmi presentati \`e corretto (manca \texttt{return} nella chiamata ricorsiva).}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item \texttt{if (x.left != null) \{ return Tree-Maximum(x.left) \} else \{ return x.key \}} (usa sinistra: trova il minimo, non il massimo)
+\end{enumerate}
+
+\paragraph{D2.} BST-sort con $n$ \textsc{Tree-Insert} + inorder: tempi caso peggiore e caso migliore?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Caso peggiore $\Theta(n^2)$; caso migliore $O(\lg n)$.
+	\item Nessuna risposta \`e corretta.
+	\item Caso peggiore $\Theta(n)$; caso migliore $O(n\lg n)$.
+	\item \textcolor{correctgreen}{\textbf{Caso peggiore $\Theta(n^2)$ (input ordinato $\Rightarrow$ albero di altezza $n$). Caso migliore $O(n\lg n)$ (albero bilanciato).}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D3.} Differenza tra propriet\`a BST e min-heap; si pu\`o elencare in $O(n)$ con min-heap?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item S\`i, si pu\`o elencare in ordine in $O(n)$.
+	\item \textcolor{correctgreen}{\textbf{BST: ordine globale (sinistro $\le$ nodo $\le$ destro). Min-heap: ordine locale (padre $\le$ figli). La propriet\`a di min-heap \`e insufficiente per elencare in $O(n)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Nessuna risposta \`e corretta.
+	\item Non in $O(n)$, ma in $O(n\log n)$.
+\end{enumerate}
+
+\paragraph{D4.} Claim del Prof. Bunyan: per ogni $a\in A$, $b\in B$, $c\in C$ vale $a\le b\le c$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item S\`i: l'esempio di ricerca conferma la tesi.
+	\item \textcolor{correctgreen}{\textbf{No. Controesempio: radice 10, figlio sinistro 8 con figli 5 e 9. Cercando 5: $B=\{10,8,5\}$, $C=\{9\}$, ma $10 > 9$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item S\`i: nell'esempio la tesi vale.
+	\item S\`i: nell'albero con radice 9 la tesi vale.
+\end{enumerate}
+
+\paragraph{D5.} Algoritmo non ricorsivo per inorder con pila.
+
+\begin{lstlisting}[language={}, numbers=none, frame=none,
+	backgroundcolor=\color{white}, basicstyle=\ttfamily\footnotesize]
+	InorderTreeWalk(T) {
+		S = pila vuota
+		current = T.root
+		finito = false
+		while (!finito) {
+			if (current != null) {
+				S.push(current)
+				current = current.left
+			} else {
+				if (!S.isEmpty()) {
+					current = S.pop()
+					visit(current)
+					current = current.right
+				} else { finito = true }
+			}
+		}
+	}
+\end{lstlisting}
+\textcolor{correctgreen}{Pattern: push verso sinistra; pop, visita, poi vai a destra.} \hfill\textcolor{correctgreen}{$\checkmark$}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 10--11 (Programmazione Dinamica)}
+% -------------------------------------------------------
+
+\paragraph{D1.} \textsc{Modified-Cut-Rod} con costo fisso $c$ per ogni taglio.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $r[0]=0$; per $j=1\ldots n$: $q=-\infty$; per $i=1\ldots j-1$: $q=\max(q,p[i]+r[j-i]-c)$; $r[j]=q$.
+	\item \textcolor{correctgreen}{\textbf{$r[0]=0$; per $j=1\ldots n$: $q=p[j]$ (nessun taglio, nessun costo); per $i=1\ldots j-1$: $q=\max(q,p[i]+r[j-i]-c)$; $r[j]=q$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Nessuna risposta \`e corretta.
+	\item Come la prima ma ciclo interno fino a $j$ incluso.
+\end{enumerate}
+
+\paragraph{D2.} Ricostruire LCS in $O(m+n)$ senza tabella $b$.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Come la risposta corretta ma stampa \texttt{X[i-1]}.
+	\item \textcolor{correctgreen}{\textbf{\texttt{Print-LCS(c,X,Y,i,j)}: se $c[i,j]=0$ ritorna; se $X[i]=Y[j]$ ricorre su $(i-1,j-1)$ e stampa $X[i]$; altrimenti segue il massimo tra $c[i-1,j]$ e $c[i,j-1]$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Come sopra ma stampa \texttt{Y[j]}.
+	\item Come sopra ma stampa \texttt{X[i-1]} nelle diramazioni else.
+\end{enumerate}
+
+\paragraph{D3.} Perch\'e la memoization non accelera \textsc{MergeSort}?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item La memoization \`e gi\`a usata implicitamente nell'albero di ricorsione.
+	\item Al pi\`u 2 chiamate per coppia di indici; la sovrapposizione \`e minima.
+	\item \textcolor{correctgreen}{\textbf{Ogni coppia di indici \`e chiamata al pi\`u una volta: nessuna sovrapposizione tra sottoproblemi, niente da riusare.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Ogni coppia \`e chiamata esattamente una volta.
+\end{enumerate}
+
+\paragraph{D4.} DP $O(n)$ per Fibonacci. Vertici e archi del grafo dei sottoproblemi?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item $n+1$ vertici; $v_0$ senza archi uscenti; gli altri 2 archi: totale $2n$.
+	\item $n$ vertici; ciascuno con 2 archi: totale $2n$.
+	\item $n+1$ vertici; tutti con 2 archi: totale $2(n+1)$.
+	\item \textcolor{correctgreen}{\textbf{\texttt{fib[0..n]}, $\mathit{fib}[0]=\mathit{fib}[1]=1$, \texttt{for} $i=2$ to $n$: $\mathit{fib}[i]=\mathit{fib}[i-1]+\mathit{fib}[i-2]$. Grafo: $n+1$ vertici; $v_0,v_1$ senza archi; gli altri con 2 archi: totale $2(n-1)$ archi.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D5.} LCS con $2\min(m,n)$ celle; come ridurre a $\min(m,n)$?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Mantieni celle successive nella stessa riga e precedenti nella riga precedente.
+	\item \textcolor{correctgreen}{\textbf{La riga $i$ dipende solo dalla riga $i-1$: bastano 2 righe di lunghezza $\min(m,n)$. Per ridurre a 1 riga: tieni il valore precedente nella stessa riga e $c[i-1,j-1]$ in una variabile temporanea.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Prendi $\min(m,n)$ come numero di righe invece di colonne.
+	\item Nessuna risposta \`e esatta.
+\end{enumerate}
+
+% -------------------------------------------------------
+\subsubsection{Settimana 13 (Grafi: BFS, DFS, Topologico)}
+% -------------------------------------------------------
+
+\paragraph{D1.} Un solo bit per il colore dei nodi in BFS: perch\'e basta?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item \textcolor{correctgreen}{\textbf{Il colore grigio \`e solo illustrativo; l'unico controllo esplicito \`e sul bianco. Bastano bianco e nero $\Rightarrow$ 1 bit.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item Il nero \`e solo illustrativo; basta controllare grigio e nero.
+	\item Grigio e nero sono illustrativi; basta un solo colore.
+\end{enumerate}
+
+\paragraph{D2.} Calcolare $G^2$ con liste di adiacenza e con matrice.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Liste: $O(|E||V|)$; matrice: Strassen $O(|V|^3)$.
+	\item \textcolor{correctgreen}{\textbf{Liste: per ogni $u$, per ogni $v\in\text{Adj}[u]$, per ogni $w\in\text{Adj}[v]$, aggiungere $w$ ad \texttt{Adj}$^2[u]$; costo $O(|V||E|)$. Matrice: quadrato con Strassen, costo $O(|V|^{\lg 7})$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+	\item $O(|V|^3)$ per entrambe.
+	\item Aggiunge $u$ ad \texttt{Adj}$^2[w]$; costo $O(|V|^3)$.
+\end{enumerate}
+
+\paragraph{D3.} BFS con matrice di adiacenza: complessit\`a?
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Invariata: $O(V+E)$.
+	\item Nessuna risposta \`e corretta.
+	\item $O(V+V^3)$.
+	\item \textcolor{correctgreen}{\textbf{Iterare su tutti gli archi costa $O(V^2)$: complessit\`a $O(V+V^2)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D4.} Grado uscente e grado entrante con liste di adiacenza di un grafo orientato.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Nessuna risposta \`e corretta.
+	\item Uscente $O(|V|)$; entrante $O(|V|+|E|)$.
+	\item Uscente $O(|E|)$; entrante $O(|E|)$.
+	\item \textcolor{correctgreen}{\textbf{Uscente $O(|V|+|E|)$ (scorrendo tutte le liste). Entrante $O(|V|+|E|)$ (contando le occorrenze di ogni nodo come destinazione).}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
+
+\paragraph{D5.} Calcolare $G^T$ con liste di adiacenza e con matrice.
+\begin{enumerate}[label=\Alph*.,leftmargin=*]
+	\item Liste: per ogni $u$, per ogni $v\in\text{Adj}[u]$, aggiungere $u$ ad \texttt{Adj}$'[v]$; costo $O(|E|)$. Matrice: copia righe come colonne; costo $O(|V|)$.
+	\item \textcolor{correctgreen}{\textbf{Liste: costo $O(|V|+|E|)$. Matrice: per $i=1,\ldots,n$ copia la riga $i$ come colonna $i$ nella nuova matrice; costo $O(|V|^2)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
+\end{enumerate}
