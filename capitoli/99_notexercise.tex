@@ -1348,3 +1348,207 @@ nell'ausiliaria, scambia. Costo: $O(i)$. Totale $n$ push: $O(n^2)$.\\
 	\item Liste: per ogni $u$, per ogni $v\in\text{Adj}[u]$, aggiungere $u$ ad \texttt{Adj}$'[v]$; costo $O(|E|)$. Matrice: copia righe come colonne; costo $O(|V|)$.
 	\item \textcolor{correctgreen}{\textbf{Liste: costo $O(|V|+|E|)$. Matrice: per $i=1,\ldots,n$ copia la riga $i$ come colonna $i$ nella nuova matrice; costo $O(|V|^2)$.}} \hfill\textcolor{correctgreen}{$\checkmark$}
 \end{enumerate}
+
+\section{Raccolta Completa Esercizi e Quiz di Programmazione}
+
+% --- CLASSE SQUARE ---
+\subsection{Modellazione Geometrica: Classe Square}
+\begin{definizione}
+	Realizzare una classe \texttt{Square} che rappresenti un modello di forme quadrate, gestendo la dimensione del lato in modo che non sia mai negativa \cite{213, 166}.
+\end{definizione}
+
+\begin{lstlisting}[caption={Implementazione della classe Square}]
+	public class Square {
+		private double side;
+		
+		// Costruttore: imposta la lunghezza se >= 0, altrimenti 0
+		public Square(double length) {
+			this.side = (length >= 0) ? length : 0;
+		}
+		
+		// Modifica la dimensione del lato solo se il valore e' significativo
+		public void modify(double length) {
+			if (length >= 0) {
+				this.side = length;
+			}
+		}
+		
+		public double getArea() {
+			return this.side * this.side;
+		}
+	}
+\end{lstlisting}
+
+\newpage
+% --- CREA ARRAY ---
+\subsection{Manipolazione Array: Duplicazione Consecutiva}
+\begin{osservazione}
+	Scrivere un metodo statico \texttt{creaArray} che generi $n$ copie consecutive di un array dato. Se $n \le 1$ o l'array è nullo, restituire l'originale senza usare \texttt{java.util.Arrays} \cite{217, 167}.
+\end{osservazione}
+
+\begin{lstlisting}[caption={Metodo creaArray}]
+	static int[] creaArray(int[] a, int n) {
+		if (n <= 1 || a == null) {
+			return a;
+		}
+		int[] arr = new int[a.length * n];
+		int index = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < a.length; j++) {
+				arr[index++] = a[j];
+			}
+		}
+		return arr;
+	}
+\end{lstlisting}
+
+% --- MAX RUN ---
+\subsection{Analisi di Sequenze: Lunghezza Massima Serie (Run)}
+\begin{nozione}
+	Una "serie" è una sequenza di valori adiacenti ripetuti. Il metodo deve restituire la lunghezza della serie più lunga \cite{219, 168}.
+\end{nozione}
+
+\begin{lstlisting}[caption={Metodo maxRun}]
+	int maxRun(int[] a) {
+		if (a == null || a.length == 0) return 0;
+		int max = 1; 
+		int tmp = 1;
+		for (int i = 1; i < a.length; i++) {
+			if (a[i] == a[i - 1]) {
+				tmp++;
+			} else {
+				max = Math.max(max, tmp);
+				tmp = 1;
+			}
+		}
+		return Math.max(max, tmp);
+	}
+\end{lstlisting}
+
+% --- EQUALS ---
+\subsection{Uguaglianza tra Oggetti: Metodo Equals}
+\begin{hardnote}
+	Per sovrascrivere correttamente \texttt{Object.equals}, il parametro deve essere di tipo \texttt{Object} e si deve usare \texttt{instanceof} prima del cast \cite{222, 170}.
+\end{hardnote}
+
+\begin{lstlisting}[caption={Override di equals per la classe A}]
+	public class A {
+		private int id;
+		private String colore;
+		
+		public boolean equals(Object o) {
+			if (!(o instanceof A a)) {
+				return false;
+			}
+			return this.id == a.id;
+		}
+	}
+\end{lstlisting}
+
+% --- FIBONACCI ---
+\subsection{Successione di Fibonacci}
+\begin{nota}
+	L'approccio iterativo evita l'overhead della ricorsione e gestisce il limite del tipo \texttt{long} (fino a $n=92$) \cite{227, 171}.
+\end{nota}
+
+\begin{lstlisting}[caption={Fibonacci iterativo}]
+	public static long fib(long i) {
+		if (i < 0) return -1;
+		if (i == 0) return 0;
+		if (i == 1) return 1;
+		if (i > 92) return -1;
+		
+		long prev2 = 0, prev1 = 1, current = 0;
+		for (int n = 2; n <= i; n++) {
+			current = prev1 + prev2;
+			prev2 = prev1;
+			prev1 = current;
+		}
+		return current;
+	}
+\end{lstlisting}
+
+\newpage
+% --- STRINGHE ALTERNATE ---
+\subsection{Trasformazione Stringhe: Alterna Upper/Lower}
+\begin{lstlisting}[caption={Metodo alternaUpperLower}]
+	public String alternaUpperLower(String s) {
+		if (s == null || s.isEmpty()) return "";
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			sb.append(i % 2 == 0 ? Character.toUpperCase(c) : Character.toLowerCase(c));
+		}
+		return sb.toString();
+	}
+\end{lstlisting}
+
+% --- INTERFACCE E COMPARABLE ---
+\subsection{Interfacce, Immutabilità e Ordinamento}
+\begin{esempio}
+	Classe \texttt{A} immutabile che implementa un'interfaccia personalizzata \texttt{I} e \texttt{Comparable} \cite{234, 177}.
+\end{esempio}
+
+\begin{lstlisting}[caption={Classe A con ordinamento basato su pow()}]
+	public class A implements I, Comparable<A> {
+		int i, j; // Accesso package richiesto
+		
+		public A(int i, int j) {
+			this.i = i;
+			this.j = j;
+		}
+		
+		@Override
+		public long pow() {
+			return (long) Math.pow(i, j);
+		}
+		
+		@Override
+		public int compareTo(A o) {
+			return Long.compare(this.pow(), o.pow());
+		}
+	}
+\end{lstlisting}
+
+\newpage
+% --- QUICK SORT PARTITION ---
+\subsection{Algoritmi di Ordinamento: Partition}
+\begin{lstlisting}[caption={Procedura Partition classica}]
+	public static int partition(int[] a, int low, int high) {
+		if (a == null || low > high) return -1;
+		int pivot = a[high];
+		int i = low - 1;
+		for (int j = low; j < high; j++) {
+			if (a[j] <= pivot) {
+				i++;
+				scambia(a, i, j);
+			}
+		}
+		scambia(a, i + 1, high);
+		return i + 1;
+	}
+\end{lstlisting}
+
+% --- BST SEARCH ---
+\subsection{Strutture Dati: Ricerca in un BST}
+\begin{lstlisting}[caption={Metodo search in BinarySearchTree}]
+	public BinaryNode<T> search(T item) {
+		if (item == null) throw new NullPointerException();
+		BinaryNode<T> node = getRoot();
+		while (node != null) {
+			int res = item.compareTo(node.getValue());
+			if (res == 0) return node;
+			node = (res < 0) ? node.getLeftSon() : node.getRightSon();
+		}
+		return null;
+	}
+\end{lstlisting}
+
+% --- NOTE FINALI ---
+\begin{nota}
+	In caso di collisioni in una tabella hash gestita con concatenamento, la ricerca con successo ha un costo medio di $\Theta(1+\alpha)$ \cite{8, 31}.
+\end{nota}
+
+\begin{hardnote}
+	Se in un \texttt{try-with-resources} sia il metodo \texttt{close()} che il corpo del \texttt{try} lanciano un'eccezione, quella del \texttt{close()} viene soppressa \cite{35, 58}.
+\end{hardnote}

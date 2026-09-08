@@ -1,0 +1,616 @@
+	\section{Domande Esame}
+	
+	% ==========================================================================
+	\subsection{Appello del 18 giugno 2026}
+	% ==========================================================================
+	
+	\subsubsection{Domande a risposta breve / quiz}
+	
+	\begin{enumerate}
+		
+		\item Scrivere un metodo pubblico Java chiamato \texttt{dividi} che prende in input due valori interi (numeratore e denominatore) e restituisce il risultato della divisione intera (tipo \texttt{int}). Il metodo deve obbligatoriamente utilizzare un blocco \texttt{try-catch} per gestire l'eccezione \texttt{ArithmeticException} nel caso in cui il denominatore sia uguale a zero. La gestione dell'eccezione deve lanciare una nuova eccezione di tipo \texttt{IllegalArgumentException} con messaggio \texttt{"Divisione per zero non consentito!"}.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			System.out.println(dividi(10,2));               // 5
+			try { System.out.println(dividi(1,0)); }
+			catch (IllegalArgumentException e) {
+				System.out.print(e.getMessage());
+			}                                                // Divisione per zero non consentita!
+		\end{lstlisting}
+		
+		\item Si considerino le seguenti classi.
+		\begin{lstlisting}[style=java]
+			public class A {
+				private String id = "Sono oggetto di A";
+				public String getId() { return id; }
+			}
+			public class B extends A {
+				private String id = "Sono oggetto di B";
+				public static void main(String[] args) {
+					A value = new B();
+					B valueB = new B();
+					System.out.println("value id: " + value.getId());
+					System.out.println("valueB id: " + valueB.getId());
+				}
+			}
+		\end{lstlisting}
+		Cosa stampa il metodo \texttt{main} di \texttt{B}?
+		\begin{enumerate}[label=(\alph*)]
+			\item \texttt{value id: Sono oggetto di B} \\ \texttt{valueB id: Sono oggetto di B}
+			\item \texttt{value id: Sono oggetto di A} \\ \texttt{valueB id: Sono oggetto di B}
+			\item \texttt{value id: Sono oggetto di B} \\ \texttt{valueB id: Sono oggetto di A}
+			\item \texttt{value id: Sono oggetto di A} \\ \texttt{valueB id: Sono oggetto di A}
+		\end{enumerate}
+		(Si ricordi: i campi non sono polimorfici — l'accesso a un campo è risolto staticamente sul tipo dichiarato della variabile, non sul tipo a runtime.)
+		
+		\item Quale limite superiore asintotico si ottiene per la seguente ricorrenza?
+		\[
+		T(n) \le T\!\left(\frac{n}{11}\right) + T\!\left(\frac{10n}{11}\right) + \Theta(n)
+		\]
+		Indicare, fra le alternative seguenti, quale ragionamento con il metodo dell'albero di ricorsione è corretto:
+		\begin{enumerate}[label=(\alph*)]
+			\item Ogni nodo genera due sottoproblemi, quindi l'albero ha $2^i$ nodi al livello $i$; la profondità è $\log_2 n$; il costo totale è $\Theta(n\log n)$.
+			\item A ogni livello la somma delle dimensioni dei sottoproblemi è al più $n$, quindi il costo per livello è $\Theta(n)$; la profondità massima (seguendo sempre il ramo $10n/11$) è $\log_{11/10} n$; quindi $T(n)=\Theta(n)\log_{11/10}n+\Theta(n)=\Theta(n\log n)$.
+			\item Ogni livello crea due sottoproblemi le cui soluzioni si ricompongono in tempo $\Theta(n^2)$; la profondità è $\log n$; quindi $T(n)=\Theta(n^2\log n)$.
+			\item A ogni livello la dimensione totale diminuisce geometricamente come $\left(\frac{10}{11}\right)^i n$; sommando su tutti i livelli si ottiene $T(n)=\Theta(n)$.
+		\end{enumerate}
+		
+		\item L'array $[23,17,14,6,18,10]$ è un max-heap? Motivare la risposta fra le alternative proposte (proprietà rispettata/violata, confronto fra elemento e relativo genitore).
+		
+		\item Si consideri la seguente classe.
+		\begin{lstlisting}[style=java]
+			public class Coin {
+				int count = 0;
+				public void add() { count++; }
+				public void print(PrintStream stream) { stream.out.println(toString()); }
+				public String toString() { return "Il valore di count e: " + count; }
+			}
+		\end{lstlisting}
+		Indicare quale fra le alternative proposte è la versione immutabile corretta della classe \texttt{Coin}.
+		
+		\item Si consideri questo metodo che usa due cicli annidati:
+		\begin{lstlisting}[style=java]
+			public static String ast(int h, int w) {
+				StringBuffer sb = new StringBuffer();
+				for (int i=1; i<=h; i++) {
+					for (int j=1; j<=w; j++) { sb.append('*'); }
+					sb.append('\r');
+				}
+				return sb.toString();
+			}
+		\end{lstlisting}
+		Indicare, fra le alternative proposte, quale metodo equivalente usa un solo ciclo.
+		
+		\item Spiegare come calcolare la lunghezza di una LCS usando soltanto $2\min(m,n)$ posizioni nella tabella $C$ più uno spazio aggiuntivo costante. Indicare, fra le alternative proposte, quale spiegazione è corretta (dimensione delle colonne pari alla sequenza più corta $q=\min(m,n)$; con $2q$ posizioni si mantengono riga precedente e riga corrente; con $q$ posizioni si mantiene una sola riga, salvando temporaneamente il valore $C[i-1,j-1]$ prima che venga sovrascritto).
+		
+		\item Indicare, fra le alternative proposte, quale descrive correttamente un'implementazione di uno stack mediante due code (assumendo costo $O(1)$ per \texttt{enqueue()}/\texttt{dequeue()}), con il relativo costo delle operazioni \texttt{push} e \texttt{pop} (nel caso peggiore e ammortizzato).
+		
+		\item Si consideri la seguente interfaccia:
+		\begin{lstlisting}[style=java]
+			public interface I {
+				/** @return i^j, dove 'i' e 'j' sono due variabili dell'oggetto. */
+				public long pow();
+			}
+		\end{lstlisting}
+		Scrivere la classe \texttt{A} \emph{immutabile} che implementi l'interfaccia \texttt{I} (usando i nomi di variabili indicati) e che permetta di creare oggetti tramite il costruttore \texttt{A(int i, int j)}.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			I a = new A(2,2);
+			System.out.println(a.pow());   // 4
+		\end{lstlisting}
+		
+		\item Indicare l'ordinamento corretto delle seguenti quattro funzioni rispetto all'operatore $\Omega()$, dalla funzione che cresce asintoticamente di più a quella che cresce di meno (cioè $f_1,f_2,f_3,f_4$ tali che $f_k=\Omega(f_{k+1})$ per $k=1,2,3$):
+		\[
+		(\sqrt{2})^{\lg n}, \quad n^2, \quad n!, \quad (\lg n)!
+		\]
+		
+		\item Nel problema del massimo di un matroide pesato si cerca un insieme indipendente massimale di peso massimo. Supponendo di voler trovare invece un insieme indipendente massimale di \emph{peso minimo}, come si può modificare la funzione peso per risolvere il problema usando lo stesso algoritmo greedy per il massimo? Scegliere fra le alternative proposte (es.\ invertire il segno dei pesi, sommare una costante, scegliere $c>\max_{x\in S} w(x)$ e definire $w'(x)=c-w(x)$, ecc.).
+		
+	\end{enumerate}
+	
+	\subsubsection{Domande aperte (esercizi lunghi)}
+	
+	\begin{enumerate}
+		\item Si progetti e si analizzi, dimostrandone correttezza e complessità, un algoritmo che, dato un array non ordinato $A[1..n]$ di $n$ numeri e un intero $k$, con $1\le k\le n$, restituisca in un array $B[1..k]$ le $k$ occorrenze di valore più piccolo presenti in $A$. L'array $B$ deve contenere tali valori in ordine non decrescente.
+		
+		L'algoritmo deve avere complessità temporale $O(n+k\lg k)$. Si osservi che non è quindi sufficiente ordinare interamente l'array $A$.
+		
+		Si forniscano:
+		\begin{itemize}
+			\item la descrizione dell'idea su cui si basa l'algoritmo;
+			\item la dimostrazione di correttezza;
+			\item lo pseudocodice;
+			\item la complessità temporale e spaziale.
+		\end{itemize}
+		
+		\item Un laboratorio di bioinformatica sta sviluppando un piccolo modulo software per la gestione degli esperimenti di sequenziamento genomico. Ogni esperimento è associato a un campione biologico e viene eseguito in un determinato giorno di analisi. Il laboratorio richiede che tutti gli esperimenti siano mantenuti in una collezione sempre ordinata in base al giorno di esecuzione (in ordine crescente).
+		
+		Si richiede di completare un insieme di classi Java già parzialmente definite, che modellano:
+		\begin{itemize}
+			\item un esperimento generico (classe astratta \texttt{Esperimento});
+			\item un tipo specifico di esperimento (\texttt{Sequenziamento});
+			\item una collezione ordinata di esperimenti (\texttt{CollezioneEsperimenti}).
+		\end{itemize}
+		Le classi sono legate tra loro da un vincolo di ereditarietà.
+		
+		Scheletro fornito:
+		\begin{lstlisting}[style=java]
+			abstract class Esperimento implements Comparable<Esperimento> {
+				private String campione;
+				private int giorno; // formato YYYYMMDD
+				public Esperimento(String campione, int giorno) { ... }
+				public String getCampione() { ... }
+				public int getGiorno() { ... }
+				@Override
+				public int compareTo(Esperimento other) {
+					// TODO: implementare (usa SOLO il giorno)
+				}
+				@Override
+				public abstract String toString();
+			}
+			
+			class Sequenziamento extends Esperimento {
+				private int reads;
+				private String tecnologia;
+				// TODO: implementare il costruttore della classe
+				public int getReads() { ... }
+				public String getTecnologia() { ... }
+				// TODO: implementare toString()
+			}
+		\end{lstlisting}
+		
+		Esempio d'uso:
+		\begin{lstlisting}[style=java]
+			CollezioneEsperimenti collezione = new CollezioneEsperimenti();
+			collezione.add(new Sequenziamento("A", 20260618, 1000, "Illumina"));
+			collezione.add(new Sequenziamento("B", 20260615, 800, "Nanopore"));
+			collezione.add(new Sequenziamento("C", 20260620, 1200, "Illumina"));
+			
+			for (Esperimento e : collezione.getAll()) {
+				System.out.println(e);
+			}
+			// B - 20260615 - 800 - Nanopore
+			// A - 20260618 - 1000 - Illumina
+			// C - 20260620 - 1200 - Illumina
+		\end{lstlisting}
+	\end{enumerate}
+	
+	% ==========================================================================
+	\subsection{Appello del 09 luglio 2026}
+	% ==========================================================================
+	
+	\subsubsection{Domande a risposta breve / quiz}
+	
+	\begin{enumerate}
+		
+		\item Si supponga di dover memorizzare $n$ chiavi in una hash table con concatenamento di dimensione $m$, con $m<n$. Le chiavi appartengono a un universo $U$, con $|U|>nm$.
+		
+		Il prof.\ Bianchi sostiene che, qualunque sia la funzione hash $h:U\to\{0,\dots,m-1\}$, esiste un sottoinsieme di $U$ formato da almeno $n$ chiavi che vengono tutte mappate nello stesso slot, e che di conseguenza, nel caso peggiore, la ricerca ha complessità $\Theta(n)$.
+		
+		Indicare, fra le alternative proposte, se l'affermazione è vera o falsa e fornire (o riconoscere) la relativa dimostrazione/controesempio.
+		
+		\item Si consideri la seguente interfaccia e classe:
+		\begin{lstlisting}[style=java]
+			public interface Printable { void print(); }
+			
+			public class Documento implements Printable {
+				private String testo;
+				public Documento(String testo) { this.testo = testo; }
+				public void print() { System.out.println(testo); }
+			}
+		\end{lstlisting}
+		Quale dei seguenti frammenti di codice è corretto?
+		\begin{enumerate}[label=(\alph*)]
+			\item \texttt{Printable p = new Documento("Hello"); Documento d = p;}
+			\item \texttt{Printable p = new Documento("Hello"); p.print();}
+			\item \texttt{Printable p = new Printable(); Documento d = new Printable();}
+		\end{enumerate}
+		
+		\item Realizzare la classe \texttt{StringEsame} che rappresenta due stringhe qualsiasi. La classe:
+		\begin{enumerate}
+			\item ha un unico costruttore che chiede le due stringhe;
+			\item deve sovrascrivere il metodo che restituisce la rappresentazione dell'oggetto come stringa, in modo che la stringa risultante sia composta dalle due stringhe ordinate fra loro e separate da \texttt{';'}.
+		\end{enumerate}
+		Se una stringa è \texttt{null}, la si consideri come precedente all'altra.
+		
+		Esempio d'uso: \texttt{new StringEsame("B","A")} stampato deve dare \texttt{A;B}.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			StringEsame str = new StringEsame(null,"A");
+			System.out.println(str);   // null;A
+		\end{lstlisting}
+		
+		\item Si consideri il digrafo pesato/orientato dato (vertici $u,v,w,x,y,z$) e si applichi l'algoritmo di depth-first search a partire dal nodo $u$, con le seguenti liste di adiacenza (nell'ordine indicato):
+		\[
+		adj[u]=[v,x],\ adj[v]=[y],\ adj[w]=[y,z],\ adj[x]=[v],\ adj[y]=[x],\ adj[z]=[z].
+		\]
+		Si esegua la visita a partire da $u$, senza avviare nuove visite da nodi non raggiungibili da $u$. Quali sono i valori di $d$ e $\pi$ dopo la quarta scoperta di un nodo? (Si usi $d=\infty$ per i nodi non ancora scoperti e $\pi=\texttt{null}$ per i nodi senza predecessore.)
+		
+		\item Cosa succede quando, in un enunciato \texttt{try} con risorsa, viene lanciata un'eccezione, quindi viene invocato il metodo \texttt{close} e questo, a sua volta, lancia un'eccezione diversa dalla prima? Scegliere fra le alternative proposte (soppressione dell'eccezione di \texttt{close}, ordine di lancio, comportamento dei blocchi \texttt{catch}, ecc.).
+		
+		\item Implementare il metodo generico \texttt{invertiLista} che riceve una \texttt{ArrayList<T>} e restituisce una nuova \texttt{ArrayList<T>} contenente gli stessi elementi in ordine inverso.
+		\begin{lstlisting}[style=java]
+			public static <T> ArrayList<T> invertiLista(ArrayList<T> lista) {
+				// IMPLEMENTARE
+			}
+		\end{lstlisting}
+		Il metodo deve: funzionare con qualsiasi tipo di elemento; restituire una \emph{nuova} \texttt{ArrayList<T>}; non modificare la lista ricevuta come parametro; mantenere il tipo generico \texttt{T}.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			ArrayList<Integer> valori = new ArrayList<>();
+			valori.add(1); valori.add(2); valori.add(3);
+			System.out.println(invertiLista(valori));   // [3, 2, 1]
+		\end{lstlisting}
+		
+		\item Si consideri l'algoritmo Counting-Sort:
+		\begin{lstlisting}
+			COUNTING-SORT(A, k)
+			Input: A[1..n] array da ordinare, k valore massimo presente in A
+			1. Siano C[0..k], B[1..n] due nuovi array
+			2. for i := 0 to k
+			3.     C[i] := 0
+			4. for j := 1 to A.length
+			5.     C[A[j]] := C[A[j]] + 1
+			6. for i := 1 to k
+			7.     C[i] := C[i] + C[i-1]
+			8. for j := A.length downto 1
+			9.     B[C[A[j]]] := A[j]
+			10.    C[A[j]]--
+			11. return B
+		\end{lstlisting}
+		Se si cambia la riga 8 con \texttt{for j := 1 to A.length}, l'algoritmo è ancora corretto e stabile? Motivare la risposta scegliendo fra le alternative proposte.
+		
+		\item Si comparino le implementazioni $A$ e $B$ di due algoritmi di ordinamento diversi sullo stesso calcolatore. Su un input di dimensione intera positiva $n$, l'implementazione $A$ viene eseguita in $64n^2$ secondi, mentre l'implementazione $B$ in $8n^3$ secondi. Per quali valori di $n$ l'implementazione $A$ risulta più veloce dell'implementazione $B$?
+		
+		\item Siano $f(n),g(n)$ due funzioni asintoticamente positive. Si consideri l'espressione
+		\[
+		f(n)=O(g(n)) \implies 2^{f(n)} = O\!\left(2^{g(n)}\right).
+		\]
+		Indicare, fra le alternative proposte, se l'espressione è vera o falsa, motivando (eventualmente con un controesempio).
+		
+		\item [Esercizio del libro, semplificato] Descrivere un algoritmo con tempo $O(n)$ che, dato un insieme $S$ di $n$ numeri distinti e un intero positivo $k \le n$, restituisca i $k$ elementi di $S$ più vicini alla mediana di $S$. Si assuma che la mediana sia l'elemento di rango $\lceil n/2\rceil$ e che non vi siano due elementi di $S$ alla stessa distanza dalla mediana.
+		
+		\item Indicare quale affermazione è corretta circa il seguente frammento di programma:
+		\begin{lstlisting}[style=java]
+			String s = "missantropo".toUpperCase().replace("SS","S");
+		\end{lstlisting}
+		
+		\item Si vuole realizzare una procedura per generare permutazioni casuali uniformi di un array di $n$ elementi. Si consideri la seguente procedura:
+		\begin{lstlisting}
+			PERMUTE-WITH-ALL(A)
+			n = A.length
+			for i = 1 to n
+			scambia A[i] con A[Random(1,n)]
+			endfor
+			return A
+		\end{lstlisting}
+		La procedura genera una permutazione casuale uniforme? Scegliere la risposta corretta fra le alternative proposte, motivando (eventualmente con un controesempio per $n=3$).
+		
+		\item Si consideri la seguente interfaccia:
+		\begin{lstlisting}[style=java]
+			public interface I {
+				/** @return i^j, dove 'i' e 'j' sono due variabili dell'oggetto. */
+				public long pow();
+			}
+		\end{lstlisting}
+		Scrivere la classe \texttt{A} che:
+		\begin{enumerate}
+			\item implementi l'interfaccia \texttt{I} e l'interfaccia \texttt{Comparable<A>};
+			\item permetta di creare oggetti tramite il costruttore \texttt{A(int i, int j)};
+			\item ordini rispetto al valore di \texttt{pow()};
+			\item abbia le variabili di istanza \texttt{i}, \texttt{j} con accesso \emph{package}.
+		\end{enumerate}
+		(Attenzione: nomi di classi/interfacce/variabili come specificato, l'esercizio è corretto automaticamente.)
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			I a = new A(2,2);
+			System.out.println(a.pow());                  // 4
+			A b = new A(2,2);
+			System.out.println(((A)a).compareTo(b)==0);   // true
+		\end{lstlisting}
+		
+		\item Si considerino le seguenti classi:
+		\begin{lstlisting}[style=java]
+			public class A {
+				private String id = "Sono oggetto di A";
+				public String getId() { return id; }
+				public void setId(String s) { id = s; }
+			}
+			public class B extends A {
+				private String id = "Sono oggetto di B";
+			}
+		\end{lstlisting}
+		Correggere (se necessario) il codice in modo che, quando si invoca il metodo \texttt{getId()} o \texttt{setId()} usando un oggetto di tipo \texttt{B}, venga considerato il proprio \texttt{id}.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			A value = new A();
+			B valueB = new B();
+			System.out.println(value.getId());   // Sono oggetto di A
+			System.out.println(valueB.getId());  // Sono oggetto di B
+		\end{lstlisting}
+		
+		\item Si consideri il grafo pesato non orientato dato (nodi $a,b,c,d,e,f,g,h,i$) e si applichi l'algoritmo di Dijkstra assumendo che $a$ sia il nodo sorgente.
+		
+		Quali sono i valori di $d$ e $\pi$ al termine del quarto ciclo principale, cioè dopo l'estrazione del quarto nodo e il rilassamento dei suoi archi incidenti? Quali sono i nodi estratti?
+		
+		Pesi degli archi dati in figura: $a$--$b$: 4, $a$--$h$: 8, $b$--$c$: 8, $b$--$h$: 11, $c$--$d$: 7, $c$--$f$: 4, $c$--$i$: 2, $d$--$e$: 9, $d$--$f$: 14, $e$--$f$: 10, $f$--$g$: 2, $g$--$h$: 1, $g$--$i$: 6, $h$--$i$: 7.
+	\end{enumerate}
+	
+	\subsubsection{Domande aperte (esercizi lunghi)}
+	
+	\begin{enumerate}
+		\item Si determini una soluzione algoritmica al problema dello \emph{zaino con ripetizione} usando la tecnica della programmazione dinamica. Nel problema dello zaino con ripetizione, ciascun tipo di elemento può essere inserito nello zaino più di una volta.
+		
+		Si usi la seguente notazione:
+		\begin{itemize}
+			\item $n$: numero di tipi di elementi;
+			\item $W$: capacità dello zaino;
+			\item $v[1..n]$: array dei valori degli elementi, dove $v[i]$ è il valore dell'elemento di tipo $i$;
+			\item $w[1..n]$: array dei pesi degli elementi, dove $w[i]$ è il peso dell'elemento di tipo $i$.
+		\end{itemize}
+		Si assuma che $W$ e tutti i pesi siano interi non negativi. L'algoritmo deve calcolare il valore massimo ottenibile con uno zaino di capacità $W$, indicando inoltre come ricostruire una scelta ottima degli elementi inseriti.
+		
+		Si forniscano: la definizione dei sottoproblemi; la ricorrenza; lo pseudocodice; la complessità temporale e spaziale.
+		
+		Suggerimento fornito nel testo: si consideri il sottoproblema in cui la capacità dello zaino è $c$, con $0\le c\le W$. Sia $OPT[c]$ il valore massimo ottenibile con capacità $c$. Per calcolare $OPT[c]$, si valuta quale elemento inserire come ultimo nella soluzione: se $w[i]\le c$, allora dopo aver inserito un elemento di tipo $i$ resta una capacità di $c-w[i]$, che può essere riempita in modo ottimale.
+		
+		\item Un parco zoologico digitale sta sviluppando un semplice modulo Java per la gestione degli animali presenti nella struttura. Ogni animale possiede un nome e deve essere in grado di restituire il proprio verso. Gli animali vengono memorizzati all'interno di una collezione generica che accetta solo oggetti appartenenti alla gerarchia degli animali.
+		
+		Scheletro fornito:
+		\begin{lstlisting}[style=java]
+			abstract class Animale {
+				private String nome;
+				public Animale(String nome) { this.nome = nome; }
+				public String getNome() { return nome; }
+				public abstract String verso();
+				@Override
+				public abstract String toString();
+			}
+			
+			class Cane extends Animale {
+				private String varieta;
+				// TODO: implementare il costruttore della classe
+				// TODO: implementare i metodi getter della classe
+				// TODO: concretizzare la classe
+				// NOTA: formato toString(): nome - varieta - verso
+				// esempio: Fido - Labrador - Abbaio
+			}
+			
+			class CollezioneAnimali<T extends Animale> {
+				private ArrayList<T> animali;
+				// TODO: implementare il costruttore della classe (si mantenga il vincolo definito)
+				public void add(T animale) { /* TODO */ }
+				public ArrayList<T> getAll() { /* TODO */ }
+			}
+		\end{lstlisting}
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			CollezioneAnimali<Cane> cani = new CollezioneAnimali<>();
+			cani.add(new Cane("Fido", "Labrador"));
+			for (Cane c : cani.getAll()) {
+				System.out.println(c);
+			}
+			// Fido - Labrador - Abbaio
+		\end{lstlisting}
+	\end{enumerate}
+	
+	% ==========================================================================
+	\subsection{Appello del 03 settembre 2026}
+	% ==========================================================================
+	
+	\subsubsection{Domande a risposta breve / quiz}
+	
+	\begin{enumerate}
+		
+		\item È fornita la seguente classe astratta:
+		\begin{lstlisting}[style=java]
+			abstract class Node {
+				protected int value;
+				public Node(int value) { this.value = value; }
+				public abstract boolean isCompatible(Node other);
+			}
+		\end{lstlisting}
+		Implementare solamente la classe \texttt{GraphNode}. Il metodo \texttt{isCompatible()} deve restituire \texttt{true} se la somma dei valori dei due nodi è pari, \texttt{false} altrimenti.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			GraphNode n1 = new GraphNode(4);
+			GraphNode n2 = new GraphNode(6);
+			System.out.println(n1.isCompatible(n2));   // true
+		\end{lstlisting}
+		
+		\item Si consideri il seguente pezzo di codice Java:
+		\begin{lstlisting}[style=java]
+			double shippingCharge = 5.00;
+			for (; shippingCharge < 5.3; shippingCharge += 0.1) {
+				if (shippingCharge >= 5.2999) {
+					shippingCharge = 6.0;
+				}
+			}
+		\end{lstlisting}
+		Che valore ha la variabile \texttt{shippingCharge} al termine del ciclo \texttt{for}?
+		
+		\item Si consideri un albero binario di ricerca e un suo nodo $x$. Quale delle seguenti affermazioni descrive correttamente il successore di $x$?
+		\begin{enumerate}[label=(\alph*)]
+			\item Se $x$ ha un sottoalbero destro non vuoto, il successore è la radice del sottoalbero destro; altrimenti è sempre il genitore di $x$.
+			\item Il successore di $x$ è sempre il nodo con chiave immediatamente maggiore tra i figli di $x$.
+			\item Se $x$ ha un sottoalbero destro non vuoto, il successore è il nodo con chiave minima nel sottoalbero destro; altrimenti è il primo antenato di $x$ per il quale $x$ appartiene al sottoalbero sinistro.
+			\item Se $x$ ha un sottoalbero sinistro non vuoto, il successore è il nodo con chiave massima nel sottoalbero sinistro; altrimenti è il primo antenato di $x$.
+		\end{enumerate}
+		
+		\item Si supponga che, su un computer, per un input di dimensione $n$, l'algoritmo insertion sort richieda $12n$ passi, mentre il merge sort richieda $36n\log_2 n$ passi. Per quali valori interi di $n$ l'insertion sort è migliore del merge sort?
+		
+		\item Come si deve modificare la dichiarazione \texttt{<T> int binarySearch(T[] a, T key)} per rafforzare il controllo sul tipo \texttt{T}, affinché sia un tipo corretto per il metodo che implementa la ricerca binaria (assumendo che il metodo usi \texttt{compareTo()})?
+		
+		\item Si consideri il seguente codice:
+		\begin{lstlisting}[style=java]
+			class Veicolo {
+				public void muovi() { System.out.println("Veicolo"); }
+			}
+			class Automobile extends Veicolo {
+				@Override
+				public void muovi() { System.out.println("Automobile"); }
+				public void apriBagagliaio() { System.out.println("Bagagliaio aperto"); }
+			}
+			public class Main {
+				public static void main(String[] args) {
+					Veicolo v = new Automobile();
+					v.muovi();
+					v.apriBagagliaio();
+				}
+			}
+		\end{lstlisting}
+		Cosa accade durante la compilazione?
+		
+		\item Scrivere il metodo di fibonacci \texttt{long[] fib(int i)} che restituisca i numeri di Fibonacci in un array fino al valore di indice \texttt{i}, per valori ammissibili d'input; array vuoto altrimenti.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			System.out.println(Arrays.toString(fib(1)));   // [0, 1]
+		\end{lstlisting}
+		
+		\item Si consideri QuickSort nella versione vista a lezione, che usa la procedura \texttt{PARTITION} con l'ultimo elemento come pivot e il confronto $A[i]\le x$. Qual è il tempo di esecuzione di QuickSort quando tutti gli elementi dell'array hanno lo stesso valore $v$?
+		
+		\item Si consideri la classe \texttt{BankAccount} che contiene il campo \texttt{private int balance}. Inserire il metodo \texttt{transferTo(BankAccount, int)} che trasferisce all'oggetto \texttt{BankAccount} specificato come parametro l'importo specificato, aggiornando il campo \texttt{balance} sia dell'oggetto chiamante sia dell'oggetto passato come parametro.
+		\begin{itemize}
+			\item Se il parametro \texttt{BankAccount} è \texttt{null}, il metodo non deve eseguire alcuna azione.
+			\item Il trasferimento può avvenire solo se il \texttt{BankAccount} che invoca il metodo ha un \texttt{balance} maggiore o uguale all'importo specificato e l'importo è un valore positivo; altrimenti il metodo non deve eseguire alcuna azione.
+		\end{itemize}
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			BankAccount a = new BankAccount(100);
+			BankAccount b = new BankAccount();
+			a.transferTo(b, 10);
+			System.out.println(a.getBalance());   // 90
+			System.out.println(b.getBalance());   // 10
+		\end{lstlisting}
+		
+		\item Sono dati $n$ giorni consecutivi. In ciascun giorno si può scegliere se svolgere o meno un'attività che genera un guadagno $g[i]$. Non è consentito svolgere attività in due giorni consecutivi. Si vuole massimizzare il guadagno totale. Quale delle seguenti definizioni dei sottoproblemi consente di impostare correttamente una soluzione mediante programmazione dinamica?
+		\begin{enumerate}[label=(\alph*)]
+			\item $OPT[i]$ = guadagno ottenuto scegliendo necessariamente l'attività del giorno $i$.
+			\item $OPT[i]$ = massimo guadagno ottenibile considerando solo i primi $i$ giorni.
+			\item $OPT[i]$ = somma dei guadagni dei primi $i$ giorni.
+			\item $OPT[i,k]$ = massimo guadagno ottenibile scegliendo esattamente $k$ attività tra i primi $i$ giorni.
+		\end{enumerate}
+		
+		\item Determinare il numero minimo e il numero massimo di elementi in un heap binario di altezza $h$.
+		
+		\item Implementare un metodo generico \texttt{firstGreater} che restituisca il primo elemento dell'array strettamente maggiore di \texttt{threshold}, secondo l'ordinamento naturale definito da \texttt{Comparable}. Se nessun elemento soddisfa la condizione, il metodo deve restituire \texttt{null}.
+		\begin{lstlisting}[style=java]
+			public static <T extends Comparable<T>> T firstGreater(T[] values, T threshold) {
+				// IMPLEMENTARE
+			}
+		\end{lstlisting}
+		Il metodo deve: funzionare con qualsiasi tipo \texttt{T} che implementi \texttt{Comparable<T>}; non modificare l'array ricevuto come parametro; mantenere il tipo generico \texttt{T}; restituire il primo elemento che soddisfa la condizione.
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			Integer[] values = {3, 7, 2, 9, 5};
+			System.out.println(firstGreater(values, 6));   // 7
+		\end{lstlisting}
+		
+		\item Sia $f(n)$ una funzione asintoticamente positiva. Si consideri l'espressione
+		\[
+		f(n) = \Theta\!\left(f(n/3)\right).
+		\]
+		Indicare, fra le alternative proposte, se l'espressione è vera o falsa (per esempio considerando $f(n)=3^n$).
+		
+		\item Si consideri un algoritmo che, su un input di dimensione $n$: suddivide il problema in $3$ sottoproblemi di dimensione $n/2$; risolve ricorsivamente tutti i sottoproblemi; combina le soluzioni in tempo $\Theta(n)$. Qual è la complessità temporale dell'algoritmo? (Si scriva la ricorrenza e si risolva, ad es.\ con il teorema dell'esperto.)
+		
+		\item Si consideri un dizionario contenente $n$ elementi con chiavi distinte, implementato mediante un array ordinato rispetto alla chiave. Quali sono, nel caso peggiore, i tempi delle operazioni \texttt{SEARCH}, \texttt{INSERT} e \texttt{DELETE}?
+		
+	\end{enumerate}
+	
+	\subsubsection{Domande aperte (esercizi lunghi)}
+	
+	\begin{enumerate}
+		\item Sono date $n$ attività $a_1,\dots,a_n$. Ogni attività $a_i$ è caratterizzata da un tempo di inizio $s[i]$ e da un tempo di fine $f[i]$, con $s[i]<f[i]$. Due attività sono compatibili se i rispettivi intervalli temporali non si sovrappongono. Si vuole determinare un sottoinsieme di cardinalità massima di attività mutuamente compatibili.
+		
+		Si progetti un algoritmo che risolva il problema con complessità temporale $O(n\log n)$. Non sono accettate soluzioni basate sull'enumerazione esaustiva o sulla forza bruta.
+		
+		Si forniscano: la descrizione dell'idea su cui si basa l'algoritmo; la giustificazione della correttezza; lo pseudocodice; la complessità temporale e spaziale.
+		
+		Suggerimento fornito nel testo: si consideri quale attività scegliere per prima, così da lasciare il maggior spazio possibile alle attività successive.
+		
+		\item Un laboratorio di bioinformatica sta sviluppando un semplice modulo Java per la gestione di sequenze di DNA ottenute da esperimenti di sequenziamento. Le sequenze sono memorizzate in un file di testo, con una sequenza per riga. Il programma deve leggere il contenuto del file e memorizzare le sequenze all'interno di una struttura dati generica.
+		
+		Vengono fornite le classi Java parzialmente implementate:
+		\begin{itemize}
+			\item \texttt{SequenzaDNA}, che rappresenta una sequenza di DNA;
+			\item l'interfaccia generica \texttt{Parser<T>}, utilizzata per trasformare una riga del file in un oggetto di tipo \texttt{T};
+			\item la classe generica \texttt{Archivio<T>}, che permette di memorizzare gli elementi letti;
+			\item la classe generica \texttt{LettoreSequenze<T>}, che si occupa della lettura dei dati dal file;
+			\item un metodo \texttt{main}-style già implementato (\texttt{AnalisiSequenze.analizza}) che utilizza le classi fornite.
+		\end{itemize}
+		
+		Completare il codice nei punti indicati (\texttt{// TODO}), rispettando le firme dei metodi già presenti. In particolare:
+		\begin{itemize}
+			\item completare l'implementazione della classe generica \texttt{Archivio<T>};
+			\item completare la lettura delle righe del file e la costruzione dell'archivio;
+			\item utilizzare il \texttt{Parser<T>} fornito per convertire ogni riga in un elemento dell'archivio;
+			\item gestire tramite eccezioni i casi in cui il file non sia disponibile e gli eventuali errori durante le operazioni di input/output;
+			\item assicurarsi che le risorse utilizzate per la lettura del file vengano rilasciate correttamente.
+		\end{itemize}
+		Non è consentito modificare le firme dei metodi già presenti né il metodo \texttt{main}.
+		
+		Scheletro fornito:
+		\begin{lstlisting}[style=java]
+			class SequenzaDNA {
+				private String sequenza;
+				public SequenzaDNA(String sequenza) { this.sequenza = sequenza; }
+				public String getSequenza() { return sequenza; }
+				public int lunghezza() { return sequenza.length(); }
+				@Override
+				public String toString() { return sequenza + " - " + lunghezza(); }
+			}
+			
+			interface Parser<T> { T parse(String riga); }
+			
+			class Archivio<T> {
+				private ArrayList<T> elementi;
+				// TODO: implementare il costruttore della classe
+				public void add(T elemento) { /* TODO */ }
+				public int size() { return elementi.size(); }
+				public T get(int index) { /* TODO */ }
+			}
+			
+			class LettoreSequenze<T> {
+				private Parser<T> parser;
+				public LettoreSequenze(Parser<T> parser) { this.parser = parser; }
+				public Archivio<T> leggi(String nomeFile) throws IOException {
+					// TODO: leggere il file una riga alla volta e costruire un Archivio<T>
+					// usando il parser; il file deve essere rilasciato correttamente;
+					// gli errori di apertura/lettura vanno propagati al chiamante.
+				}
+			}
+			
+			public class AnalisiSequenze {
+				public static void analizza(String nomeFile) {
+					Parser<SequenzaDNA> parser = riga -> new SequenzaDNA(riga);
+					LettoreSequenze<SequenzaDNA> lettore = new LettoreSequenze<>(parser);
+					// TODO: gestire le eccezioni relative alla lettura del file
+					Archivio<SequenzaDNA> archivio = lettore.leggi(nomeFile);
+					for (int i = 0; i < archivio.size(); i++) {
+						System.out.println(archivio.get(i));
+					}
+				}
+			}
+		\end{lstlisting}
+		
+		Esempio:
+		\begin{lstlisting}[style=java]
+			AnalisiSequenze.analizza("sequenze1.txt");
+			// ATCG - 4
+			// GCTA - 4
+		\end{lstlisting}
+	\end{enumerate}
+	
+\end{document}
